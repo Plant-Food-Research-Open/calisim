@@ -1,0 +1,16 @@
+[run]
+source=calisim
+omit =
+    */tmp*
+    */Temp/*
+    */usr/local/lib*
+    *test/*
+
+[report]
+skip_empty = true
+fail_under = 0
+omit =
+    */tmp*
+    */Temp/*
+    */usr/local/lib*
+    *test/*
