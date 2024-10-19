@@ -4,7 +4,7 @@ labels: ["refactor"]
 body:
   - type: textarea
     id: location-textarea
-    attributes: 
+    attributes:
       label: "Where is the code located?"
       placeholder: Describe what project/directory the code is located within here
     validations:

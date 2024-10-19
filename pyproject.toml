@@ -94,3 +94,7 @@ extend-select = [
     "NPY",
     "RUF"
 ]
+
+extend-ignore = [
+    "W191"
+]
