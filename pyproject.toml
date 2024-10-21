@@ -32,6 +32,8 @@ pyabc = "^0.12.13"
 iterative-ensemble-smoother = "^0.2.6"
 pymc = "<=5.16.2"
 pytensor = "<=2.20.0"
+plotly = "^5.24.1"
+scikit-activeml = "^0.5.2"
 
 
 [tool.poetry.group.dev.dependencies]
@@ -70,6 +72,9 @@ gpytorch = "^1.13"
 botorch = "^0.12.0"
 lampe = "^0.9.0"
 zuko = "^1.3.0"
+ax-platform = "^0.4.3"
+skorch = "^1.0.0"
+torchcp = "^0.1.3"
 
 [build-system]
 requires = ["poetry-core"]
