@@ -101,5 +101,6 @@ extend-select = [
 ]
 
 extend-ignore = [
-    "W191"
+    "W191",
+    "E101"
 ]
