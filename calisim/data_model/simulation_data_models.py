@@ -65,6 +65,7 @@ class CalibrationModel(BaseModel):
 
 	experiment_name: str | None = "default"
 	outdir: str | None = None
+	verbose: bool | None = False
 
 
 class IntervalCalibrationModel(CalibrationModel):

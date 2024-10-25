@@ -78,19 +78,14 @@ class OptunaOptimisation(CalibrationWorkflowBase):
 				trial,
 				parameter_spec,
 				self.specification.observed_data,
-				objective_func=self.specification.objective,
+				objective_func=self.specification.objective[0],
 				objective_kwargs=objective_kwargs,
 			),
 			**self.specification.optimisation_kwargs,
 		)
 
 	def analyze(self) -> None:
-		"""Analyze the results of the simulation calibration procedure.
-
-		Raises:
-		    NotImplementedError:
-		        Error raised for the unimplemented abstract method.
-		"""
+		"""Analyze the results of the simulation calibration procedure."""
 		task = "optimisation"
 		time_now = get_datetime_now()
 		outdir = self.specification.outdir

@@ -24,10 +24,10 @@ class OptimisationMethodModel(IntervalCalibrationModel):
 	        The calibration base model class.
 	"""
 
-	objective: Callable
+	objective: list[Callable]
 	observed_data: np.ndarray | pd.DataFrame
 	directions: list[str] | None = ["minimize"]
-	sampler: str
+	sampler: str | None = ""
 	sampler_kwargs: dict[str, Any] | None = None
 	optimisation_kwargs: dict[str, Any] | None = None
 	objective_kwargs: dict[str, Any] | None = None
