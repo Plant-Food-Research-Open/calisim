@@ -6,4 +6,7 @@ API Reference
 
     base.rst
     data_model.rst
+    example_models.rst
     optimisation.rst
+    statistics.rst
+    utils.rst

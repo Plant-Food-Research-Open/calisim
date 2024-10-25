@@ -1,5 +1,3 @@
-from .botorch_wrapper import BoTorchOptimisation
-from .implementation import OptimisationMethod
-from .optuna_wrapper import OptunaOptimisation
+from .implementation import OptimisationMethod, OptimisationMethodModel
 
-_all__ = [BoTorchOptimisation, OptimisationMethod, OptunaOptimisation]
+_all__ = [OptimisationMethod, OptimisationMethodModel]

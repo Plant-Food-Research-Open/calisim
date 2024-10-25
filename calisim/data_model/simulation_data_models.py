@@ -5,13 +5,27 @@ simulation calibration procedures.
 
 """
 
+from enum import Enum
 from typing import Any
 
-from pydantic import BaseModel
+from pydantic import BaseModel as PydanticBaseModel
 
 
-class Config:
-	arbitrary_types_allowed = True
+class BaseModel(PydanticBaseModel):
+	"""Base Pydantic data model.
+
+	Args:
+	    PydanticBaseModel (PydanticBaseModel):
+	        The Pydantic Base model class.
+	"""
+
+	class Config:
+		arbitrary_types_allowed = True
+
+
+class ParameterDataType(Enum):
+	DISCRETE = "discrete"
+	CONTINUOUS = "continuous"
 
 
 class ParameterIntervalModel(BaseModel):
@@ -25,7 +39,7 @@ class ParameterIntervalModel(BaseModel):
 	name: str
 	lower_bound: float
 	upper_bound: float
-	data_type: str
+	data_type: ParameterDataType
 
 
 class DistributionModel(BaseModel):
@@ -41,14 +55,35 @@ class DistributionModel(BaseModel):
 	dist_kwargs: dict[str, Any]
 
 
-class CalibrationMethodModel(BaseModel):
-	"""The calibration method data model.
+class CalibrationModel(BaseModel):
+	"""The calibration data model.
 
 	Args:
 	    BaseModel (BaseModel):
 	        The Pydantic Base model class.
 	"""
 
-	parameter_spec: list[ParameterIntervalModel] | list[DistributionModel]
-	calibration_spec: dict[str, Any]
-	analysis_spec: dict[str, Any]
+	experiment_name: str | None = "default"
+	outdir: str | None = None
+
+
+class IntervalCalibrationModel(CalibrationModel):
+	"""The interval-based calibration data model.
+
+	Args:
+	    BaseModel (BaseModel):
+	        The Pydantic Base model class.
+	"""
+
+	parameter_spec: list[ParameterIntervalModel]
+
+
+class DistributionCalibrationModel(CalibrationModel):
+	"""The distribution-based calibration data model.
+
+	Args:
+	    BaseModel (BaseModel):
+	        The Pydantic Base model class.
+	"""
+
+	parameter_spec: list[DistributionModel]
