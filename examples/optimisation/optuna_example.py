@@ -43,17 +43,18 @@ def objective(parameters: dict, observed_data: pd.DataFrame) -> float | list[flo
 
 
 specification = OptimisationMethodModel(
-	objective=[objective],
 	experiment_name="optuna_optimisation",
 	parameter_spec=parameter_spec,
 	observed_data=observed_data,
 	outdir=get_examples_outdir(),
 	sampler="tpes",
 	directions=["minimize"],
-	optimisation_kwargs=dict(n_trials=20),
+	n_samples=20,
 	sampler_kwargs=dict(n_startup_trials=10),
 )
 
-calibrator = OptimisationMethod(specification=specification, engine="optuna")
+calibrator = OptimisationMethod(
+	calibration_func=objective, specification=specification, engine="optuna"
+)
 
 calibrator.specify().execute().analyze()

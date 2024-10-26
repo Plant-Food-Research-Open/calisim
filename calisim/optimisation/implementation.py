@@ -7,13 +7,25 @@ Implements the supported optimisation methods.
 from collections.abc import Callable
 from typing import Any
 
-import numpy as np
-import pandas as pd
-
-from ..base import CalibrationMethodBase
+from ..base import CalibrationMethodBase, CalibrationWorkflowBase
 from ..data_model import IntervalCalibrationModel
 from .botorch_wrapper import BoTorchOptimisation
 from .optuna_wrapper import OptunaOptimisation
+
+TASK = "optimisation"
+IMPLEMENTATIONS: dict[str, type[CalibrationWorkflowBase]] = dict(
+	optuna=OptunaOptimisation, botorch=BoTorchOptimisation
+)
+
+
+def get_optimisation_implementations() -> dict[str, type[CalibrationWorkflowBase]]:
+	"""Get the calibration implementations for optimisation.
+
+	Returns:
+		Dict[str, type[CalibrationWorkflowBase]]:
+			The dictionary of calibration implementations for optimisation.
+	"""
+	return IMPLEMENTATIONS
 
 
 class OptimisationMethodModel(IntervalCalibrationModel):
@@ -24,12 +36,7 @@ class OptimisationMethodModel(IntervalCalibrationModel):
 	        The calibration base model class.
 	"""
 
-	objective: list[Callable]
-	observed_data: np.ndarray | pd.DataFrame
 	directions: list[str] | None = ["minimize"]
-	sampler: str | None = ""
-	sampler_kwargs: dict[str, Any] | None = None
-	optimisation_kwargs: dict[str, Any] | None = None
 	objective_kwargs: dict[str, Any] | None = None
 
 
@@ -38,19 +45,19 @@ class OptimisationMethod(CalibrationMethodBase):
 
 	def __init__(
 		self,
+		calibration_func: Callable,
 		specification: OptimisationMethodModel,
 		engine: str = "optuna",
 	) -> None:
 		"""OptimisationMethod constructor.
 
 		Args:
+			calibration_func (Callable):
+				The calibration function.
+				For example, a simulation function or objective function.
 		    specification (OptimisationMethodModel):
 		        The calibration specification.
 		    engine (str, optional):
 		        The optimisation backend. Defaults to "optuna".
 		"""
-		task = "optimisation"
-
-		implementations = dict(optuna=OptunaOptimisation, botorch=BoTorchOptimisation)
-
-		super().__init__(specification, task, engine, implementations)
+		super().__init__(calibration_func, specification, TASK, engine, IMPLEMENTATIONS)

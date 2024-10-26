@@ -69,7 +69,7 @@ class OptunaOptimisation(CalibrationWorkflowBase):
 
 			return objective_func(parameters, observed_data, **objective_kwargs)
 
-		objective_kwargs = self.specification.objective_kwargs
+		objective_kwargs = self.specification.calibration_kwargs
 		if objective_kwargs is None:
 			objective_kwargs = {}
 
@@ -78,10 +78,11 @@ class OptunaOptimisation(CalibrationWorkflowBase):
 				trial,
 				parameter_spec,
 				self.specification.observed_data,
-				objective_func=self.specification.objective[0],
+				objective_func=self.calibration_func,
 				objective_kwargs=objective_kwargs,
 			),
-			**self.specification.optimisation_kwargs,
+			n_trials=self.specification.n_samples,
+			n_jobs=self.specification.n_jobs,
 		)
 
 	def analyze(self) -> None:

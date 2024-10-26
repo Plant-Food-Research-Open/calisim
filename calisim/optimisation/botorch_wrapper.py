@@ -5,6 +5,7 @@ Implements Bayesian optimisation methods using the BoTorch library.
 """
 
 import os.path as osp
+from typing import Any
 
 import numpy as np
 import pandas as pd
@@ -50,8 +51,8 @@ class BoTorchOptimisation(CalibrationWorkflowBase):
 		search_space = SearchSpace(parameters=parameters)
 
 		observed_data = self.specification.observed_data
-		objective_func = self.specification.objective[0]
-		objective_kwargs = self.specification.objective_kwargs
+		objective_func = self.calibration_func
+		objective_kwargs: dict[str, Any] = self.specification.calibration_kwargs  # type: ignore[assignment]
 		if objective_kwargs is None:
 			objective_kwargs = {}
 
@@ -65,7 +66,7 @@ class BoTorchOptimisation(CalibrationWorkflowBase):
 		optimization_config = OptimizationConfig(
 			objective=Objective(
 				metric=ObjectiveMetric(
-					name="single_objective_metric",
+					name=f"{self.specification.experiment_name}_metric",
 					param_names=parameter_names,
 					noise_sd=None,
 				),
@@ -86,9 +87,8 @@ class BoTorchOptimisation(CalibrationWorkflowBase):
 		sobol = Models.SOBOL(search_space=experiment.search_space)
 
 		sobol = Models.SOBOL(search_space=experiment.search_space)
-		optimisation_kwargs = self.specification.optimisation_kwargs
-		n_init = optimisation_kwargs["n_init"]
-		n_trials = optimisation_kwargs["n_trials"]
+		n_init = self.specification.n_init
+		n_trials = self.specification.n_samples
 
 		for i in range(n_init):
 			generator_run = sobol.gen(n=1)

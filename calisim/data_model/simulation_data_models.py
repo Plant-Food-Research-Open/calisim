@@ -8,6 +8,8 @@ simulation calibration procedures.
 from enum import Enum
 from typing import Any
 
+import numpy as np
+import pandas as pd
 from pydantic import BaseModel as PydanticBaseModel
 
 
@@ -65,7 +67,15 @@ class CalibrationModel(BaseModel):
 
 	experiment_name: str | None = "default"
 	outdir: str | None = None
-	verbose: bool | None = False
+	sampler: str = ""
+	sampler_kwargs: dict[str, Any] | None = None
+	calibration_kwargs: dict[str, Any] | None = None
+	observed_data: np.ndarray | pd.DataFrame | None = None
+	n_samples: int = 1
+	n_init: int = 1
+	n_iterations: int = 1
+	n_jobs: int = 1
+	verbose: bool = False
 
 
 class IntervalCalibrationModel(CalibrationModel):

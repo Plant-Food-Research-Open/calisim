@@ -43,19 +43,18 @@ def objective(parameters: dict, observed_data: pd.DataFrame) -> float | list[flo
 
 
 specification = OptimisationMethodModel(
-	objective=[objective],
 	experiment_name="botorch_optimisation",
 	parameter_spec=parameter_spec,
 	observed_data=observed_data,
 	outdir=get_examples_outdir(),
 	directions=["minimize"],
-	optimisation_kwargs=dict(
-		n_init=10,
-		n_trials=10,
-	),
+	n_init=10,
+	n_samples=10,
 	verbose=True,
 )
 
-calibrator = OptimisationMethod(specification=specification, engine="botorch")
+calibrator = OptimisationMethod(
+	calibration_func=objective, specification=specification, engine="botorch"
+)
 
 calibrator.specify().execute().analyze()

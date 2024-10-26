@@ -6,6 +6,7 @@ simulation calibration procedures.
 """
 
 from abc import ABC, abstractmethod
+from collections.abc import Callable
 
 from ..data_model import DistributionCalibrationModel, IntervalCalibrationModel
 
@@ -14,15 +15,21 @@ class CalibrationWorkflowBase(ABC):
 	"""The calibration workflow abstract class."""
 
 	def __init__(
-		self, specification: IntervalCalibrationModel | DistributionCalibrationModel
+		self,
+		calibration_func: Callable,
+		specification: IntervalCalibrationModel | DistributionCalibrationModel,
 	) -> None:
 		"""CalibrationMethodBase constructor.
 
 		Args:
+			calibration_func (Callable):
+				The calibration function.
+				For example, a simulation function or objective function.
 		    specification (IntervalCalibrationModel | DistributionCalibrationModel):
 		        The calibration specification.
 		"""
 		super().__init__()
+		self.calibration_func = calibration_func
 		self.specification = specification
 
 	@abstractmethod
@@ -61,6 +68,7 @@ class CalibrationMethodBase(CalibrationWorkflowBase):
 
 	def __init__(
 		self,
+		calibration_func: Callable,
 		specification: IntervalCalibrationModel | DistributionCalibrationModel,
 		task: str,
 		engine: str,
@@ -69,6 +77,9 @@ class CalibrationMethodBase(CalibrationWorkflowBase):
 		"""CalibrationMethodBase constructor.
 
 		Args:
+			calibration_func (Callable):
+				The calibration function.
+				For example, a simulation function or objective function.
 		    specification (IntervalCalibrationModel | DistributionCalibrationModel):
 		        The calibration specification.
 		    task (str):
@@ -78,7 +89,7 @@ class CalibrationMethodBase(CalibrationWorkflowBase):
 		    implementations (dict[str, type[CalibrationWorkflowBase]]):
 		        The list of supported engines.
 		"""
-		super().__init__(specification)
+		super().__init__(calibration_func, specification)
 		self.task = task
 
 		self.engine = engine
@@ -89,7 +100,7 @@ class CalibrationMethodBase(CalibrationWorkflowBase):
 		implementation = implementations.get(engine, None)
 		if implementation is None:
 			raise ValueError(f"{self.task} implementation not defined for: {engine}")
-		self.implementation = implementation(specification)
+		self.implementation = implementation(calibration_func, specification)
 
 	def _implementation_check(self, function_name: str) -> None:
 		"""Check that the implementation is set.
