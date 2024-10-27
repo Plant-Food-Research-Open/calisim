@@ -55,7 +55,8 @@ specification = SensitivityAnalysisMethodModel(
 	n_samples=8,
 	output_labels=["Discrepancy"],
 	verbose=True,
-	sampler_kwargs=dict(
+	sampler_kwargs=dict(calc_second_order=True, scramble=True),
+	analyze_kwargs=dict(
 		calc_second_order=True,
 		num_resamples=200,
 		conf_level=0.95,

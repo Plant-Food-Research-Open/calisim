@@ -69,7 +69,10 @@ class CalibrationModel(BaseModel):
 	outdir: str | None = None
 	sampler: str = ""
 	sampler_kwargs: dict[str, Any] | None = None
+	method: str = ""
+	method_kwargs: dict[str, Any] | None = None
 	calibration_kwargs: dict[str, Any] | None = None
+	analyze_kwargs: dict[str, Any] | None = None
 	observed_data: np.ndarray | pd.DataFrame | None = None
 	n_samples: int = 1
 	n_init: int = 1
@@ -78,6 +81,8 @@ class CalibrationModel(BaseModel):
 	random_seed: int | None = None
 	n_jobs: int = 1
 	output_labels: list[str] | None = None
+	groups: list[str] | None = None
+	parallel_backend: str = ""
 	vectorize: bool = False
 	verbose: bool = False
 

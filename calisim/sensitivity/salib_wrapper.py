@@ -5,10 +5,10 @@ Implements the supported sensitivity analysis methods using the SALib library.
 """
 
 import os.path as osp
-from pydoc import locate
 
 import numpy as np
-import plotly.express as px
+import pandas as pd
+from matplotlib import pyplot as plt
 from SALib import ProblemSpec
 
 from ..base import CalibrationWorkflowBase
@@ -22,6 +22,7 @@ class SALibSensitivityAnalysis(CalibrationWorkflowBase):
 	def specify(self) -> None:
 		"""Specify the parameters of the model calibration procedure."""
 		self.names = []
+		self.data_types = []
 		bounds = []
 		dists = []
 
@@ -29,7 +30,12 @@ class SALibSensitivityAnalysis(CalibrationWorkflowBase):
 		for spec in parameter_spec:
 			parameter_name = spec.name
 			self.names.append(parameter_name)
+
+			data_type = spec.data_type
+			self.data_types.append(data_type)
+
 			dists.append("unif")
+
 			lower_bound = spec.lower_bound
 			upper_bound = spec.upper_bound
 			bounds.append([lower_bound, upper_bound])
@@ -39,7 +45,7 @@ class SALibSensitivityAnalysis(CalibrationWorkflowBase):
 			"names": self.names,
 			"bounds": bounds,
 			"dists": dists,
-			"groups": None,
+			"groups": self.specification.groups,
 			"outputs": self.specification.output_labels,
 		}
 
@@ -48,15 +54,13 @@ class SALibSensitivityAnalysis(CalibrationWorkflowBase):
 	def execute(self) -> None:
 		"""Execute the simulation calibration procedure."""
 		sampler_name = self.specification.sampler
+		sample_func = getattr(self.sp, f"sample_{sampler_name}")
+		sampler_kwargs = self.specification.sampler_kwargs
+		if sampler_kwargs is None:
+			sampler_kwargs = {}
+		sampler_kwargs["seed"] = self.specification.random_seed
 		n_samples = self.specification.n_samples
-
-		sample_func_name = f"SALib.sample.{sampler_name}.sample"
-		sample_func = locate(sample_func_name)
-		if sample_func is None:
-			raise ValueError(f"Sampler not implemented in SALib: {sampler_name}")
-		self.parameter_values = sample_func(  # type: ignore[operator]
-			self.sp, n_samples, seed=self.specification.random_seed
-		)
+		sample_func(n_samples, **sampler_kwargs)
 
 		data_types = []
 		parameter_spec = self.specification.parameter_spec
@@ -64,77 +68,97 @@ class SALibSensitivityAnalysis(CalibrationWorkflowBase):
 			data_type = spec.data_type
 			data_types.append(data_type)
 
-		parameters = []
-		for x in self.parameter_values:
-			theta = {}
-			for i, name in enumerate(self.names):
-				data_type = data_types[i]
-				if data_type == ParameterDataType.CONTINUOUS:
-					theta[name] = x[i].item()
-				else:
-					theta[name] = int(x[i].item())
-			parameters.append(theta)
+		def sensitivity_func(
+			X: np.ndarray,
+			observed_data: pd.DataFrame | np.ndarray,
+			parameter_names: list[str],
+			data_types: list[ParameterDataType],
+			sensitivity_kwargs: dict,
+		) -> np.ndarray:
+			import numpy as np
+
+			parameters = []
+			for theta in X:
+				parameter_set = {}
+				for i, parameter_value in enumerate(theta):
+					parameter_name = parameter_names[i]
+					data_type = data_types[i]
+					if data_type == ParameterDataType.CONTINUOUS:
+						parameter_set[parameter_name] = parameter_value
+					else:
+						parameter_set[parameter_name] = int(parameter_value)
+				parameters.append(parameter_set)
+
+			if self.specification.vectorize:
+				results = self.calibration_func(
+					parameters, observed_data, **sensitivity_kwargs
+				)
+			else:
+				results = []
+				for parameter in parameters:
+					result = self.calibration_func(
+						parameter,
+						self.specification.observed_data,
+						**sensitivity_kwargs,
+					)
+					results.append(result)
+			results = np.array(results)
+			return results
 
 		sensitivity_kwargs = self.specification.calibration_kwargs
 		if sensitivity_kwargs is None:
 			sensitivity_kwargs = {}
+		self.sp.evaluate(
+			sensitivity_func,
+			self.specification.observed_data,
+			self.names,
+			self.data_types,
+			sensitivity_kwargs,
+		)
 
-		if self.specification.vectorize:
-			self.results = self.calibration_func(
-				parameters, self.specification.observed_data, **sensitivity_kwargs
-			)
-		else:
-			self.results = []
-			for parameter in parameters:
-				result = self.calibration_func(
-					parameter, self.specification.observed_data, **sensitivity_kwargs
-				)
-				self.results.append(result)
-
-		self.results = np.array(self.results)
-
-		analyze_func_name = f"SALib.analyze.{sampler_name}.analyze"
-		analyze_func = locate(analyze_func_name)
-		if analyze_func is None:
-			raise ValueError(
-				f"Analysis for sampler not implemented in SALib: {sampler_name}"
-			)
-
-		analyze_kwargs = self.specification.sampler_kwargs
-		analyze_kwargs["seed"] = self.specification.random_seed  # type: ignore[index]
-		self.sensitivity_indices = analyze_func(self.sp, self.results, **analyze_kwargs)  # type: ignore[operator]
+		analyze_func = getattr(self.sp, f"analyze_{sampler_name}")
+		analyze_kwargs = self.specification.analyze_kwargs
+		if analyze_kwargs is None:
+			analyze_kwargs = {}
+		analyze_kwargs["seed"] = self.specification.random_seed
+		analyze_func(**analyze_kwargs)
 
 	def analyze(self) -> None:
 		"""Analyze the results of the simulation calibration procedure."""
 		task = "sensitivity_analysis"
 		time_now = get_datetime_now()
 		outdir = self.specification.outdir
+		sampler_name = self.specification.sampler
 
-		si_dfs = self.sensitivity_indices.to_df()
+		self.sp.plot()
+		plt.tight_layout()
+		if outdir is not None:
+			outfile = osp.join(outdir, f"{time_now}-{task}_indices.png")
+			plt.savefig(outfile)
+		else:
+			plt.show()
+		plt.close()
 
-		for i in range(len(si_dfs)):
-			si_df = si_dfs[i].reset_index()
-			si_df["index"] = si_df["index"].astype("str")
-			si_type = si_df.columns[1]
-			fig = px.bar(
-				si_df,
-				x="index",
-				y=si_type,
-				error_y=f"{si_type}_conf",
-			).update_layout(xaxis_title="Parameter", yaxis_title=si_type)
-
-			if outdir is not None:
-				outfile = osp.join(outdir, f"{time_now}_{task}_{si_type}.png")
-				fig.write_image(outfile)
-			else:
-				fig.show()
+		self.sp.heatmap()
+		plt.tight_layout()
+		if outdir is not None:
+			outfile = osp.join(outdir, f"{time_now}-{task}_heatmap.png")
+			plt.savefig(outfile)
+		else:
+			plt.show()
+		plt.close()
 
 		if outdir is None:
 			return
 
-		for si_df in si_dfs:
-			si_df = si_df.reset_index().rename(columns={"index": "parameter"})
-
-			si_type = si_df.columns[1]
-			outfile = osp.join(outdir, f"{time_now}_{task}_{si_type}.csv")
+		si_dfs = self.sp.to_df()
+		if isinstance(si_dfs, list):
+			for si_df in si_dfs:
+				si_df = si_df.reset_index().rename(columns={"index": "parameter"})
+				si_type = si_df.columns[1]
+				outfile = osp.join(outdir, f"{time_now}_{task}_{si_type}.csv")
+				si_df.to_csv(outfile, index=False)
+		else:
+			si_df = si_dfs.reset_index().rename(columns={"index": "parameter"})
+			outfile = osp.join(outdir, f"{time_now}_{task}_{sampler_name}.csv")
 			si_df.to_csv(outfile, index=False)
