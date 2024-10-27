@@ -74,7 +74,11 @@ class CalibrationModel(BaseModel):
 	n_samples: int = 1
 	n_init: int = 1
 	n_iterations: int = 1
+	n_epochs: int = 1
+	random_seed: int | None = None
 	n_jobs: int = 1
+	output_labels: list[str] | None = None
+	vectorize: bool = False
 	verbose: bool = False
 
 

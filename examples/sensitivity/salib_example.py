@@ -2,7 +2,10 @@ import pandas as pd
 
 from calisim.data_model import ParameterDataType, ParameterIntervalModel
 from calisim.example_models import LotkaVolterraModel
-from calisim.optimisation import OptimisationMethod, OptimisationMethodModel
+from calisim.sensitivity import (
+	SensitivityAnalysisMethod,
+	SensitivityAnalysisMethodModel,
+)
 from calisim.statistics import MeanSquaredError
 from calisim.utils import get_examples_outdir
 
@@ -25,7 +28,7 @@ parameter_spec = [
 ]
 
 
-def objective(
+def sensitivity_func(
 	parameters: dict, observed_data: pd.DataFrame | None
 ) -> float | list[float]:
 	simulation_parameters = dict(
@@ -43,19 +46,24 @@ def objective(
 	return discrepancy
 
 
-specification = OptimisationMethodModel(
-	experiment_name="botorch_optimisation",
+specification = SensitivityAnalysisMethodModel(
+	experiment_name="salib_sensitivity_analysis",
 	parameter_spec=parameter_spec,
 	observed_data=observed_data,
 	outdir=get_examples_outdir(),
-	directions=["minimize"],
-	n_init=10,
-	n_samples=10,
+	sampler="sobol",
+	n_samples=8,
+	output_labels=["Discrepancy"],
 	verbose=True,
+	sampler_kwargs=dict(
+		calc_second_order=True,
+		num_resamples=200,
+		conf_level=0.95,
+	),
 )
 
-calibrator = OptimisationMethod(
-	calibration_func=objective, specification=specification, engine="botorch"
+calibrator = SensitivityAnalysisMethod(
+	calibration_func=sensitivity_func, specification=specification, engine="salib"
 )
 
 calibrator.specify().execute().analyze()

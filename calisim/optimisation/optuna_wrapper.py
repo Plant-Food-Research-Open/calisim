@@ -28,11 +28,15 @@ class OptunaOptimisation(CalibrationWorkflowBase):
 			cmaes=opt_samplers.CmaEsSampler,
 			nsga=opt_samplers.NSGAIISampler,
 			qmc=opt_samplers.QMCSampler,
+			gp=opt_samplers.GPSampler,
 		)
 		sampler_class = supported_samplers.get(sampler_name, None)
 		if sampler_class is None:
 			raise ValueError(f"Unsupported Optuna sampler: {sampler_name}")
-		self.sampler = sampler_class(**self.specification.sampler_kwargs)
+		sampler_kwargs = self.specification.sampler_kwargs
+		if sampler_kwargs is None:
+			sampler_kwargs = {}
+		self.sampler = sampler_class(**sampler_kwargs)
 
 		self.study = optuna.create_study(
 			sampler=self.sampler,

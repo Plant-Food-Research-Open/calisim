@@ -25,13 +25,14 @@ parameter_spec = [
 ]
 
 
-def objective(parameters: dict, observed_data: pd.DataFrame) -> float | list[float]:
+def objective(
+	parameters: dict, observed_data: pd.DataFrame | None
+) -> float | list[float]:
 	simulation_parameters = dict(
 		h0=34.0, l0=5.9, t=observed_data.year, gamma=0.84, delta=0.026
 	)
 
 	for k in ["alpha", "beta"]:
-		simulation_parameters[k] = parameters[k]
 		simulation_parameters[k] = parameters[k]
 
 	simulated_data = model.simulate(simulation_parameters)

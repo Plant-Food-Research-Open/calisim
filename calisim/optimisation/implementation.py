@@ -5,7 +5,6 @@ Implements the supported optimisation methods.
 """
 
 from collections.abc import Callable
-from typing import Any
 
 from ..base import CalibrationMethodBase, CalibrationWorkflowBase
 from ..data_model import IntervalCalibrationModel
@@ -37,7 +36,6 @@ class OptimisationMethodModel(IntervalCalibrationModel):
 	"""
 
 	directions: list[str] | None = ["minimize"]
-	objective_kwargs: dict[str, Any] | None = None
 
 
 class OptimisationMethod(CalibrationMethodBase):

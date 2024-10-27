@@ -7,8 +7,40 @@ simulation calibration procedures.
 
 from abc import ABC, abstractmethod
 from collections.abc import Callable
+from functools import wraps
 
 from ..data_model import DistributionCalibrationModel, IntervalCalibrationModel
+
+
+def pre_post_hooks(f: Callable) -> Callable:
+	"""Execute prehooks and posthooks for calibration methods.
+
+	Args:
+		f (Callable):
+			The wrapped function.
+
+	Returns:
+		Callable:
+			The wrapper function.
+	"""
+
+	@wraps(f)
+	def wrapper(
+		self: CalibrationWorkflowBase, *args: list, **kwargs: dict
+	) -> "CalibrationWorkflowBase":
+		"""The wrapper function for prehooks and posthooks.
+
+		Returns:
+			CalibrationWorkflowBase:
+				The calibration workflow.
+		"""
+		func_name = f.__name__
+		getattr(self, f"prehook_{func_name}")()
+		result = f(self, *args, **kwargs)
+		getattr(self, f"posthook_{func_name}")()
+		return result
+
+	return wrapper
 
 
 class CalibrationWorkflowBase(ABC):
@@ -61,6 +93,30 @@ class CalibrationWorkflowBase(ABC):
 		        Error raised for the unimplemented abstract method.
 		"""
 		raise NotImplementedError("analyze() method not implemented.")
+
+	def prehook_specify(self) -> None:
+		"""Prehook to run before specify()."""
+		pass
+
+	def posthook_specify(self) -> None:
+		"""Posthook to run after specify()."""
+		pass
+
+	def prehook_execute(self) -> None:
+		"""Prehook to run before execute()."""
+		pass
+
+	def posthook_execute(self) -> None:
+		"""Posthook to run after execute()."""
+		pass
+
+	def prehook_analyze(self) -> None:
+		"""Prehook to run before analyze()."""
+		pass
+
+	def posthook_analyze(self) -> None:
+		"""Posthook to run after analyze()."""
+		pass
 
 
 class CalibrationMethodBase(CalibrationWorkflowBase):
@@ -118,7 +174,8 @@ class CalibrationMethodBase(CalibrationWorkflowBase):
 				f"{self.task} implementation is not set when calling {function_name}()."
 			)
 
-	def specify(self) -> "CalibrationMethodBase":  # type: ignore[override]
+	@pre_post_hooks
+	def specify(self) -> "CalibrationMethodBase":
 		"""Specify the parameters of the model calibration procedure.
 
 		Raises:
@@ -133,7 +190,8 @@ class CalibrationMethodBase(CalibrationWorkflowBase):
 		self.implementation.specify()
 		return self
 
-	def execute(self) -> "CalibrationMethodBase":  # type: ignore[override]
+	@pre_post_hooks
+	def execute(self) -> "CalibrationMethodBase":
 		"""Execute the simulation calibration procedure.
 
 		Raises:
@@ -148,7 +206,8 @@ class CalibrationMethodBase(CalibrationWorkflowBase):
 		self.implementation.execute()
 		return self
 
-	def analyze(self) -> "CalibrationMethodBase":  # type: ignore[override]
+	@pre_post_hooks
+	def analyze(self) -> "CalibrationMethodBase":
 		"""Analyze the results of the simulation calibration procedure.
 
 		Raises:

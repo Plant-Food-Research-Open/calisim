@@ -84,7 +84,6 @@ class BoTorchOptimisation(CalibrationWorkflowBase):
 	def execute(self) -> None:
 		"""Execute the simulation calibration procedure."""
 		experiment = self.experiment
-		sobol = Models.SOBOL(search_space=experiment.search_space)
 
 		sobol = Models.SOBOL(search_space=experiment.search_space)
 		n_init = self.specification.n_init
