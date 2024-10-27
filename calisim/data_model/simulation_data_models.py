@@ -54,7 +54,8 @@ class DistributionModel(BaseModel):
 
 	name: str
 	dist_name: str
-	dist_kwargs: dict[str, Any]
+	dist_args: list | None = None
+	dist_kwargs: dict[str, Any] | None = None
 
 
 class CalibrationModel(BaseModel):
@@ -67,8 +68,6 @@ class CalibrationModel(BaseModel):
 
 	experiment_name: str | None = "default"
 	outdir: str | None = None
-	sampler: str = ""
-	sampler_kwargs: dict[str, Any] | None = None
 	method: str = ""
 	method_kwargs: dict[str, Any] | None = None
 	calibration_kwargs: dict[str, Any] | None = None
@@ -77,7 +76,6 @@ class CalibrationModel(BaseModel):
 	n_samples: int = 1
 	n_init: int = 1
 	n_iterations: int = 1
-	n_epochs: int = 1
 	random_seed: int | None = None
 	n_jobs: int = 1
 	output_labels: list[str] | None = None
@@ -85,6 +83,7 @@ class CalibrationModel(BaseModel):
 	parallel_backend: str = ""
 	vectorize: bool = False
 	verbose: bool = False
+	figsize: tuple[int, int] = (12, 12)
 
 
 class IntervalCalibrationModel(CalibrationModel):

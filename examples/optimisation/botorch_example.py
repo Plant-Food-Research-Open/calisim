@@ -1,3 +1,4 @@
+import numpy as np
 import pandas as pd
 
 from calisim.data_model import ParameterDataType, ParameterIntervalModel
@@ -26,18 +27,14 @@ parameter_spec = [
 
 
 def objective(
-	parameters: dict, observed_data: pd.DataFrame | None
+	parameters: dict, observed_data: np.ndarray | None, t: pd.Series
 ) -> float | list[float]:
-	simulation_parameters = dict(
-		h0=34.0, l0=5.9, t=observed_data.year, gamma=0.84, delta=0.026
-	)
+	simulation_parameters = dict(h0=34.0, l0=5.9, t=t, gamma=0.84, delta=0.026)
 
 	for k in ["alpha", "beta"]:
 		simulation_parameters[k] = parameters[k]
 
-	simulated_data = model.simulate(simulation_parameters)
-	observed_data = observed_data.drop(columns=["year"])
-
+	simulated_data = model.simulate(simulation_parameters).lynx.values
 	metric = MeanSquaredError()
 	discrepancy = metric.calculate(observed_data, simulated_data)
 	return discrepancy
@@ -46,12 +43,13 @@ def objective(
 specification = OptimisationMethodModel(
 	experiment_name="botorch_optimisation",
 	parameter_spec=parameter_spec,
-	observed_data=observed_data,
+	observed_data=observed_data.lynx.values,
 	outdir=get_examples_outdir(),
 	directions=["minimize"],
 	n_init=10,
-	n_samples=10,
+	n_samples=50,
 	verbose=True,
+	calibration_kwargs=dict(t=observed_data.year),
 )
 
 calibrator = OptimisationMethod(

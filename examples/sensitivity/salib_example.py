@@ -6,7 +6,6 @@ from calisim.sensitivity import (
 	SensitivityAnalysisMethod,
 	SensitivityAnalysisMethodModel,
 )
-from calisim.statistics import MeanSquaredError
 from calisim.utils import get_examples_outdir
 
 model = LotkaVolterraModel()
@@ -29,33 +28,29 @@ parameter_spec = [
 
 
 def sensitivity_func(
-	parameters: dict, observed_data: pd.DataFrame | None
+	parameters: dict, observed_data: pd.DataFrame | None, t: pd.Series
 ) -> float | list[float]:
-	simulation_parameters = dict(
-		h0=34.0, l0=5.9, t=observed_data.year, gamma=0.84, delta=0.026
-	)
+	simulation_parameters = dict(h0=34.0, l0=5.9, t=t, gamma=0.84, delta=0.026)
 
 	for k in ["alpha", "beta"]:
 		simulation_parameters[k] = parameters[k]
 
-	simulated_data = model.simulate(simulation_parameters)
-	observed_data = observed_data.drop(columns=["year"])
-
-	metric = MeanSquaredError()
-	discrepancy = metric.calculate(observed_data, simulated_data)
-	return discrepancy
+	simulated_data = model.simulate(simulation_parameters).lynx.values.mean()
+	return simulated_data
 
 
 specification = SensitivityAnalysisMethodModel(
 	experiment_name="salib_sensitivity_analysis",
 	parameter_spec=parameter_spec,
-	observed_data=observed_data,
+	observed_data=observed_data.lynx.values,
 	outdir=get_examples_outdir(),
-	sampler="sobol",
-	n_samples=8,
-	output_labels=["Discrepancy"],
+	method="sobol",
+	n_samples=128,
+	output_labels=["Lynx"],
 	verbose=True,
-	sampler_kwargs=dict(calc_second_order=True, scramble=True),
+	vectorize=False,
+	calibration_kwargs=dict(t=observed_data.year),
+	method_kwargs=dict(calc_second_order=True, scramble=True),
 	analyze_kwargs=dict(
 		calc_second_order=True,
 		num_resamples=200,

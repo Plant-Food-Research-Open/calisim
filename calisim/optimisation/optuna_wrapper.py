@@ -22,7 +22,7 @@ class OptunaOptimisation(CalibrationWorkflowBase):
 
 	def specify(self) -> None:
 		"""Specify the parameters of the model calibration procedure."""
-		sampler_name = self.specification.sampler
+		sampler_name = self.specification.method
 		supported_samplers = dict(
 			tpes=opt_samplers.TPESampler,
 			cmaes=opt_samplers.CmaEsSampler,
@@ -33,7 +33,7 @@ class OptunaOptimisation(CalibrationWorkflowBase):
 		sampler_class = supported_samplers.get(sampler_name, None)
 		if sampler_class is None:
 			raise ValueError(f"Unsupported Optuna sampler: {sampler_name}")
-		sampler_kwargs = self.specification.sampler_kwargs
+		sampler_kwargs = self.specification.method_kwargs
 		if sampler_kwargs is None:
 			sampler_kwargs = {}
 		self.sampler = sampler_class(**sampler_kwargs)

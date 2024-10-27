@@ -17,7 +17,7 @@ from ..utils import get_datetime_now
 
 
 class SALibSensitivityAnalysis(CalibrationWorkflowBase):
-	"""The Optuna optimisation method class."""
+	"""The SALib sensitivity analysis method class."""
 
 	def specify(self) -> None:
 		"""Specify the parameters of the model calibration procedure."""
@@ -53,9 +53,9 @@ class SALibSensitivityAnalysis(CalibrationWorkflowBase):
 
 	def execute(self) -> None:
 		"""Execute the simulation calibration procedure."""
-		sampler_name = self.specification.sampler
+		sampler_name = self.specification.method
 		sample_func = getattr(self.sp, f"sample_{sampler_name}")
-		sampler_kwargs = self.specification.sampler_kwargs
+		sampler_kwargs = self.specification.method_kwargs
 		if sampler_kwargs is None:
 			sampler_kwargs = {}
 		sampler_kwargs["seed"] = self.specification.random_seed
@@ -128,7 +128,7 @@ class SALibSensitivityAnalysis(CalibrationWorkflowBase):
 		task = "sensitivity_analysis"
 		time_now = get_datetime_now()
 		outdir = self.specification.outdir
-		sampler_name = self.specification.sampler
+		sampler_name = self.specification.method
 
 		self.sp.plot()
 		plt.tight_layout()
@@ -151,13 +151,19 @@ class SALibSensitivityAnalysis(CalibrationWorkflowBase):
 		if outdir is None:
 			return
 
-		si_dfs = self.sp.to_df()
-		if isinstance(si_dfs, list):
-			for si_df in si_dfs:
-				si_df = si_df.reset_index().rename(columns={"index": "parameter"})
+		def recursive_write_csv(dfs: pd.DataFrame) -> None:
+			if isinstance(dfs, list):
+				for df in dfs:
+					recursive_write_csv(df)
+			else:
+				si_df = dfs.reset_index().rename(columns={"index": "parameter"})
 				si_type = si_df.columns[1]
 				outfile = osp.join(outdir, f"{time_now}_{task}_{si_type}.csv")
 				si_df.to_csv(outfile, index=False)
+
+		si_dfs = self.sp.to_df()
+		if isinstance(si_dfs, list):
+			recursive_write_csv(si_dfs)
 		else:
 			si_df = si_dfs.reset_index().rename(columns={"index": "parameter"})
 			outfile = osp.join(outdir, f"{time_now}_{task}_{sampler_name}.csv")
