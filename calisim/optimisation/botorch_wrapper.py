@@ -20,7 +20,6 @@ from plotly.subplots import make_subplots
 
 from ..base import CalibrationWorkflowBase
 from ..data_model import ParameterDataType
-from ..utils import get_datetime_now
 
 
 class BoTorchOptimisation(CalibrationWorkflowBase):
@@ -34,8 +33,7 @@ class BoTorchOptimisation(CalibrationWorkflowBase):
 		for spec in parameter_spec:
 			name = spec.name
 			parameter_names.append(name)
-			lower = spec.lower_bound
-			upper = spec.upper_bound
+			lower, upper = self.get_parameter_bounds(spec)
 			data_type = spec.data_type
 
 			if data_type == ParameterDataType.CONTINUOUS:
@@ -110,9 +108,7 @@ class BoTorchOptimisation(CalibrationWorkflowBase):
 
 	def analyze(self) -> None:
 		"""Analyze the results of the simulation calibration procedure."""
-		task = "optimisation"
-		time_now = get_datetime_now()
-		outdir = self.specification.outdir
+		task, time_now, outdir = self.prepare_analyze()
 
 		trials = []
 		for trial in self.experiment.trials.values():

@@ -30,20 +30,6 @@ class ParameterDataType(Enum):
 	CONTINUOUS = "continuous"
 
 
-class ParameterIntervalModel(BaseModel):
-	"""The parameter interval data model.
-
-	Args:
-	    BaseModel (BaseModel):
-	        The Pydantic Base model class.
-	"""
-
-	name: str
-	lower_bound: float
-	upper_bound: float
-	data_type: ParameterDataType
-
-
 class DistributionModel(BaseModel):
 	"""The probability distribution data model.
 
@@ -53,9 +39,10 @@ class DistributionModel(BaseModel):
 	"""
 
 	name: str
-	dist_name: str
+	dist_name: str = "uniform"
 	dist_args: list | None = None
 	dist_kwargs: dict[str, Any] | None = None
+	data_type: ParameterDataType = ParameterDataType.CONTINUOUS
 
 
 class CalibrationModel(BaseModel):
@@ -66,6 +53,7 @@ class CalibrationModel(BaseModel):
 	        The Pydantic Base model class.
 	"""
 
+	parameter_spec: list[DistributionModel]
 	experiment_name: str | None = "default"
 	outdir: str | None = None
 	method: str = ""
@@ -84,25 +72,3 @@ class CalibrationModel(BaseModel):
 	vectorize: bool = False
 	verbose: bool = False
 	figsize: tuple[int, int] = (12, 12)
-
-
-class IntervalCalibrationModel(CalibrationModel):
-	"""The interval-based calibration data model.
-
-	Args:
-	    BaseModel (BaseModel):
-	        The Pydantic Base model class.
-	"""
-
-	parameter_spec: list[ParameterIntervalModel]
-
-
-class DistributionCalibrationModel(CalibrationModel):
-	"""The distribution-based calibration data model.
-
-	Args:
-	    BaseModel (BaseModel):
-	        The Pydantic Base model class.
-	"""
-
-	parameter_spec: list[DistributionModel]

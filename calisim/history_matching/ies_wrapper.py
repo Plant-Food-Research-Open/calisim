@@ -1,6 +1,8 @@
-"""Contains the implementations for sensitivity analysis methods using SALib
+"""Contains the implementations for history matching methods using
+iterative_ensemble_smoother
 
-Implements the supported sensitivity analysis methods using the SALib library.
+Implements the supported history matching methods using
+the iterative_ensemble_smoother library.
 
 """
 
@@ -13,7 +15,6 @@ from iterative_ensemble_smoother.utils import steplength_exponential
 from matplotlib import pyplot as plt
 
 from ..base import CalibrationWorkflowBase
-from ..utils import get_datetime_now
 
 
 class IESHistoryMatching(CalibrationWorkflowBase):
@@ -164,9 +165,7 @@ class IESHistoryMatching(CalibrationWorkflowBase):
 
 	def analyze(self) -> None:
 		"""Analyze the results of the simulation calibration procedure."""
-		task = "history_matching"
-		time_now = get_datetime_now()
-		outdir = self.specification.outdir
+		task, time_now, outdir = self.prepare_analyze()
 		smoother_name = self.specification.method
 		n_iterations = self.specification.n_iterations
 

@@ -7,7 +7,7 @@ Implements the supported sensitivity analysis methods.
 from collections.abc import Callable
 
 from ..base import CalibrationMethodBase, CalibrationWorkflowBase
-from ..data_model import IntervalCalibrationModel
+from ..data_model import CalibrationModel
 from .salib_wrapper import SALibSensitivityAnalysis
 
 TASK = "sensitivity_analysis"
@@ -28,11 +28,11 @@ def get_sensitivity_analysis_implementations() -> (
 	return IMPLEMENTATIONS
 
 
-class SensitivityAnalysisMethodModel(IntervalCalibrationModel):
+class SensitivityAnalysisMethodModel(CalibrationModel):
 	"""The sensitivity analysis method data model.
 
 	Args:
-	    BaseModel (IntervalCalibrationModel):
+	    BaseModel (CalibrationModel):
 	        The calibration base model class.
 	"""
 
@@ -45,6 +45,7 @@ class SensitivityAnalysisMethod(CalibrationMethodBase):
 		calibration_func: Callable,
 		specification: SensitivityAnalysisMethodModel,
 		engine: str = "salib",
+		implementation: CalibrationWorkflowBase | None = None,
 	) -> None:
 		"""SensitivityAnalysisMethod constructor.
 
@@ -56,5 +57,14 @@ class SensitivityAnalysisMethod(CalibrationMethodBase):
 		        The calibration specification.
 		    engine (str, optional):
 		        The sensitivity analysis backend. Defaults to "salib".
+			implementation (CalibrationWorkflowBase | None):
+				The calibration workflow implementation.
 		"""
-		super().__init__(calibration_func, specification, TASK, engine, IMPLEMENTATIONS)
+		super().__init__(
+			calibration_func,
+			specification,
+			TASK,
+			engine,
+			IMPLEMENTATIONS,
+			implementation,
+		)

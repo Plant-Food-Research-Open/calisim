@@ -13,7 +13,6 @@ from SALib import ProblemSpec
 
 from ..base import CalibrationWorkflowBase
 from ..data_model import ParameterDataType
-from ..utils import get_datetime_now
 
 
 class SALibSensitivityAnalysis(CalibrationWorkflowBase):
@@ -36,8 +35,7 @@ class SALibSensitivityAnalysis(CalibrationWorkflowBase):
 
 			dists.append("unif")
 
-			lower_bound = spec.lower_bound
-			upper_bound = spec.upper_bound
+			lower_bound, upper_bound = self.get_parameter_bounds(spec)
 			bounds.append([lower_bound, upper_bound])
 
 		problem = {
@@ -125,9 +123,7 @@ class SALibSensitivityAnalysis(CalibrationWorkflowBase):
 
 	def analyze(self) -> None:
 		"""Analyze the results of the simulation calibration procedure."""
-		task = "sensitivity_analysis"
-		time_now = get_datetime_now()
-		outdir = self.specification.outdir
+		task, time_now, outdir = self.prepare_analyze()
 		sampler_name = self.specification.method
 
 		self.sp.plot()

@@ -13,8 +13,7 @@ import optuna.samplers as opt_samplers
 import pandas as pd
 
 from ..base import CalibrationWorkflowBase
-from ..data_model import ParameterDataType
-from ..utils import get_datetime_now
+from ..data_model import DistributionModel, ParameterDataType
 
 
 class OptunaOptimisation(CalibrationWorkflowBase):
@@ -50,7 +49,7 @@ class OptunaOptimisation(CalibrationWorkflowBase):
 
 		def objective(
 			trial: optuna.trial.Trial,
-			parameter_spec: list,
+			parameter_spec: list[DistributionModel],
 			observed_data: np.ndarray | pd.DataFrame,
 			objective_func: Callable,
 			objective_kwargs: dict,
@@ -58,8 +57,7 @@ class OptunaOptimisation(CalibrationWorkflowBase):
 			parameters = {}
 			for spec in parameter_spec:
 				parameter_name = spec.name
-				lower_bound = spec.lower_bound
-				upper_bound = spec.upper_bound
+				lower_bound, upper_bound = self.get_parameter_bounds(spec)
 				data_type = spec.data_type
 
 				if data_type == ParameterDataType.CONTINUOUS:
@@ -91,9 +89,7 @@ class OptunaOptimisation(CalibrationWorkflowBase):
 
 	def analyze(self) -> None:
 		"""Analyze the results of the simulation calibration procedure."""
-		task = "optimisation"
-		time_now = get_datetime_now()
-		outdir = self.specification.outdir
+		task, time_now, outdir = self.prepare_analyze()
 
 		for plot_func in [
 			optuna.visualization.plot_edf,

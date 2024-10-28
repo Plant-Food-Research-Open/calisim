@@ -9,7 +9,7 @@ from collections.abc import Callable
 import numpy as np
 
 from ..base import CalibrationMethodBase, CalibrationWorkflowBase
-from ..data_model import DistributionCalibrationModel
+from ..data_model import CalibrationModel
 from .ies_wrapper import IESHistoryMatching
 
 TASK = "history_matching"
@@ -26,11 +26,11 @@ def get_history_matching_implementations() -> dict[str, type[CalibrationWorkflow
 	return IMPLEMENTATIONS
 
 
-class HistoryMatchingMethodModel(DistributionCalibrationModel):
+class HistoryMatchingMethodModel(CalibrationModel):
 	"""The history matching method data model.
 
 	Args:
-	    BaseModel (DistributionCalibrationModel):
+	    BaseModel (CalibrationModel):
 	        The calibration base model class.
 	"""
 
@@ -45,6 +45,7 @@ class HistoryMatchingMethod(CalibrationMethodBase):
 		calibration_func: Callable,
 		specification: HistoryMatchingMethodModel,
 		engine: str = "ies",
+		implementation: CalibrationWorkflowBase | None = None,
 	) -> None:
 		"""HistoryMatchingMethod constructor.
 
@@ -56,5 +57,14 @@ class HistoryMatchingMethod(CalibrationMethodBase):
 		        The calibration specification.
 		    engine (str, optional):
 		        The history matching backend. Defaults to "ies".
+			implementation (CalibrationWorkflowBase | None):
+				The calibration workflow implementation.
 		"""
-		super().__init__(calibration_func, specification, TASK, engine, IMPLEMENTATIONS)
+		super().__init__(
+			calibration_func,
+			specification,
+			TASK,
+			engine,
+			IMPLEMENTATIONS,
+			implementation,
+		)

@@ -1,7 +1,7 @@
 import numpy as np
 import pandas as pd
 
-from calisim.data_model import DistributionModel
+from calisim.data_model import DistributionModel, ParameterDataType
 from calisim.example_models import LotkaVolterraModel
 from calisim.history_matching import (
 	HistoryMatchingMethod,
@@ -13,8 +13,18 @@ model = LotkaVolterraModel()
 observed_data = model.get_observed_data()
 
 parameter_spec = [
-	DistributionModel(name="alpha", dist_name="normal", dist_args=[0.4, 0.03]),
-	DistributionModel(name="beta", dist_name="normal", dist_args=[0.025, 0.003]),
+	DistributionModel(
+		name="alpha",
+		dist_name="normal",
+		dist_args=[0.4, 0.03],
+		data_type=ParameterDataType.CONTINUOUS,
+	),
+	DistributionModel(
+		name="beta",
+		dist_name="normal",
+		dist_args=[0.025, 0.003],
+		data_type=ParameterDataType.CONTINUOUS,
+	),
 ]
 
 

@@ -1,7 +1,7 @@
 import numpy as np
 import pandas as pd
 
-from calisim.data_model import ParameterDataType, ParameterIntervalModel
+from calisim.data_model import DistributionModel, ParameterDataType
 from calisim.example_models import LotkaVolterraModel
 from calisim.optimisation import OptimisationMethod, OptimisationMethodModel
 from calisim.statistics import MeanSquaredError
@@ -11,16 +11,16 @@ model = LotkaVolterraModel()
 observed_data = model.get_observed_data()
 
 parameter_spec = [
-	ParameterIntervalModel(
+	DistributionModel(
 		name="alpha",
-		lower_bound=0.45,
-		upper_bound=0.55,
+		dist_name="uniform",
+		dist_args=[0.45, 0.55],
 		data_type=ParameterDataType.CONTINUOUS,
 	),
-	ParameterIntervalModel(
+	DistributionModel(
 		name="beta",
-		lower_bound=0.02,
-		upper_bound=0.03,
+		dist_name="uniform",
+		dist_args=[0.02, 0.03],
 		data_type=ParameterDataType.CONTINUOUS,
 	),
 ]

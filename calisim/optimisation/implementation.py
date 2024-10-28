@@ -7,7 +7,7 @@ Implements the supported optimisation methods.
 from collections.abc import Callable
 
 from ..base import CalibrationMethodBase, CalibrationWorkflowBase
-from ..data_model import IntervalCalibrationModel
+from ..data_model import CalibrationModel
 from .botorch_wrapper import BoTorchOptimisation
 from .optuna_wrapper import OptunaOptimisation
 
@@ -27,11 +27,11 @@ def get_optimisation_implementations() -> dict[str, type[CalibrationWorkflowBase
 	return IMPLEMENTATIONS
 
 
-class OptimisationMethodModel(IntervalCalibrationModel):
+class OptimisationMethodModel(CalibrationModel):
 	"""The optimisation method data model.
 
 	Args:
-	    BaseModel (IntervalCalibrationModel):
+	    BaseModel (CalibrationModel):
 	        The calibration base model class.
 	"""
 
@@ -46,6 +46,7 @@ class OptimisationMethod(CalibrationMethodBase):
 		calibration_func: Callable,
 		specification: OptimisationMethodModel,
 		engine: str = "optuna",
+		implementation: CalibrationWorkflowBase | None = None,
 	) -> None:
 		"""OptimisationMethod constructor.
 
@@ -57,5 +58,14 @@ class OptimisationMethod(CalibrationMethodBase):
 		        The calibration specification.
 		    engine (str, optional):
 		        The optimisation backend. Defaults to "optuna".
+			implementation (CalibrationWorkflowBase | None):
+				The calibration workflow implementation.
 		"""
-		super().__init__(calibration_func, specification, TASK, engine, IMPLEMENTATIONS)
+		super().__init__(
+			calibration_func,
+			specification,
+			TASK,
+			engine,
+			IMPLEMENTATIONS,
+			implementation,
+		)

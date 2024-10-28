@@ -9,7 +9,8 @@ from abc import ABC, abstractmethod
 from collections.abc import Callable
 from functools import wraps
 
-from ..data_model import DistributionCalibrationModel, IntervalCalibrationModel
+from ..data_model import CalibrationModel, DistributionModel
+from ..utils import get_datetime_now
 
 
 def pre_post_hooks(f: Callable) -> Callable:
@@ -47,9 +48,7 @@ class CalibrationWorkflowBase(ABC):
 	"""The calibration workflow abstract class."""
 
 	def __init__(
-		self,
-		calibration_func: Callable,
-		specification: IntervalCalibrationModel | DistributionCalibrationModel,
+		self, calibration_func: Callable, specification: CalibrationModel, task: str
 	) -> None:
 		"""CalibrationMethodBase constructor.
 
@@ -57,10 +56,13 @@ class CalibrationWorkflowBase(ABC):
 			calibration_func (Callable):
 				The calibration function.
 				For example, a simulation function or objective function.
-		    specification (IntervalCalibrationModel | DistributionCalibrationModel):
+		    specification (CalibrationModel):
 		        The calibration specification.
+		    task (str):
+		        The calibration task.
 		"""
 		super().__init__()
+		self.task = task
 		self.calibration_func = calibration_func
 		self.specification = specification
 
@@ -118,6 +120,51 @@ class CalibrationWorkflowBase(ABC):
 		"""Posthook to run after analyze()."""
 		pass
 
+	def prepare_analyze(self) -> tuple[str, str, str | None]:
+		"""Perform preparations for the analyze step.
+
+		Returns:
+			tuple[str, str, str | None]:
+				A list of metadata needed for the analysis outputs.
+		"""
+		task = self.task
+		time_now = get_datetime_now()
+		self.time_now = time_now
+		outdir = self.specification.outdir
+		return task, time_now, outdir
+
+	def get_parameter_bounds(self, spec: DistributionModel) -> tuple[float, float]:
+		"""Get the lower and upper bounds from a parameter specification.
+
+		Args:
+			spec (DistributionModel):
+				The parameter specification.
+
+		Raises:
+			ValueError:
+				Error raised when the bounds cannot be identified.
+
+		Returns:
+			tuple[float, float]:
+				The lower and upper bounds.
+		"""
+		dist_args = spec.dist_args
+		if isinstance(dist_args, list):
+			if len(dist_args) == 2:
+				lower_bound, upper_bound = dist_args
+				return lower_bound, upper_bound
+
+		dist_kwargs = spec.dist_kwargs
+		if isinstance(dist_kwargs, dict):
+			lower_bound = dist_kwargs.get("lower_bound", None)
+			upper_bound = dist_kwargs.get("upper_bound", None)
+			if lower_bound is not None and upper_bound is not None:
+				return lower_bound, upper_bound
+
+		raise ValueError(
+			f"Invalid parameter specification for {spec.name} of type {spec.dist_name}"
+		)
+
 
 class CalibrationMethodBase(CalibrationWorkflowBase):
 	"""The calibration method abstract class."""
@@ -125,10 +172,11 @@ class CalibrationMethodBase(CalibrationWorkflowBase):
 	def __init__(
 		self,
 		calibration_func: Callable,
-		specification: IntervalCalibrationModel | DistributionCalibrationModel,
+		specification: CalibrationModel,
 		task: str,
 		engine: str,
 		implementations: dict[str, type[CalibrationWorkflowBase]],
+		implementation: CalibrationWorkflowBase | None = None,
 	) -> None:
 		"""CalibrationMethodBase constructor.
 
@@ -136,7 +184,7 @@ class CalibrationMethodBase(CalibrationWorkflowBase):
 			calibration_func (Callable):
 				The calibration function.
 				For example, a simulation function or objective function.
-		    specification (IntervalCalibrationModel | DistributionCalibrationModel):
+		    specification (CalibrationModel):
 		        The calibration specification.
 		    task (str):
 		        The calibration task.
@@ -144,19 +192,27 @@ class CalibrationMethodBase(CalibrationWorkflowBase):
 		        The calibration implementation engine.
 		    implementations (dict[str, type[CalibrationWorkflowBase]]):
 		        The list of supported engines.
+			implementation (CalibrationWorkflowBase | None):
+				The calibration workflow implementation.
 		"""
-		super().__init__(calibration_func, specification)
-		self.task = task
-
+		super().__init__(calibration_func, specification, task)
 		self.engine = engine
 		self.supported_engines = list(implementations.keys())
-		if engine not in self.supported_engines:
-			raise NotImplementedError(f"Unsupported {task} engine: {engine}")
 
-		implementation = implementations.get(engine, None)
 		if implementation is None:
-			raise ValueError(f"{self.task} implementation not defined for: {engine}")
-		self.implementation = implementation(calibration_func, specification)
+			if engine not in self.supported_engines:
+				raise NotImplementedError(f"Unsupported {task} engine: {engine}")
+
+			implementation_class = implementations.get(engine, None)
+			if implementation_class is None:
+				raise ValueError(
+					f"{self.task} implementation not defined for: {engine}"
+				)
+			self.implementation = implementation_class(
+				calibration_func, specification, task
+			)
+		else:
+			self.implementation = implementation
 
 	def _implementation_check(self, function_name: str) -> None:
 		"""Check that the implementation is set.

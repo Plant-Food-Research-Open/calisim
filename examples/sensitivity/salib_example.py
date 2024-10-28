@@ -1,6 +1,6 @@
 import pandas as pd
 
-from calisim.data_model import ParameterDataType, ParameterIntervalModel
+from calisim.data_model import DistributionModel, ParameterDataType
 from calisim.example_models import LotkaVolterraModel
 from calisim.sensitivity import (
 	SensitivityAnalysisMethod,
@@ -12,23 +12,23 @@ model = LotkaVolterraModel()
 observed_data = model.get_observed_data()
 
 parameter_spec = [
-	ParameterIntervalModel(
+	DistributionModel(
 		name="alpha",
-		lower_bound=0.45,
-		upper_bound=0.55,
+		dist_name="uniform",
+		dist_args=[0.45, 0.55],
 		data_type=ParameterDataType.CONTINUOUS,
 	),
-	ParameterIntervalModel(
+	DistributionModel(
 		name="beta",
-		lower_bound=0.02,
-		upper_bound=0.03,
+		dist_name="uniform",
+		dist_args=[0.02, 0.03],
 		data_type=ParameterDataType.CONTINUOUS,
 	),
 ]
 
 
 def sensitivity_func(
-	parameters: dict, observed_data: pd.DataFrame | None, t: pd.Series
+	parameters: dict, _: pd.DataFrame | None, t: pd.Series
 ) -> float | list[float]:
 	simulation_parameters = dict(h0=34.0, l0=5.9, t=t, gamma=0.84, delta=0.026)
 
