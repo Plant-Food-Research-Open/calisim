@@ -7,7 +7,7 @@ example simulation models.
 
 import numpy as np
 import pandas as pd
-from scipy.integrate import odeint
+from scipy.integrate import solve_ivp
 
 from ..base import ExampleModelBase
 
@@ -93,15 +93,15 @@ class LotkaVolterraModel(ExampleModelBase):
 		        The simulated data.
 		"""
 
-		def dX_dt(X: np.ndarray, _: float) -> np.ndarray:
+		def dX_dt(_: np.ndarray, X: np.ndarray) -> np.ndarray:
 			x, y = X
 			dx_dt = parameters["alpha"] * x - parameters["beta"] * x * y
 			dy_dt = -parameters["gamma"] * y + parameters["delta"] * x * y
 			return np.array([dx_dt, dy_dt])
 
 		X0 = [parameters["h0"], parameters["l0"]]
-		t = parameters["t"]
-		x_y = odeint(func=dX_dt, y0=X0, t=t)
+		t = (parameters["t"].min(), parameters["t"].max())
+		x_y = solve_ivp(fun=dX_dt, y0=X0, t_span=t, t_eval=parameters["t"].values).y
 
-		df = pd.DataFrame(dict(lynx=x_y[:, 1], hare=x_y[:, 0]))
+		df = pd.DataFrame(dict(lynx=x_y[1, :], hare=x_y[0, :]))
 		return df

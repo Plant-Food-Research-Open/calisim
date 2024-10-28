@@ -17,13 +17,13 @@ parameter_spec = [
 	DistributionModel(
 		name="alpha",
 		distribution_name="normal",
-		distribution_args=[0.4, 0.03],
+		distribution_args=[0.4, 0.01],
 		data_type=ParameterDataType.CONTINUOUS,
 	),
 	DistributionModel(
 		name="beta",
 		distribution_name="normal",
-		distribution_args=[0.025, 0.003],
+		distribution_args=[0.025, 0.001],
 		data_type=ParameterDataType.CONTINUOUS,
 	),
 ]
@@ -49,8 +49,8 @@ specification = ApproximateBayesianComputationMethodModel(
 	parameter_spec=parameter_spec,
 	observed_data=observed_data.lynx.values,
 	outdir=outdir,
-	n_samples=3,
-	n_chains=3,
+	n_samples=100,
+	n_chains=2,
 	n_jobs=1,
 	epsilon=0.1,
 	sum_stat="identity",
