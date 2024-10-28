@@ -50,7 +50,7 @@ specification = OptimisationMethodModel(
 	directions=["minimize"],
 	n_samples=50,
 	method_kwargs=dict(n_startup_trials=10),
-	calibration_kwargs=dict(t=observed_data.year),
+	calibration_func_kwargs=dict(t=observed_data.year),
 )
 
 calibrator = OptimisationMethod(

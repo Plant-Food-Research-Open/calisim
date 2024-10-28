@@ -7,6 +7,7 @@ Implements the supported history matching methods.
 from collections.abc import Callable
 
 import numpy as np
+from pydantic import Field
 
 from ..base import CalibrationMethodBase, CalibrationWorkflowBase
 from ..data_model import CalibrationModel
@@ -34,7 +35,9 @@ class HistoryMatchingMethodModel(CalibrationModel):
 	        The calibration base model class.
 	"""
 
-	covariance: np.ndarray | None = None
+	covariance: np.ndarray | None = Field(
+		description="The covariance matrix for variables", default=None
+	)
 
 
 class HistoryMatchingMethod(CalibrationMethodBase):

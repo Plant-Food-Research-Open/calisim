@@ -50,7 +50,7 @@ class BoTorchOptimisation(CalibrationWorkflowBase):
 
 		observed_data = self.specification.observed_data
 		objective_func = self.calibration_func
-		objective_kwargs: dict[str, Any] = self.specification.calibration_kwargs  # type: ignore[assignment]
+		objective_kwargs: dict[str, Any] = self.specification.calibration_func_kwargs  # type: ignore[assignment]
 		if objective_kwargs is None:
 			objective_kwargs = {}
 

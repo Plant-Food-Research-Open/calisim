@@ -103,7 +103,7 @@ class SALibSensitivityAnalysis(CalibrationWorkflowBase):
 			results = np.array(results)
 			return results
 
-		sensitivity_kwargs = self.specification.calibration_kwargs
+		sensitivity_kwargs = self.specification.calibration_func_kwargs
 		if sensitivity_kwargs is None:
 			sensitivity_kwargs = {}
 		self.sp.evaluate(

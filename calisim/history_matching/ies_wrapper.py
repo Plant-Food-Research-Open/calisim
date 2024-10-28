@@ -79,7 +79,7 @@ class IESHistoryMatching(CalibrationWorkflowBase):
 		        The ensemble outputs.
 		"""
 		observed_data = self.specification.observed_data
-		history_matching_kwargs = self.specification.calibration_kwargs
+		history_matching_kwargs = self.specification.calibration_func_kwargs
 		if history_matching_kwargs is None:
 			history_matching_kwargs = {}
 

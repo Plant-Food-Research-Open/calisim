@@ -18,6 +18,8 @@ extensions = [
 	"sphinx.ext.viewcode",
 	"sphinx.ext.githubpages",
 	"sphinxarg.ext",
+	"sphinxcontrib.autodoc_pydantic",
+	"myst_nb",
 ]
 
 numpydoc_show_class_members = False

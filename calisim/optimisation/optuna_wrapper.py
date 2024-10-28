@@ -71,7 +71,7 @@ class OptunaOptimisation(CalibrationWorkflowBase):
 
 			return objective_func(parameters, observed_data, **objective_kwargs)
 
-		objective_kwargs = self.specification.calibration_kwargs
+		objective_kwargs = self.specification.calibration_func_kwargs
 		if objective_kwargs is None:
 			objective_kwargs = {}
 

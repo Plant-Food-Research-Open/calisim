@@ -57,7 +57,7 @@ specification = ApproximateBayesianComputationMethodModel(
 	output_labels=["Lynx"],
 	verbose=True,
 	vectorize=False,
-	calibration_kwargs=dict(t=observed_data.year),
+	calibration_func_kwargs=dict(t=observed_data.year),
 	method_kwargs=dict(compute_convergence_checks=True, return_inferencedata=True),
 )
 

@@ -6,6 +6,8 @@ Implements the supported optimisation methods.
 
 from collections.abc import Callable
 
+from pydantic import Field
+
 from ..base import CalibrationMethodBase, CalibrationWorkflowBase
 from ..data_model import CalibrationModel
 from .botorch_wrapper import BoTorchOptimisation
@@ -35,7 +37,9 @@ class OptimisationMethodModel(CalibrationModel):
 	        The calibration base model class.
 	"""
 
-	directions: list[str] | None = ["minimize"]
+	directions: list[str] | None = Field(
+		description="The list of objective directions", default=["minimize"]
+	)
 
 
 class OptimisationMethod(CalibrationMethodBase):

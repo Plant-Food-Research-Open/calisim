@@ -94,7 +94,7 @@ class PyABCApproximateBayesianComputation(CalibrationWorkflowBase):
 		output_labels = self.specification.output_labels
 
 		def simulator_func(parameters: dict) -> dict:
-			abc_kwargs = self.specification.calibration_kwargs
+			abc_kwargs = self.specification.calibration_func_kwargs
 			if abc_kwargs is None:
 				abc_kwargs = {}
 			observed_data = self.specification.observed_data

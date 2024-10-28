@@ -7,6 +7,7 @@ API Reference
     base.rst
     data_model.rst
     example_models.rst
+    abc.rst
     history_matching.rst
     optimisation.rst
     sensitivity.rst

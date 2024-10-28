@@ -53,7 +53,7 @@ specification = HistoryMatchingMethodModel(
 	verbose=True,
 	vectorize=False,
 	covariance=np.eye(observed_data.lynx.values.shape[0]),
-	calibration_kwargs=dict(t=observed_data.year),
+	calibration_func_kwargs=dict(t=observed_data.year),
 	method_kwargs=dict(truncation=1.0),
 )
 

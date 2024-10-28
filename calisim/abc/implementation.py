@@ -6,6 +6,8 @@ Implements the supported Approximate Bayesian Computation methods.
 
 from collections.abc import Callable
 
+from pydantic import Field
+
 from ..base import CalibrationMethodBase, CalibrationWorkflowBase
 from ..data_model import CalibrationModel
 from .pyabc_wrapper import PyABCApproximateBayesianComputation
@@ -36,11 +38,22 @@ class ApproximateBayesianComputationMethodModel(CalibrationModel):
 	        The calibration base model class.
 	"""
 
-	n_bootstrap: int = 5
-	min_population_size: int = 2
-	epsilon: float = 0
-	sum_stat: str | Callable = "identity"
-	distance: str | Callable | None = None
+	n_bootstrap: int = Field(description="The number of bootstrap samples", default=5)
+	min_population_size: int = Field(
+		description="The minimum population size", default=5
+	)
+	epsilon: float = Field(
+		description="The dissimilarity threshold between observed and simulated data",
+		default=0,
+	)
+	sum_stat: str | Callable = Field(
+		description="The summary statistic function for observed and simulated data",
+		default="identity",
+	)
+	distance: str | Callable | None = Field(
+		description="The distance function between observed and simulated data",
+		default=None,
+	)
 
 
 class ApproximateBayesianComputationMethod(CalibrationMethodBase):
