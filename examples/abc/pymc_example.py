@@ -45,26 +45,24 @@ def abc_func(
 
 outdir = get_examples_outdir()
 specification = ApproximateBayesianComputationMethodModel(
-	experiment_name="pyabc_approximate_bayesian_computation",
+	experiment_name="pymc_approximate_bayesian_computation",
 	parameter_spec=parameter_spec,
 	observed_data=observed_data.lynx.values,
 	outdir=outdir,
-	n_init=20,
-	walltime=3,  # minutes
+	n_samples=3,
+	n_chains=3,
+	n_jobs=1,
 	epsilon=0.1,
+	sum_stat="identity",
 	output_labels=["Lynx"],
-	n_bootstrap=5,
-	min_population_size=1,
 	verbose=True,
 	vectorize=False,
 	calibration_kwargs=dict(t=observed_data.year),
-	method_kwargs=dict(
-		max_total_nr_simulations=200, max_nr_populations=5, min_acceptance_rate=0.0
-	),
+	method_kwargs=dict(compute_convergence_checks=True, return_inferencedata=True),
 )
 
 calibrator = ApproximateBayesianComputationMethod(
-	calibration_func=abc_func, specification=specification, engine="pyabc"
+	calibration_func=abc_func, specification=specification, engine="pymc"
 )
 
 calibrator.specify().execute().analyze()

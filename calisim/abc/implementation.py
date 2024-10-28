@@ -9,10 +9,11 @@ from collections.abc import Callable
 from ..base import CalibrationMethodBase, CalibrationWorkflowBase
 from ..data_model import CalibrationModel
 from .pyabc_wrapper import PyABCApproximateBayesianComputation
+from .pymc_wrapper import PyMCApproximateBayesianComputation
 
 TASK = "approximate_bayesian_computation"
 IMPLEMENTATIONS: dict[str, type[CalibrationWorkflowBase]] = dict(
-	pyabc=PyABCApproximateBayesianComputation
+	pymc=PyMCApproximateBayesianComputation, pyabc=PyABCApproximateBayesianComputation
 )
 
 
@@ -38,7 +39,8 @@ class ApproximateBayesianComputationMethodModel(CalibrationModel):
 	n_bootstrap: int = 5
 	min_population_size: int = 2
 	epsilon: float = 0
-	max_nr_populations: float = 5
+	sum_stat: str | Callable = "identity"
+	distance: str | Callable | None = None
 
 
 class ApproximateBayesianComputationMethod(CalibrationMethodBase):

@@ -62,6 +62,7 @@ class CalibrationModel(BaseModel):
 	analyze_kwargs: dict[str, Any] | None = None
 	observed_data: np.ndarray | pd.DataFrame | None = None
 	n_samples: int = 1
+	n_chains: int = 1
 	n_init: int = 1
 	n_iterations: int = 1
 	random_seed: int | None = None

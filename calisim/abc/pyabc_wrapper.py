@@ -1,8 +1,8 @@
-"""Contains the implementations for history matching methods using
-iterative_ensemble_smoother
+"""Contains the implementations for Approximate Bayesian Computation methods using
+PyABC
 
-Implements the supported history matching methods using
-the iterative_ensemble_smoother library.
+Implements the supported Approximate Bayesian Computation methods using
+the PyABC library.
 
 """
 
@@ -134,12 +134,14 @@ class PyABCApproximateBayesianComputation(CalibrationWorkflowBase):
 
 		self.abc.new("sqlite://")
 
+		method_kwargs = self.specification.method_kwargs
+		if method_kwargs is None:
+			method_kwargs = {}
+
 		self.history = self.abc.run(
 			minimum_epsilon=self.specification.epsilon,
-			max_nr_populations=self.specification.max_nr_populations,
-			min_acceptance_rate=0.0,
-			max_total_nr_simulations=self.specification.n_iterations,
 			max_walltime=timedelta(minutes=self.specification.walltime),
+			**method_kwargs,
 		)
 
 	def analyze(self) -> None:
@@ -158,7 +160,7 @@ class PyABCApproximateBayesianComputation(CalibrationWorkflowBase):
 			pyabc.visualization.plot_acceptance_rates_trajectory,
 			pyabc.visualization.plot_kde_matrix_highlevel,
 		]:
-			optimisation_plot = plot_func(self.history)
+			abc_plot = plot_func(self.history)
 			if outdir is not None:
 				outfile = osp.join(
 					outdir, f"{time_now}_{task}_{plot_func.__name__}.png"
@@ -167,7 +169,7 @@ class PyABCApproximateBayesianComputation(CalibrationWorkflowBase):
 				plt.savefig(outfile)
 				plt.close()
 			else:
-				optimisation_plot.show()
+				abc_plot.show()
 
 		if outdir is None:
 			return
