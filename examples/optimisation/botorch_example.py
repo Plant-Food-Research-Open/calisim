@@ -13,14 +13,14 @@ observed_data = model.get_observed_data()
 parameter_spec = [
 	DistributionModel(
 		name="alpha",
-		dist_name="uniform",
-		dist_args=[0.45, 0.55],
+		distribution_name="uniform",
+		distribution_args=[0.45, 0.55],
 		data_type=ParameterDataType.CONTINUOUS,
 	),
 	DistributionModel(
 		name="beta",
-		dist_name="uniform",
-		dist_args=[0.02, 0.03],
+		distribution_name="uniform",
+		distribution_args=[0.02, 0.03],
 		data_type=ParameterDataType.CONTINUOUS,
 	),
 ]
@@ -40,11 +40,12 @@ def objective(
 	return discrepancy
 
 
+outdir = get_examples_outdir()
 specification = OptimisationMethodModel(
 	experiment_name="botorch_optimisation",
 	parameter_spec=parameter_spec,
 	observed_data=observed_data.lynx.values,
-	outdir=get_examples_outdir(),
+	outdir=outdir,
 	directions=["minimize"],
 	n_init=5,
 	n_samples=20,
@@ -57,3 +58,5 @@ calibrator = OptimisationMethod(
 )
 
 calibrator.specify().execute().analyze()
+
+print(f"Results written to: {outdir}")

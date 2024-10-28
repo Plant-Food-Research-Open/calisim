@@ -39,9 +39,9 @@ class DistributionModel(BaseModel):
 	"""
 
 	name: str
-	dist_name: str = "uniform"
-	dist_args: list | None = None
-	dist_kwargs: dict[str, Any] | None = None
+	distribution_name: str = "uniform"
+	distribution_args: list | None = None
+	distribution_kwargs: dict[str, Any] | None = None
 	data_type: ParameterDataType = ParameterDataType.CONTINUOUS
 
 
@@ -66,6 +66,7 @@ class CalibrationModel(BaseModel):
 	n_iterations: int = 1
 	random_seed: int | None = None
 	n_jobs: int = 1
+	walltime: int = 1
 	output_labels: list[str] | None = None
 	groups: list[str] | None = None
 	parallel_backend: str = ""

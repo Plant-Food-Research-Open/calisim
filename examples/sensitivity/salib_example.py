@@ -14,14 +14,14 @@ observed_data = model.get_observed_data()
 parameter_spec = [
 	DistributionModel(
 		name="alpha",
-		dist_name="uniform",
-		dist_args=[0.45, 0.55],
+		distribution_name="uniform",
+		distribution_args=[0.45, 0.55],
 		data_type=ParameterDataType.CONTINUOUS,
 	),
 	DistributionModel(
 		name="beta",
-		dist_name="uniform",
-		dist_args=[0.02, 0.03],
+		distribution_name="uniform",
+		distribution_args=[0.02, 0.03],
 		data_type=ParameterDataType.CONTINUOUS,
 	),
 ]
@@ -39,11 +39,12 @@ def sensitivity_func(
 	return simulated_data
 
 
+outdir = get_examples_outdir()
 specification = SensitivityAnalysisMethodModel(
 	experiment_name="salib_sensitivity_analysis",
 	parameter_spec=parameter_spec,
 	observed_data=observed_data.lynx.values,
-	outdir=get_examples_outdir(),
+	outdir=outdir,
 	method="sobol",
 	n_samples=128,
 	output_labels=["Lynx"],
@@ -63,3 +64,5 @@ calibrator = SensitivityAnalysisMethod(
 )
 
 calibrator.specify().execute().analyze()
+
+print(f"Results written to: {outdir}")

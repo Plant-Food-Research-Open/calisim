@@ -148,22 +148,20 @@ class CalibrationWorkflowBase(ABC):
 			tuple[float, float]:
 				The lower and upper bounds.
 		"""
-		dist_args = spec.dist_args
-		if isinstance(dist_args, list):
-			if len(dist_args) == 2:
-				lower_bound, upper_bound = dist_args
+		distribution_args = spec.distribution_args
+		if isinstance(distribution_args, list):
+			if len(distribution_args) == 2:
+				lower_bound, upper_bound = distribution_args
 				return lower_bound, upper_bound
 
-		dist_kwargs = spec.dist_kwargs
-		if isinstance(dist_kwargs, dict):
-			lower_bound = dist_kwargs.get("lower_bound", None)
-			upper_bound = dist_kwargs.get("upper_bound", None)
+		distribution_kwargs = spec.distribution_kwargs
+		if isinstance(distribution_kwargs, dict):
+			lower_bound = distribution_kwargs.get("lower_bound", None)
+			upper_bound = distribution_kwargs.get("upper_bound", None)
 			if lower_bound is not None and upper_bound is not None:
 				return lower_bound, upper_bound
 
-		raise ValueError(
-			f"Invalid parameter specification for {spec.name} of type {spec.dist_name}"
-		)
+		raise ValueError(f"Invalid parameter specification for {spec.name}")
 
 
 class CalibrationMethodBase(CalibrationWorkflowBase):

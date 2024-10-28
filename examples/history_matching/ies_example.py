@@ -15,14 +15,14 @@ observed_data = model.get_observed_data()
 parameter_spec = [
 	DistributionModel(
 		name="alpha",
-		dist_name="normal",
-		dist_args=[0.4, 0.03],
+		distribution_name="normal",
+		distribution_args=[0.4, 0.03],
 		data_type=ParameterDataType.CONTINUOUS,
 	),
 	DistributionModel(
 		name="beta",
-		dist_name="normal",
-		dist_args=[0.025, 0.003],
+		distribution_name="normal",
+		distribution_args=[0.025, 0.003],
 		data_type=ParameterDataType.CONTINUOUS,
 	),
 ]
@@ -40,11 +40,12 @@ def history_matching_func(
 	return simulated_data
 
 
+outdir = get_examples_outdir()
 specification = HistoryMatchingMethodModel(
 	experiment_name="ies_history_matching",
 	parameter_spec=parameter_spec,
 	observed_data=observed_data.lynx.values,
-	outdir=get_examples_outdir(),
+	outdir=outdir,
 	method="sies",
 	n_samples=50,
 	n_iterations=10,
@@ -61,3 +62,5 @@ calibrator = HistoryMatchingMethod(
 )
 
 calibrator.specify().execute().analyze()
+
+print(f"Results written to: {outdir}")

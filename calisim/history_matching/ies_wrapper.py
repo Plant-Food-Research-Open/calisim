@@ -18,7 +18,7 @@ from ..base import CalibrationWorkflowBase
 
 
 class IESHistoryMatching(CalibrationWorkflowBase):
-	"""The Optuna optimisation method class."""
+	"""The iterative_ensemble_smoother history matching method class."""
 
 	def specify(self) -> None:
 		"""Specify the parameters of the model calibration procedure."""
@@ -29,19 +29,21 @@ class IESHistoryMatching(CalibrationWorkflowBase):
 		self.parameters = {}
 		for spec in parameter_spec:
 			parameter_name = spec.name
-			dist_name = spec.dist_name.replace(" ", "_").lower()
+			distribution_name = spec.distribution_name.replace(" ", "_").lower()
 
-			dist_args = spec.dist_args
-			if dist_args is None:
-				dist_args = []
+			distribution_args = spec.distribution_args
+			if distribution_args is None:
+				distribution_args = []
 
-			dist_kwargs = spec.dist_kwargs
-			if dist_kwargs is None:
-				dist_kwargs = {}
-			dist_kwargs["size"] = ensemble_size
+			distribution_kwargs = spec.distribution_kwargs
+			if distribution_kwargs is None:
+				distribution_kwargs = {}
+			distribution_kwargs["size"] = ensemble_size
 
-			dist_instance = getattr(self.rng, dist_name)
-			self.parameters[parameter_name] = dist_instance(*dist_args, **dist_kwargs)
+			dist_instance = getattr(self.rng, distribution_name)
+			self.parameters[parameter_name] = dist_instance(
+				*distribution_args, **distribution_kwargs
+			)
 
 	def convert_parameters(self, X: np.ndarray) -> list[dict[str, float]]:
 		"""Convert the parameters from an array to a list of records.
