@@ -46,13 +46,15 @@ specification = SimulationBasedInferenceMethodModel(
 	parameter_spec=parameter_spec,
 	observed_data=observed_data.lynx.values,
 	outdir=outdir,
-	n_samples=100,
-	n_iterations=100,
-	epsilon=0.1,
+	n_samples=300,
+	n_iterations=20,
+	num_simulations=200,
+	lr=0.01,
 	output_labels=["Lynx"],
 	verbose=True,
 	vectorize=False,
 	calibration_func_kwargs=dict(t=observed_data.year),
+	method_kwargs=dict(transforms=20, hidden_features=[64] * 3),
 )
 
 calibrator = SimulationBasedInferenceMethod(

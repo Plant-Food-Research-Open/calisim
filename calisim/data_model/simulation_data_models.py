@@ -93,6 +93,10 @@ class CalibrationModel(BaseModel):
 	num_simulations: int = Field(
 		description="The number of simulations to run", default=25
 	)
+	lr: float = Field(
+		description="The learning rate of the model",
+		default=0.01,
+	)
 	random_seed: int | None = Field(
 		description="The random seed for replicability", default=None
 	)
