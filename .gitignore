@@ -163,3 +163,4 @@ cython_debug/
 *.cache
 *.xml
 .python-version
+sbi-logs

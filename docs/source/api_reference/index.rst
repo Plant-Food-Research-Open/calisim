@@ -10,6 +10,7 @@ API Reference
     abc.rst
     history_matching.rst
     optimisation.rst
+    sbi.rst
     sensitivity.rst
     statistics.rst
     utils.rst

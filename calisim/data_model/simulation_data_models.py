@@ -90,6 +90,9 @@ class CalibrationModel(BaseModel):
 	n_iterations: int = Field(
 		description="The number of iterations for sequential calibrators", default=1
 	)
+	num_simulations: int = Field(
+		description="The number of simulations to run", default=25
+	)
 	random_seed: int | None = Field(
 		description="The random seed for replicability", default=None
 	)
