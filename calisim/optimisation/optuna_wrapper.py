@@ -45,7 +45,7 @@ class OptunaOptimisation(CalibrationWorkflowBase):
 
 	def execute(self) -> None:
 		"""Execute the simulation calibration procedure."""
-		parameter_spec = self.specification.parameter_spec
+		parameter_spec = self.specification.parameter_spec.parameters
 
 		def objective(
 			trial: optuna.trial.Trial,
@@ -78,7 +78,7 @@ class OptunaOptimisation(CalibrationWorkflowBase):
 		self.study.optimize(
 			lambda trial: objective(
 				trial,
-				parameter_spec,
+				parameter_spec,  # type: ignore[arg-type]
 				self.specification.observed_data,
 				objective_func=self.calibration_func,
 				objective_kwargs=objective_kwargs,

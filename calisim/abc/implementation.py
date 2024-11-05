@@ -23,9 +23,8 @@ def get_abc_implementations() -> dict[str, type[CalibrationWorkflowBase]]:
 	"""Get the calibration implementations for Approximate Bayesian Computation.
 
 	Returns:
-		Dict[str, type[CalibrationWorkflowBase]]:
-			The dictionary of calibration implementations
-			for Approximate Bayesian Computation.
+		Dict[str, type[CalibrationWorkflowBase]]: The dictionary of
+			calibration implementations for Approximate Bayesian Computation.
 	"""
 	return IMPLEMENTATIONS
 
@@ -34,8 +33,7 @@ class ApproximateBayesianComputationMethodModel(CalibrationModel):
 	"""The Approximate Bayesian Computation method data model.
 
 	Args:
-	    BaseModel (CalibrationModel):
-	        The calibration base model class.
+	    BaseModel (CalibrationModel): The calibration base model class.
 	"""
 
 	n_bootstrap: int = Field(description="The number of bootstrap samples", default=5)
@@ -69,15 +67,14 @@ class ApproximateBayesianComputationMethod(CalibrationMethodBase):
 		"""ApproximateBayesianComputationMethod constructor.
 
 		Args:
-			calibration_func (Callable):
-				The calibration function.
+			calibration_func (Callable): The calibration function.
 				For example, a simulation function or objective function.
-		    specification (ApproximateBayesianComputationMethodModel):
-		        The calibration specification.
-		    engine (str, optional):
-		        The Approximate Bayesian Computation backend. Defaults to "pymc".
-			implementation (CalibrationWorkflowBase | None):
-				The calibration workflow implementation.
+		    specification (ApproximateBayesianComputationMethodModel): The
+				calibration specification.
+		    engine (str, optional): The Approximate Bayesian
+				Computation backend. Defaults to "pymc".
+			implementation (CalibrationWorkflowBase | None): The
+				calibration workflow implementation.
 		"""
 		super().__init__(
 			calibration_func,

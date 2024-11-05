@@ -18,13 +18,12 @@ class ExampleModelBase(ABC):
 	def get_observed_data(self) -> np.ndarray | pd.DataFrame:
 		"""Retrieve observed data.
 
-		        Raises:
-		            NotImplementedError:
-		  Error raised for the unimplemented abstract method.
+		Raises:
+		    NotImplementedError: Error raised for
+				the unimplemented abstract method.
 
 		Returns:
-		    np.ndarray | pd.DataFrame:
-		        The observed data.
+		    np.ndarray | pd.DataFrame: The observed data.
 		"""
 		raise NotImplementedError("get_observed_data() method not implemented.")
 
@@ -32,16 +31,14 @@ class ExampleModelBase(ABC):
 	def simulate(self, parameters: dict) -> np.ndarray | pd.DataFrame:
 		"""Run the simulation.
 
-		        Args:
-		                parameters (dict):
-		                        The simulation parameters.
+			Args:
+		        parameters (dict): The simulation parameters.
 
-		        Raises:
-		            NotImplementedError:
-		  Error raised for the unimplemented abstract method.
+		    Raises:
+				NotImplementedError: Error raised for the
+					unimplemented abstract method.
 
 		Returns:
-		    np.ndarray | pd.DataFrame:
-		        The simulated data.
+		    np.ndarray | pd.DataFrame: The simulated data.
 		"""
 		raise NotImplementedError("simulate() method not implemented.")

@@ -25,12 +25,10 @@ class PyABCApproximateBayesianComputation(CalibrationWorkflowBase):
 		"""Apply data preprocessing to the distribution name.
 
 		Args:
-			name (str):
-				The unprocessed distribution name.
+			name (str): The unprocessed distribution name.
 
 		Returns:
-			str:
-				The processed distribution name.
+			str: The processed distribution name.
 		"""
 		name = name.replace(" ", "_").lower()
 
@@ -42,7 +40,7 @@ class PyABCApproximateBayesianComputation(CalibrationWorkflowBase):
 		"""Specify the parameters of the model calibration procedure."""
 		distributions = {}
 		transition_mapping = {}
-		parameter_spec = self.specification.parameter_spec
+		parameter_spec = self.specification.parameter_spec.parameters
 
 		for spec in parameter_spec:
 			parameter_name = spec.name

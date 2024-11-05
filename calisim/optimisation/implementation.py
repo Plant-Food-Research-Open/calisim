@@ -33,8 +33,7 @@ class OptimisationMethodModel(CalibrationModel):
 	"""The optimisation method data model.
 
 	Args:
-	    BaseModel (CalibrationModel):
-	        The calibration base model class.
+	    BaseModel (CalibrationModel): The calibration base model class.
 	"""
 
 	directions: list[str] | None = Field(
@@ -55,15 +54,14 @@ class OptimisationMethod(CalibrationMethodBase):
 		"""OptimisationMethod constructor.
 
 		Args:
-			calibration_func (Callable):
-				The calibration function.
+			calibration_func (Callable): The calibration function.
 				For example, a simulation function or objective function.
-		    specification (OptimisationMethodModel):
-		        The calibration specification.
-		    engine (str, optional):
-		        The optimisation backend. Defaults to "optuna".
-			implementation (CalibrationWorkflowBase | None):
-				The calibration workflow implementation.
+		    specification (OptimisationMethodModel): The calibration
+				specification.
+		    engine (str, optional): The optimisation backend.
+				Defaults to "optuna".
+			implementation (CalibrationWorkflowBase | None): The calibration
+				workflow implementation.
 		"""
 		super().__init__(
 			calibration_func,

@@ -32,8 +32,7 @@ class PriorCollection:
 		"""PriorCollection constructor.
 
 		Args:
-		    priors (list[dist.Distribution]):
-		        The list of prior distributions.
+		    priors (list[dist.Distribution]): The list of prior distributions.
 		"""
 		self.priors = priors
 
@@ -41,12 +40,11 @@ class PriorCollection:
 		"""Sample from the priors.
 
 		Args:
-		    batch_shape (tuple, optional):
-		        The batch shape of the sampled priors. Defaults to ().
+		    batch_shape (tuple, optional): The batch shape of
+				the sampled priors. Defaults to ().
 
 		Returns:
-		    torch.Tensor:
-		        The sampled priors.
+		    torch.Tensor: The sampled priors.
 		"""
 		prior_sample = []
 		for prior in self.priors:
@@ -59,7 +57,7 @@ class LAMPESimulationBasedInference(CalibrationWorkflowBase):
 
 	def specify(self) -> None:
 		"""Specify the parameters of the model calibration procedure."""
-		parameter_spec = self.specification.parameter_spec
+		parameter_spec = self.specification.parameter_spec.parameters
 
 		self.names = []
 		priors = []

@@ -21,8 +21,8 @@ def get_history_matching_implementations() -> dict[str, type[CalibrationWorkflow
 	"""Get the calibration implementations for history matching.
 
 	Returns:
-		Dict[str, type[CalibrationWorkflowBase]]:
-			The dictionary of calibration implementations for history matching.
+		Dict[str, type[CalibrationWorkflowBase]]: The dictionary
+			of calibration implementations for history matching.
 	"""
 	return IMPLEMENTATIONS
 
@@ -31,8 +31,7 @@ class HistoryMatchingMethodModel(CalibrationModel):
 	"""The history matching method data model.
 
 	Args:
-	    BaseModel (CalibrationModel):
-	        The calibration base model class.
+	    BaseModel (CalibrationModel): The calibration base model class.
 	"""
 
 	covariance: np.ndarray | None = Field(
@@ -53,15 +52,14 @@ class HistoryMatchingMethod(CalibrationMethodBase):
 		"""HistoryMatchingMethod constructor.
 
 		Args:
-			calibration_func (Callable):
-				The calibration function.
+			calibration_func (Callable): The calibration function.
 				For example, a simulation function or objective function.
-		    specification (HistoryMatchingMethodModel):
-		        The calibration specification.
-		    engine (str, optional):
-		        The history matching backend. Defaults to "ies".
-			implementation (CalibrationWorkflowBase | None):
-				The calibration workflow implementation.
+		    specification (HistoryMatchingMethodModel): The calibration
+				specification.
+		    engine (str, optional): The history matching backend.
+				Defaults to "ies".
+			implementation (CalibrationWorkflowBase | None): The
+				calibration workflow implementation.
 		"""
 		super().__init__(
 			calibration_func,

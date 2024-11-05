@@ -25,7 +25,7 @@ class SALibSensitivityAnalysis(CalibrationWorkflowBase):
 		bounds = []
 		dists = []
 
-		parameter_spec = self.specification.parameter_spec
+		parameter_spec = self.specification.parameter_spec.parameters
 		for spec in parameter_spec:
 			parameter_name = spec.name
 			self.names.append(parameter_name)
@@ -61,7 +61,7 @@ class SALibSensitivityAnalysis(CalibrationWorkflowBase):
 		sample_func(n_samples, **sampler_kwargs)
 
 		data_types = []
-		parameter_spec = self.specification.parameter_spec
+		parameter_spec = self.specification.parameter_spec.parameters
 		for spec in parameter_spec:
 			data_type = spec.data_type
 			data_types.append(data_type)

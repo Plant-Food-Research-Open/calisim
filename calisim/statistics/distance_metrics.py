@@ -26,14 +26,12 @@ class DistanceMetricBase(ABC):
 		"""Calculate the distance between observed and simulated data.
 
 		Args:
-		    observed (np.ndarray):
-		        The observed data.
-		    simulated (np.ndarray):
-		        The simulated data.
+		    observed (np.ndarray): The observed data.
+		    simulated (np.ndarray): The simulated data.
 
 		Raises:
-		    NotImplementedError:
-		        Error raised for the unimplemented abstract method.
+		    NotImplementedError: Error raised for the
+				unimplemented abstract method.
 		"""
 		raise NotImplementedError("calculate() method not implemented.")
 
@@ -47,10 +45,8 @@ class L1Norm(DistanceMetricBase):
 		"""Calculate the distance between observed and simulated data.
 
 		Args:
-		    observed (np.ndarray):
-		        The observed data.
-		    simulated (np.ndarray):
-		        The simulated data.
+		    observed (np.ndarray): The observed data.
+		    simulated (np.ndarray): The simulated data.
 		"""
 		distance = np.linalg.norm(observed - simulated, ord=1)
 		return distance
@@ -65,10 +61,8 @@ class MeanSquaredError(DistanceMetricBase):
 		"""Calculate the distance between observed and simulated data.
 
 		Args:
-		    observed (np.ndarray):
-		        The observed data.
-		    simulated (np.ndarray):
-		        The simulated data.
+		    observed (np.ndarray): The observed data.
+		    simulated (np.ndarray): The simulated data.
 		"""
 		distance = metrics.mean_squared_error(observed, simulated)
 		return distance
@@ -83,10 +77,8 @@ class MeanAbsoluteError(DistanceMetricBase):
 		"""Calculate the distance between observed and simulated data.
 
 		Args:
-		    observed (np.ndarray):
-		        The observed data.
-		    simulated (np.ndarray):
-		        The simulated data.
+		    observed (np.ndarray): The observed data.
+		    simulated (np.ndarray): The simulated data.
 		"""
 		distance = metrics.mean_absolute_error(observed, simulated)
 		return distance
@@ -101,10 +93,8 @@ class RootMeanSquaredError(DistanceMetricBase):
 		"""Calculate the distance between observed and simulated data.
 
 		Args:
-		    observed (np.ndarray):
-		        The observed data.
-		    simulated (np.ndarray):
-		        The simulated data.
+		    observed (np.ndarray): The observed data.
+		    simulated (np.ndarray): The simulated data.
 		"""
 		distance = metrics.root_mean_squared_error(observed, simulated)
 		return distance
@@ -119,10 +109,8 @@ class MeanPinballLoss(DistanceMetricBase):
 		"""Calculate the distance between observed and simulated data.
 
 		Args:
-		    observed (np.ndarray):
-		        The observed data.
-		    simulated (np.ndarray):
-		        The simulated data.
+		    observed (np.ndarray): The observed data.
+		    simulated (np.ndarray): The simulated data.
 		"""
 		distance = metrics.mean_pinball_loss(observed, simulated)
 		return distance
@@ -137,10 +125,8 @@ class MeanAbsolutePercentageError(DistanceMetricBase):
 		"""Calculate the distance between observed and simulated data.
 
 		Args:
-		    observed (np.ndarray):
-		        The observed data.
-		    simulated (np.ndarray):
-		        The simulated data.
+		    observed (np.ndarray): The observed data.
+		    simulated (np.ndarray): The simulated data.
 		"""
 		distance = metrics.mean_absolute_percentage_error(observed, simulated)
 		return distance
@@ -155,10 +141,8 @@ class MedianAbsoluteError(DistanceMetricBase):
 		"""Calculate the distance between observed and simulated data.
 
 		Args:
-		    observed (np.ndarray):
-		        The observed data.
-		    simulated (np.ndarray):
-		        The simulated data.
+		    observed (np.ndarray): The observed data.
+		    simulated (np.ndarray): The simulated data.
 		"""
 		distance = metrics.median_absolute_error(observed, simulated)
 		return distance
@@ -168,12 +152,10 @@ def get_distance_metric_func(distance_metric: str) -> Callable:
 	"""Get the distance metric function by name.
 
 	Args:
-	    distance_metric (str):
-	        The distance metric name.
+	    distance_metric (str): The distance metric name.
 
 	Returns:
-	    Callable:
-	        The distance metric function.
+	    Callable: The distance metric function.
 	"""
 	distance_metric = distance_metric.replace("_", " ").title().replace(" ", "")
 	module = "calisim.statistics.distance_metrics"
@@ -185,8 +167,7 @@ def get_distance_metrics() -> list[dict]:
 	"""Get a list of available distance metrics and labels.
 
 	Returns:
-	    list[dict]:
-	        A list of available distance metrics and labels.
+	    list[dict]: A list of available distance metrics and labels.
 	"""
 	distance_metrics: list[str] = [
 		"l1_norm",

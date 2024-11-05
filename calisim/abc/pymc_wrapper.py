@@ -24,7 +24,7 @@ class PyMCApproximateBayesianComputation(CalibrationWorkflowBase):
 		"""Specify the parameters of the model calibration procedure."""
 		self.names = []
 		priors = []
-		parameter_spec = self.specification.parameter_spec
+		parameter_spec = self.specification.parameter_spec.parameters
 		with pm.Model() as self.model:
 			for spec in parameter_spec:
 				parameter_name = spec.name

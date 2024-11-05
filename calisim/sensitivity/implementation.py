@@ -22,8 +22,8 @@ def get_sensitivity_analysis_implementations() -> (
 	"""Get the calibration implementations for sensitivity analysis.
 
 	Returns:
-		Dict[str, type[CalibrationWorkflowBase]]:
-			The dictionary of calibration implementations for sensitivity analysis.
+		Dict[str, type[CalibrationWorkflowBase]]: The dictionary of
+			calibration implementations for sensitivity analysis.
 	"""
 	return IMPLEMENTATIONS
 
@@ -32,8 +32,8 @@ class SensitivityAnalysisMethodModel(CalibrationModel):
 	"""The sensitivity analysis method data model.
 
 	Args:
-	    BaseModel (CalibrationModel):
-	        The calibration base model class.
+	    BaseModel (CalibrationModel): The calibration
+			base model class.
 	"""
 
 
@@ -50,15 +50,14 @@ class SensitivityAnalysisMethod(CalibrationMethodBase):
 		"""SensitivityAnalysisMethod constructor.
 
 		Args:
-			calibration_func (Callable):
-				The calibration function.
+			calibration_func (Callable): The calibration function.
 				For example, a simulation function or objective function.
-		    specification (SensitivityAnalysisMethodModel):
-		        The calibration specification.
-		    engine (str, optional):
-		        The sensitivity analysis backend. Defaults to "salib".
-			implementation (CalibrationWorkflowBase | None):
-				The calibration workflow implementation.
+		    specification (SensitivityAnalysisMethodModel): The calibration
+				specification.
+		    engine (str, optional): The sensitivity analysis backend.
+				Defaults to "salib".
+			implementation (CalibrationWorkflowBase | None): The calibration
+				workflow implementation.
 		"""
 		super().__init__(
 			calibration_func,

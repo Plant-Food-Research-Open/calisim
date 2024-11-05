@@ -21,9 +21,8 @@ def get_sbi_implementations() -> dict[str, type[CalibrationWorkflowBase]]:
 	"""Get the calibration implementations for simulation-based inference.
 
 	Returns:
-		Dict[str, type[CalibrationWorkflowBase]]:
-			The dictionary of calibration implementations
-			for simulation-based inference.
+		Dict[str, type[CalibrationWorkflowBase]]: The dictionary of
+			calibration implementations for simulation-based inference.
 	"""
 	return IMPLEMENTATIONS
 
@@ -32,8 +31,7 @@ class SimulationBasedInferenceMethodModel(CalibrationModel):
 	"""The simulation-based inference method data model.
 
 	Args:
-	    BaseModel (CalibrationModel):
-	        The calibration base model class.
+	    BaseModel (CalibrationModel): The calibration base model class.
 	"""
 
 
@@ -50,15 +48,14 @@ class SimulationBasedInferenceMethod(CalibrationMethodBase):
 		"""SimulationBasedInferenceMethod constructor.
 
 		Args:
-			calibration_func (Callable):
-				The calibration function.
+			calibration_func (Callable): The calibration function.
 				For example, a simulation function or objective function.
-		    specification (SimulationBasedInferenceMethodModel):
-		        The calibration specification.
-		    engine (str, optional):
-		        The simulation-based inference backend. Defaults to "sbi".
-			implementation (CalibrationWorkflowBase | None):
-				The calibration workflow implementation.
+		    specification (SimulationBasedInferenceMethodModel): The
+				calibration specification.
+		    engine (str, optional): The simulation-based inference
+				backend. Defaults to "sbi".
+			implementation (CalibrationWorkflowBase | None): The
+				calibration workflow implementation.
 		"""
 		super().__init__(
 			calibration_func,

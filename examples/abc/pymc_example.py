@@ -5,7 +5,11 @@ from calisim.abc import (
 	ApproximateBayesianComputationMethod,
 	ApproximateBayesianComputationMethodModel,
 )
-from calisim.data_model import DistributionModel, ParameterDataType
+from calisim.data_model import (
+	DistributionModel,
+	ParameterDataType,
+	ParameterSpecification,
+)
 from calisim.example_models import LotkaVolterraModel
 from calisim.statistics import MeanSquaredError
 from calisim.utils import get_examples_outdir
@@ -13,20 +17,22 @@ from calisim.utils import get_examples_outdir
 model = LotkaVolterraModel()
 observed_data = model.get_observed_data()
 
-parameter_spec = [
-	DistributionModel(
-		name="alpha",
-		distribution_name="normal",
-		distribution_args=[0.4, 0.01],
-		data_type=ParameterDataType.CONTINUOUS,
-	),
-	DistributionModel(
-		name="beta",
-		distribution_name="normal",
-		distribution_args=[0.025, 0.001],
-		data_type=ParameterDataType.CONTINUOUS,
-	),
-]
+parameter_spec = ParameterSpecification(
+	parameters=[
+		DistributionModel(
+			name="alpha",
+			distribution_name="normal",
+			distribution_args=[0.4, 0.01],
+			data_type=ParameterDataType.CONTINUOUS,
+		),
+		DistributionModel(
+			name="beta",
+			distribution_name="normal",
+			distribution_args=[0.025, 0.001],
+			data_type=ParameterDataType.CONTINUOUS,
+		),
+	]
+)
 
 
 def abc_func(

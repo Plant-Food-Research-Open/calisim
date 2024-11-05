@@ -18,8 +18,7 @@ class BaseModel(PydanticBaseModel):
 	"""Base Pydantic data model.
 
 	Args:
-	    PydanticBaseModel (PydanticBaseModel):
-	        The Pydantic Base model class.
+	    PydanticBaseModel (PydanticBaseModel): The Pydantic Base model class.
 	"""
 
 	class Config:
@@ -35,8 +34,7 @@ class DistributionModel(BaseModel):
 	"""The probability distribution data model.
 
 	Args:
-	    BaseModel (BaseModel):
-	        The Pydantic Base model class.
+	    BaseModel (BaseModel): The Pydantic Base model class.
 	"""
 
 	name: str = Field(description="The parameter name")
@@ -54,16 +52,27 @@ class DistributionModel(BaseModel):
 	)
 
 
+class ParameterSpecification(BaseModel):
+	"""The collection of parameters.
+
+	Args:
+	    BaseModel (BaseModel): The Pydantic Base model class.
+	"""
+
+	parameters: list[DistributionModel] | None = Field(
+		description="The parameter specification list", default=None
+	)
+
+
 class CalibrationModel(BaseModel):
 	"""The calibration data model.
 
 	Args:
-	    BaseModel (BaseModel):
-	        The Pydantic Base model class.
+	    BaseModel (BaseModel): The Pydantic Base model class.
 	"""
 
-	parameter_spec: list[DistributionModel] = Field(
-		description="The parameter specification list"
+	parameter_spec: ParameterSpecification | None = Field(
+		description="The parameter specification", default=None
 	)
 	experiment_name: str | None = Field(
 		description="The modelling experiment name", default="default"

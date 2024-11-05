@@ -23,7 +23,7 @@ class IESHistoryMatching(CalibrationWorkflowBase):
 	def specify(self) -> None:
 		"""Specify the parameters of the model calibration procedure."""
 		ensemble_size = self.specification.n_samples
-		parameter_spec = self.specification.parameter_spec
+		parameter_spec = self.specification.parameter_spec.parameters
 		self.rng = np.random.default_rng(self.specification.random_seed)
 
 		self.parameters = {}
@@ -49,19 +49,17 @@ class IESHistoryMatching(CalibrationWorkflowBase):
 		"""Convert the parameters from an array to a list of records.
 
 		Args:
-		    X (np.ndarray):
-		        The array of parameters.
+		    X (np.ndarray): The array of parameters.
 
 		Returns:
-		    List[Dict[str, float]:
-		        The list of parameters.
+		    List[Dict[str, float]: The list of parameters.
 		"""
 		parameters = []
 		ensemble_size = self.specification.n_samples
-		parameter_spec = self.specification.parameter_spec
+		parameter_spec = self.specification.parameter_spec.parameters
 		for i in range(ensemble_size):
 			parameter_set = {}
-			for j, spec in enumerate(parameter_spec):
+			for j, spec in enumerate(parameter_spec):  # type: ignore[arg-type]
 				parameter_name = spec.name
 				parameter_set[parameter_name] = X[j][i]
 			parameters.append(parameter_set)
@@ -71,12 +69,11 @@ class IESHistoryMatching(CalibrationWorkflowBase):
 		"""Run the simulation for the history matching procedure.
 
 		Args:
-		    parameters (List[Dict[str, float]]):
-		        The list of simulation parameters.
+		    parameters (List[Dict[str, float]]): The list of
+				simulation parameters.
 
 		Returns:
-		    np.ndarray:
-		        The ensemble outputs.
+		    np.ndarray: The ensemble outputs.
 		"""
 		observed_data = self.specification.observed_data
 		history_matching_kwargs = self.specification.calibration_func_kwargs

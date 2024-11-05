@@ -29,7 +29,7 @@ class BoTorchOptimisation(CalibrationWorkflowBase):
 		"""Specify the parameters of the model calibration procedure."""
 		parameters = []
 		parameter_names = []
-		parameter_spec = self.specification.parameter_spec
+		parameter_spec = self.specification.parameter_spec.parameters
 		for spec in parameter_spec:
 			name = spec.name
 			parameter_names.append(name)

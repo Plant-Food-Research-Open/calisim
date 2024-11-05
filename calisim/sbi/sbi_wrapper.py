@@ -31,7 +31,7 @@ class SBISimulationBasedInference(CalibrationWorkflowBase):
 
 	def specify(self) -> None:
 		"""Specify the parameters of the model calibration procedure."""
-		parameter_spec = self.specification.parameter_spec
+		parameter_spec = self.specification.parameter_spec.parameters
 
 		self.names = []
 		self.priors = []

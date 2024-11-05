@@ -17,12 +17,10 @@ def pre_post_hooks(f: Callable) -> Callable:
 	"""Execute prehooks and posthooks for calibration methods.
 
 	Args:
-		f (Callable):
-			The wrapped function.
+		f (Callable): The wrapped function.
 
 	Returns:
-		Callable:
-			The wrapper function.
+		Callable: The wrapper function.
 	"""
 
 	@wraps(f)
@@ -32,8 +30,7 @@ def pre_post_hooks(f: Callable) -> Callable:
 		"""The wrapper function for prehooks and posthooks.
 
 		Returns:
-			CalibrationWorkflowBase:
-				The calibration workflow.
+			CalibrationWorkflowBase: The calibration workflow.
 		"""
 		func_name = f.__name__
 		getattr(self, f"prehook_{func_name}")()
@@ -53,13 +50,10 @@ class CalibrationWorkflowBase(ABC):
 		"""CalibrationMethodBase constructor.
 
 		Args:
-			calibration_func (Callable):
-				The calibration function.
+			calibration_func (Callable): The calibration function.
 				For example, a simulation function or objective function.
-		    specification (CalibrationModel):
-		        The calibration specification.
-		    task (str):
-		        The calibration task.
+		    specification (CalibrationModel): The calibration specification.
+		    task (str): The calibration task.
 		"""
 		super().__init__()
 		self.task = task
@@ -71,8 +65,7 @@ class CalibrationWorkflowBase(ABC):
 		"""Specify the parameters of the model calibration procedure.
 
 		Raises:
-		    NotImplementedError:
-		        Error raised for the unimplemented abstract method.
+		    NotImplementedError: Error raised for the unimplemented abstract method.
 		"""
 		raise NotImplementedError("specify() method not implemented.")
 
@@ -81,8 +74,7 @@ class CalibrationWorkflowBase(ABC):
 		"""Execute the simulation calibration procedure.
 
 		Raises:
-		    NotImplementedError:
-		        Error raised for the unimplemented abstract method.
+		    NotImplementedError: Error raised for the unimplemented abstract method.
 		"""
 		raise NotImplementedError("execute() method not implemented.")
 
@@ -91,8 +83,7 @@ class CalibrationWorkflowBase(ABC):
 		"""Analyze the results of the simulation calibration procedure.
 
 		Raises:
-		    NotImplementedError:
-		        Error raised for the unimplemented abstract method.
+		    NotImplementedError: Error raised for the unimplemented abstract method.
 		"""
 		raise NotImplementedError("analyze() method not implemented.")
 
@@ -124,8 +115,8 @@ class CalibrationWorkflowBase(ABC):
 		"""Perform preparations for the analyze step.
 
 		Returns:
-			tuple[str, str, str | None]:
-				A list of metadata needed for the analysis outputs.
+			tuple[str, str, str | None]: A list of
+				metadata needed for the analysis outputs.
 		"""
 		task = self.task
 		time_now = get_datetime_now()
@@ -137,16 +128,14 @@ class CalibrationWorkflowBase(ABC):
 		"""Get the lower and upper bounds from a parameter specification.
 
 		Args:
-			spec (DistributionModel):
-				The parameter specification.
+			spec (DistributionModel): The parameter specification.
 
 		Raises:
-			ValueError:
-				Error raised when the bounds cannot be identified.
+			ValueError: Error raised when the
+				bounds cannot be identified.
 
 		Returns:
-			tuple[float, float]:
-				The lower and upper bounds.
+			tuple[float, float]: The lower and upper bounds.
 		"""
 		distribution_args = spec.distribution_args
 		if isinstance(distribution_args, list):
@@ -179,19 +168,15 @@ class CalibrationMethodBase(CalibrationWorkflowBase):
 		"""CalibrationMethodBase constructor.
 
 		Args:
-			calibration_func (Callable):
-				The calibration function.
+			calibration_func (Callable): The calibration function.
 				For example, a simulation function or objective function.
-		    specification (CalibrationModel):
-		        The calibration specification.
-		    task (str):
-		        The calibration task.
-		    engine (str):
-		        The calibration implementation engine.
-		    implementations (dict[str, type[CalibrationWorkflowBase]]):
-		        The list of supported engines.
-			implementation (CalibrationWorkflowBase | None):
-				The calibration workflow implementation.
+		    specification (CalibrationModel): The calibration specification.
+		    task (str): The calibration task.
+		    engine (str): The calibration implementation engine.
+		    implementations (dict[str, type[CalibrationWorkflowBase]]): The
+				list of supported engines.
+			implementation (CalibrationWorkflowBase | None): The
+				calibration workflow implementation.
 		"""
 		super().__init__(calibration_func, specification, task)
 		self.engine = engine
@@ -216,12 +201,10 @@ class CalibrationMethodBase(CalibrationWorkflowBase):
 		"""Check that the implementation is set.
 
 		Args:
-			function_name (str):
-				The name of the function.
+			function_name (str): The name of the function.
 
 		Raises:
-			ValueError:
-				Error raised when the implementation is not set.
+			ValueError: Error raised when the implementation is not set.
 		"""
 		if self.implementation is None:
 			raise ValueError(
@@ -233,12 +216,10 @@ class CalibrationMethodBase(CalibrationWorkflowBase):
 		"""Specify the parameters of the model calibration procedure.
 
 		Raises:
-			ValueError:
-				Error raised when the implementation is not set.
+			ValueError: Error raised when the implementation is not set.
 
 		Returns:
-			CalibrationMethodBase:
-				The calibration method.
+			CalibrationMethodBase: The calibration method.
 		"""
 		self._implementation_check("specify")
 		self.implementation.specify()
@@ -249,12 +230,10 @@ class CalibrationMethodBase(CalibrationWorkflowBase):
 		"""Execute the simulation calibration procedure.
 
 		Raises:
-			ValueError:
-				Error raised when the implementation is not set.
+			ValueError: Error raised when the implementation is not set.
 
 		Returns:
-			CalibrationMethodBase:
-				The calibration method.
+			CalibrationMethodBase: The calibration method.
 		"""
 		self._implementation_check("execute")
 		self.implementation.execute()
@@ -265,12 +244,10 @@ class CalibrationMethodBase(CalibrationWorkflowBase):
 		"""Analyze the results of the simulation calibration procedure.
 
 		Raises:
-			ValueError:
-				Error raised when the implementation is not set.
+			ValueError: Error raised when the implementation is not set.
 
 		Returns:
-			CalibrationMethodBase:
-				The calibration method.
+			CalibrationMethodBase: The calibration method.
 		"""
 		self._implementation_check("analyze")
 		self.implementation.analyze()
@@ -280,12 +257,11 @@ class CalibrationMethodBase(CalibrationWorkflowBase):
 		"""Get a list of supported engines.
 
 		Args:
-		    as_string (bool, optional):
-		        Whether to return the engine list as a string. Defaults to False.
+		    as_string (bool, optional): Whether to return
+				the engine list as a string. Defaults to False.
 
 		Returns:
-		    list | str:
-				The list of supported engines.
+		    list | str: The list of supported engines.
 		"""
 		if as_string:
 			return ", ".join(self.supported_engines)

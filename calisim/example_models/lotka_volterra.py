@@ -21,8 +21,7 @@ class LotkaVolterraModel(ExampleModelBase):
 		"""Retrieve observed data.
 
 		Returns:
-		    np.ndarray | pd.DataFrame:
-		        The observed data.
+		    np.ndarray | pd.DataFrame: The observed data.
 		"""
 		observed_df = pd.DataFrame(
 			dict(
@@ -84,13 +83,11 @@ class LotkaVolterraModel(ExampleModelBase):
 	def simulate(self, parameters: dict) -> np.ndarray | pd.DataFrame:
 		"""Run the simulation.
 
-		        Args:
-		                parameters (dict):
-		                        The simulation parameters.
+		Args:
+			parameters (dict): The simulation parameters.
 
 		Returns:
-		    np.ndarray | pd.DataFrame:
-		        The simulated data.
+		    np.ndarray | pd.DataFrame: The simulated data.
 		"""
 
 		def dX_dt(_: np.ndarray, X: np.ndarray) -> np.ndarray:
