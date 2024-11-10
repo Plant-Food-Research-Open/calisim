@@ -23,6 +23,7 @@ from sbi import analysis as analysis
 
 from ..base import CalibrationWorkflowBase
 from ..data_model import ParameterDataType
+from ..utils import get_simulation_uuid
 
 
 class PriorCollection:
@@ -118,7 +119,10 @@ class LAMPESimulationBasedInference(CalibrationWorkflowBase):
 				sbi_kwargs = {}
 
 			observed_data = self.specification.observed_data
-			results = self.calibration_func(parameters, observed_data, **sbi_kwargs)
+			simulation_id = get_simulation_uuid()
+			results = self.calibration_func(
+				parameters, simulation_id, observed_data, **sbi_kwargs
+			)
 			return torch.from_numpy(results).float()
 
 		loader = JointLoader(self.priors, simulator_func, batch_size=1, vectorized=True)

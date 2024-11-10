@@ -14,6 +14,7 @@ import pandas as pd
 
 from ..base import CalibrationWorkflowBase
 from ..data_model import DistributionModel, ParameterDataType
+from ..utils import get_simulation_uuid
 
 
 class OptunaOptimisation(CalibrationWorkflowBase):
@@ -69,7 +70,10 @@ class OptunaOptimisation(CalibrationWorkflowBase):
 						parameter_name, lower_bound, upper_bound
 					)
 
-			return objective_func(parameters, observed_data, **objective_kwargs)
+			simulation_id = get_simulation_uuid()
+			return objective_func(
+				parameters, simulation_id, observed_data, **objective_kwargs
+			)
 
 		objective_kwargs = self.specification.calibration_func_kwargs
 		if objective_kwargs is None:

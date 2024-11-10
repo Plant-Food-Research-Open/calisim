@@ -20,6 +20,7 @@ from plotly.subplots import make_subplots
 
 from ..base import CalibrationWorkflowBase
 from ..data_model import ParameterDataType
+from ..utils import get_simulation_uuid
 
 
 class BoTorchOptimisation(CalibrationWorkflowBase):
@@ -59,7 +60,11 @@ class BoTorchOptimisation(CalibrationWorkflowBase):
 				parameters = {}
 				for i, parameter_name in enumerate(parameter_names):
 					parameters[parameter_name] = x[i]
-				return objective_func(parameters, observed_data, **objective_kwargs)
+
+				simulation_id = get_simulation_uuid()
+				return objective_func(
+					parameters, simulation_id, observed_data, **objective_kwargs
+				)
 
 		optimization_config = OptimizationConfig(
 			objective=Objective(

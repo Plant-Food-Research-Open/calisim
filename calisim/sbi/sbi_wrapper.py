@@ -24,6 +24,7 @@ from sbi.inference import (
 
 from ..base import CalibrationWorkflowBase
 from ..data_model import ParameterDataType
+from ..utils import get_simulation_uuid
 
 
 class SBISimulationBasedInference(CalibrationWorkflowBase):
@@ -91,7 +92,10 @@ class SBISimulationBasedInference(CalibrationWorkflowBase):
 				sbi_kwargs = {}
 
 			observed_data = self.specification.observed_data
-			results = self.calibration_func(parameters, observed_data, **sbi_kwargs)
+			simulation_id = get_simulation_uuid()
+			results = self.calibration_func(
+				parameters, simulation_id, observed_data, **sbi_kwargs
+			)
 			return results
 
 		simulator, prior = prepare_for_sbi(simulator_func, self.priors)

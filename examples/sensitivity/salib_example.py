@@ -1,3 +1,4 @@
+import numpy as np
 import pandas as pd
 
 from calisim.data_model import (
@@ -34,10 +35,9 @@ parameter_spec = ParameterSpecification(
 
 
 def sensitivity_func(
-	parameters: dict, _: pd.DataFrame | None, t: pd.Series
+	parameters: dict, simulation_id: str, observed_data: np.ndarray | None, t: pd.Series
 ) -> float | list[float]:
 	simulation_parameters = dict(h0=34.0, l0=5.9, t=t, gamma=0.84, delta=0.026)
-
 	for k in ["alpha", "beta"]:
 		simulation_parameters[k] = parameters[k]
 

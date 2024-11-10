@@ -15,6 +15,7 @@ import pymc as pm
 from matplotlib import pyplot as plt
 
 from ..base import CalibrationWorkflowBase
+from ..utils import get_simulation_uuid
 
 
 class PyMCApproximateBayesianComputation(CalibrationWorkflowBase):
@@ -66,8 +67,11 @@ class PyMCApproximateBayesianComputation(CalibrationWorkflowBase):
 			if abc_kwargs is None:
 				abc_kwargs = {}
 
+			simulation_id = get_simulation_uuid()
 			observed_data = self.specification.observed_data
-			results = self.calibration_func(parameters, observed_data, **abc_kwargs)
+			results = self.calibration_func(
+				parameters, simulation_id, observed_data, **abc_kwargs
+			)
 
 			if not hasattr(results, "__iter__"):
 				results = [results]

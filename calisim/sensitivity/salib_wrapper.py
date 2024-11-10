@@ -13,6 +13,7 @@ from SALib import ProblemSpec
 
 from ..base import CalibrationWorkflowBase
 from ..data_model import ParameterDataType
+from ..utils import get_simulation_uuid
 
 
 class SALibSensitivityAnalysis(CalibrationWorkflowBase):
@@ -87,16 +88,20 @@ class SALibSensitivityAnalysis(CalibrationWorkflowBase):
 						parameter_set[parameter_name] = int(parameter_value)
 				parameters.append(parameter_set)
 
+			simulation_ids = [get_simulation_uuid() for _ in range(len(parameters))]
+
 			if self.specification.vectorize:
 				results = self.calibration_func(
-					parameters, observed_data, **sensitivity_kwargs
+					parameters, simulation_ids, observed_data, **sensitivity_kwargs
 				)
 			else:
 				results = []
-				for parameter in parameters:
+				for i, parameter in enumerate(parameters):
+					simulation_id = simulation_ids[i]
 					result = self.calibration_func(
 						parameter,
-						self.specification.observed_data,
+						simulation_id,
+						observed_data,
 						**sensitivity_kwargs,
 					)
 					results.append(result)

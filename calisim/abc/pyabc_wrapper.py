@@ -16,6 +16,7 @@ from matplotlib import pyplot as plt
 
 from ..base import CalibrationWorkflowBase
 from ..data_model import ParameterDataType
+from ..utils import get_simulation_uuid
 
 
 class PyABCApproximateBayesianComputation(CalibrationWorkflowBase):
@@ -97,7 +98,10 @@ class PyABCApproximateBayesianComputation(CalibrationWorkflowBase):
 				abc_kwargs = {}
 			observed_data = self.specification.observed_data
 
-			results = self.calibration_func(parameters, observed_data, **abc_kwargs)
+			simulation_id = get_simulation_uuid()
+			results = self.calibration_func(
+				parameters, simulation_id, observed_data, **abc_kwargs
+			)
 
 			summary_stats = {}
 			if len(output_labels) == 1:  # type: ignore[arg-type]

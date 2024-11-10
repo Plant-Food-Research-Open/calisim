@@ -33,7 +33,7 @@ parameter_spec = ParameterSpecification(
 
 
 def objective(
-	parameters: dict, observed_data: np.ndarray | None, t: pd.Series
+	parameters: dict, simulation_id: str, observed_data: np.ndarray | None, t: pd.Series
 ) -> float | list[float]:
 	simulation_parameters = dict(h0=34.0, l0=5.9, t=t, gamma=0.84, delta=0.026)
 

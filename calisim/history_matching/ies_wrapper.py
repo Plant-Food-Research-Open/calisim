@@ -15,6 +15,7 @@ from iterative_ensemble_smoother.utils import steplength_exponential
 from matplotlib import pyplot as plt
 
 from ..base import CalibrationWorkflowBase
+from ..utils import get_simulation_uuid
 
 
 class IESHistoryMatching(CalibrationWorkflowBase):
@@ -80,15 +81,18 @@ class IESHistoryMatching(CalibrationWorkflowBase):
 		if history_matching_kwargs is None:
 			history_matching_kwargs = {}
 
+		simulation_ids = [get_simulation_uuid() for _ in range(len(parameters))]
+
 		if self.specification.vectorize:
 			ensemble_outputs = self.calibration_func(
-				parameters, observed_data, **history_matching_kwargs
+				parameters, simulation_ids, observed_data, **history_matching_kwargs
 			)
 		else:
 			ensemble_outputs = []
-			for parameter in parameters:
+			for i, parameter in enumerate(parameters):
+				simulation_id = simulation_ids[i]
 				outputs = self.calibration_func(
-					parameter, observed_data, **history_matching_kwargs
+					parameter, simulation_id, observed_data, **history_matching_kwargs
 				)
 				ensemble_outputs.append(outputs)
 
