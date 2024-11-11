@@ -6,14 +6,15 @@ Implements the supported optimisation methods using the Emukit library.
 
 import os.path as osp
 
-import emukit.quadrature.kernels
-import emukit.quadrature.measures
 import numpy as np
 from emukit.core import ContinuousParameter, DiscreteParameter, ParameterSpace
 from emukit.core.initial_designs import RandomDesign
-from emukit.model_wrappers.gpy_quadrature_wrappers import BaseGaussianProcessGPy, RBFGPy
-from emukit.quadrature.loop import VanillaBayesianQuadratureLoop
-from emukit.quadrature.methods import VanillaBayesianQuadrature
+from emukit.experimental_design import ExperimentalDesignLoop
+from emukit.experimental_design.acquisitions import (
+	IntegratedVarianceReduction,
+	ModelVariance,
+)
+from emukit.model_wrappers import GPyModelWrapper
 from GPy.models import GPRegression
 from matplotlib import pyplot as plt
 
@@ -22,21 +23,19 @@ from ..data_model import ParameterDataType
 from ..utils import get_simulation_uuid
 
 
-class EmukitBayesianQuadrature(CalibrationWorkflowBase):
-	"""The Emukit Bayesian quadrature method class."""
+class EmukitExperimentalDesign(CalibrationWorkflowBase):
+	"""The Emukit experimental design method class."""
 
 	def specify(self) -> None:
 		"""Specify the parameters of the model calibration procedure."""
+
 		parameters = []
 		self.names = []
-		self.bounds = []
 		parameter_spec = self.specification.parameter_spec.parameters
 		for spec in parameter_spec:
 			parameter_name = spec.name
 			self.names.append(parameter_name)
-			bounds = self.get_parameter_bounds(spec)
-			self.bounds.append(bounds)
-			lower_bound, upper_bound = bounds
+			lower_bound, upper_bound = self.get_parameter_bounds(spec)
 			data_type = spec.data_type
 
 			if data_type == ParameterDataType.DISCRETE:
@@ -52,9 +51,9 @@ class EmukitBayesianQuadrature(CalibrationWorkflowBase):
 
 	def execute(self) -> None:
 		"""Execute the simulation calibration procedure."""
-		bayesian_quadrature_kwargs = self.specification.calibration_func_kwargs
-		if bayesian_quadrature_kwargs is None:
-			bayesian_quadrature_kwargs = {}
+		experimental_design_kwargs = self.specification.calibration_func_kwargs
+		if experimental_design_kwargs is None:
+			experimental_design_kwargs = {}
 
 		observed_data = self.specification.observed_data
 
@@ -73,7 +72,7 @@ class EmukitBayesianQuadrature(CalibrationWorkflowBase):
 					parameters,
 					simulation_ids,
 					observed_data,
-					**bayesian_quadrature_kwargs,
+					**experimental_design_kwargs,
 				)
 			else:
 				results = []
@@ -83,7 +82,7 @@ class EmukitBayesianQuadrature(CalibrationWorkflowBase):
 						parameter,
 						simulation_id,
 						observed_data,
-						**bayesian_quadrature_kwargs,
+						**experimental_design_kwargs,
 					)
 
 					results.append(result)
@@ -100,44 +99,68 @@ class EmukitBayesianQuadrature(CalibrationWorkflowBase):
 		Y = target_function(X)
 
 		gp = GPRegression(X, Y, **method_kwargs)
-		emukit_rbf = RBFGPy(gp.kern)
+		emulator = GPyModelWrapper(gp)
 
-		measure_name = self.specification.measure
-		measure_func = getattr(emukit.quadrature.measures, measure_name)
-		measure = measure_func.from_bounds(bounds=self.bounds)
+		acquisition_name = self.specification.method
+		acquisitions = dict(
+			model_variance=ModelVariance,
+			integrated_variance_reduction=IntegratedVarianceReduction,
+		)
+		acquisition_class = acquisitions.get(acquisition_name, None)
+		if acquisition_class is None:
+			raise ValueError(
+				f"Unsupported emulator acquisition type: {acquisition_name}"
+			)
+		acquisition = acquisition_class(model=emulator)
 
-		kernel_name = self.specification.kernel
-		kernel_func = getattr(emukit.quadrature.kernels, kernel_name)
-		kernel = kernel_func(emukit_rbf, measure)
-		emulator = BaseGaussianProcessGPy(kern=kernel, gpy_model=gp)
-
-		quadrature = VanillaBayesianQuadrature(base_gp=emulator, X=X, Y=Y)
-		quadrature_loop = VanillaBayesianQuadratureLoop(model=quadrature)
+		design_loop = ExperimentalDesignLoop(
+			model=emulator,
+			space=self.parameter_space,
+			acquisition=acquisition,
+			batch_size=1,
+		)
 		n_iterations = self.specification.n_iterations
-		quadrature_loop.run_loop(target_function, stopping_condition=n_iterations)
+		design_loop.run_loop(target_function, stopping_condition=n_iterations)
 
 		self.emulator = emulator
-		self.quadrature_loop = quadrature_loop
+		self.design_loop = design_loop
 
 	def analyze(self) -> None:
 		"""Analyze the results of the simulation calibration procedure."""
 		task, time_now, outdir = self.prepare_analyze()
 
-		integral_mean, integral_variance = self.quadrature_loop.model.integrate()
-		fig, ax = plt.subplots(figsize=self.specification.figsize)
-		ax.set_title("Integral density")
-		self.rng = np.random.default_rng(self.specification.random_seed)
-		integral_samples = self.rng.normal(
-			integral_mean, integral_variance, size=self.specification.n_samples
-		)
-		ax.hist(
-			integral_samples,
-			alpha=0.5,
-		)
-		ax.legend()
+		design = RandomDesign(self.parameter_space)
+		n_samples = self.specification.n_samples
+		X_sample = design.get_samples(n_samples)
+
+		predicted_mu, predicted_var = self.design_loop.model.predict(X_sample)
+
+		observed_data = self.specification.observed_data
+		output_label = self.specification.output_labels[0]  # type: ignore[index]
+		X = np.arange(0, observed_data.shape[0], 1)
+		fig, axes = plt.subplots(nrows=2, figsize=self.specification.figsize)
+
+		axes[0].plot(X, observed_data)
+		axes[0].set_title(f"Observed {output_label}")
+
+		mean_predicted_mu = predicted_mu.mean(axis=0)
+		mean_predicted_var = predicted_var.mean(axis=0)
+		axes[1].plot(X, mean_predicted_mu)
+
+		for mult, alpha in [(1, 0.6), (2, 0.4), (3, 0.2)]:
+			axes[1].fill_between(
+				X,
+				mean_predicted_mu - mult * np.sqrt(mean_predicted_var),
+				mean_predicted_mu + mult * np.sqrt(mean_predicted_var),
+				color="C0",
+				alpha=alpha,
+			)
+
+		axes[1].set_title(f"Predicted {output_label}")
+
 		fig.tight_layout()
 		if outdir is not None:
-			outfile = osp.join(outdir, f"{time_now}-{task}_integral_density.png")
+			outfile = osp.join(outdir, f"{time_now}-{task}_ensemble_{output_label}.png")
 			fig.savefig(outfile)
 		else:
 			fig.show()

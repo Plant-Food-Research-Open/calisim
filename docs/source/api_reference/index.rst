@@ -8,6 +8,8 @@ API Reference
     data_model.rst
     example_models.rst
     abc.rst
+    bayesian_quadrature.rst
+    experimental_design.rst
     history_matching.rst
     optimisation.rst
     sbi.rst
