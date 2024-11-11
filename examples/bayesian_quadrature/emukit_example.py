@@ -1,16 +1,16 @@
 import numpy as np
 import pandas as pd
 
+from calisim.bayesian_quadrature import (
+	BayesianQuadratureMethod,
+	BayesianQuadratureMethodModel,
+)
 from calisim.data_model import (
 	DistributionModel,
 	ParameterDataType,
 	ParameterSpecification,
 )
 from calisim.example_models import LotkaVolterraModel
-from calisim.history_matching import (
-	HistoryMatchingMethod,
-	HistoryMatchingMethodModel,
-)
 from calisim.utils import get_examples_outdir
 
 model = LotkaVolterraModel()
@@ -20,21 +20,21 @@ parameter_spec = ParameterSpecification(
 	parameters=[
 		DistributionModel(
 			name="alpha",
-			distribution_name="normal",
-			distribution_args=[0.4, 0.03],
+			distribution_name="uniform",
+			distribution_args=[0.45, 0.55],
 			data_type=ParameterDataType.CONTINUOUS,
 		),
 		DistributionModel(
 			name="beta",
-			distribution_name="normal",
-			distribution_args=[0.025, 0.003],
+			distribution_name="uniform",
+			distribution_args=[0.02, 0.03],
 			data_type=ParameterDataType.CONTINUOUS,
 		),
 	]
 )
 
 
-def history_matching_func(
+def bayesian_quadrature_func(
 	parameters: dict, simulation_id: str, observed_data: np.ndarray | None, t: pd.Series
 ) -> float | list[float]:
 	simulation_parameters = dict(h0=34.0, l0=5.9, t=t, gamma=0.84, delta=0.026)
@@ -47,27 +47,26 @@ def history_matching_func(
 
 
 outdir = get_examples_outdir()
-specification = HistoryMatchingMethodModel(
-	experiment_name="pyesmda_history_matching",
+specification = BayesianQuadratureMethodModel(
+	experiment_name="emukit_bayesian_quadrature",
 	parameter_spec=parameter_spec,
 	observed_data=observed_data.lynx.values,
 	outdir=outdir,
-	method="esmda",
-	n_samples=50,
+	n_init=5,
 	n_iterations=10,
-	output_labels=["Lynx"],
-	verbose=True,
-	vectorize=False,
-	covariance=np.eye(observed_data.lynx.values.shape[0]),
+	n_samples=50,
+	kernel="QuadratureRBFLebesgueMeasure",
+	measure="LebesgueMeasure",
+	method_kwargs=dict(noise_var=1e-4),
 	calibration_func_kwargs=dict(t=observed_data.year),
-	method_kwargs=dict(save_ensembles_history=True),
-	n_jobs=10,
+	vectorize=False,
 )
 
-calibrator = HistoryMatchingMethod(
-	calibration_func=history_matching_func,
+
+calibrator = BayesianQuadratureMethod(
+	calibration_func=bayesian_quadrature_func,
 	specification=specification,
-	engine="pyesmda",
+	engine="emukit",
 )
 
 calibrator.specify().execute().analyze()

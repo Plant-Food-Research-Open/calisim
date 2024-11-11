@@ -48,7 +48,7 @@ def objective(
 
 outdir = get_examples_outdir()
 specification = OptimisationMethodModel(
-	experiment_name="optuna_optimisation",
+	experiment_name="emukit_optimisation",
 	parameter_spec=parameter_spec,
 	observed_data=observed_data.lynx.values,
 	outdir=outdir,
