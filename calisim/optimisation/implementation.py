@@ -11,11 +11,12 @@ from pydantic import Field
 from ..base import CalibrationMethodBase, CalibrationWorkflowBase
 from ..data_model import CalibrationModel
 from .botorch_wrapper import BoTorchOptimisation
+from .emukit_wrapper import EmukitOptimisation
 from .optuna_wrapper import OptunaOptimisation
 
 TASK = "optimisation"
 IMPLEMENTATIONS: dict[str, type[CalibrationWorkflowBase]] = dict(
-	optuna=OptunaOptimisation, botorch=BoTorchOptimisation
+	optuna=OptunaOptimisation, botorch=BoTorchOptimisation, emukit=EmukitOptimisation
 )
 
 
@@ -38,6 +39,9 @@ class OptimisationMethodModel(CalibrationModel):
 
 	directions: list[str] | None = Field(
 		description="The list of objective directions", default=["minimize"]
+	)
+	acquisition_func: str | None = Field(
+		description="The acquisition function for Bayesian optimisation", default="ei"
 	)
 
 

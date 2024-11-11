@@ -10,6 +10,12 @@ BoTorch
 .. automodule:: calisim.optimisation.botorch_wrapper
    :members:
 
+Emukit
+------
+
+.. automodule:: calisim.optimisation.emukit_wrapper
+   :members:
+
 Optuna
 ------
 
