@@ -12,12 +12,15 @@ from pydantic import Field
 from ..base import CalibrationMethodBase, CalibrationWorkflowBase
 from ..data_model import CalibrationModel
 from .ies_wrapper import IESHistoryMatching
+from .pyesmda_wrapper import PyESMDAHistoryMatching
 
 TASK = "history_matching"
-IMPLEMENTATIONS: dict[str, type[CalibrationWorkflowBase]] = dict(ies=IESHistoryMatching)
+IMPLEMENTATIONS: dict[str, type[CalibrationWorkflowBase]] = dict(
+	ies=IESHistoryMatching, pyesmda=PyESMDAHistoryMatching
+)
 
 
-def get_history_matching_implementations() -> dict[str, type[CalibrationWorkflowBase]]:
+def get_implementations() -> dict[str, type[CalibrationWorkflowBase]]:
 	"""Get the calibration implementations for history matching.
 
 	Returns:

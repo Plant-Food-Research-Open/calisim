@@ -3671,6 +3671,21 @@ toml = ["tomli (>=2.0.1)"]
 yaml = ["pyyaml (>=6.0.1)"]
 
 [[package]]
+name = "pyesmda"
+version = "0.4.3"
+description = "Python Ensemble Smoother with Multiple Data Assimilation."
+optional = false
+python-versions = "<4,>=3.7"
+files = [
+    {file = "pyesmda-0.4.3-py2.py3-none-any.whl", hash = "sha256:df390523b12479b772341824454da79c2614cd6ce74a9a843e442369b7f107d4"},
+    {file = "pyesmda-0.4.3.tar.gz", hash = "sha256:fc4cb23b78ed9e2c71ad7937621a4464c10775d11d0abae9636799972212cd07"},
+]
+
+[package.dependencies]
+importlib-metadata = "*"
+numpy = "*"
+
+[[package]]
 name = "pygments"
 version = "2.18.0"
 description = "Pygments is a syntax highlighting package written in Python."
@@ -5467,4 +5482,4 @@ dev = ["pre-commit", "pytest", "ruff"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.10,<3.11"
-content-hash = "5d28e11cc831bb8668c238ba7ba14d218bab6a281830177254a3a64af92ad539"
+content-hash = "01d14f86c228f6841429ed6856e8cfa30944281cea3ed7631e0959064c686ee3"

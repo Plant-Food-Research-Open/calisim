@@ -34,6 +34,7 @@ pymc = "<=5.16.2"
 pytensor = "<=2.20.0"
 plotly = "^5.24.1"
 scikit-activeml = "^0.5.2"
+pyesmda = "^0.4.3"
 
 
 [tool.poetry.group.dev.dependencies]

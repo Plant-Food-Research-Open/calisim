@@ -17,7 +17,7 @@ IMPLEMENTATIONS: dict[str, type[CalibrationWorkflowBase]] = dict(
 )
 
 
-def get_sbi_implementations() -> dict[str, type[CalibrationWorkflowBase]]:
+def get_implementations() -> dict[str, type[CalibrationWorkflowBase]]:
 	"""Get the calibration implementations for simulation-based inference.
 
 	Returns:

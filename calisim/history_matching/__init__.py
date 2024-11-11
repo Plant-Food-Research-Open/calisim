@@ -1,11 +1,11 @@
 from .implementation import (
 	HistoryMatchingMethod,
 	HistoryMatchingMethodModel,
-	get_history_matching_implementations,
+	get_implementations,
 )
 
 _all__ = [
 	HistoryMatchingMethod,
 	HistoryMatchingMethodModel,
-	get_history_matching_implementations,
+	get_implementations,
 ]
