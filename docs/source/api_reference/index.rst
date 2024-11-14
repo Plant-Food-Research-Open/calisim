@@ -9,6 +9,7 @@ API Reference
     example_models.rst
     abc.rst
     bayesian_quadrature.rst
+    evolutionary.rst
     experimental_design.rst
     history_matching.rst
     optimisation.rst

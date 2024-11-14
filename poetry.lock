@@ -5018,6 +5018,25 @@ standalone = ["Sphinx (>=5)"]
 test = ["pytest"]
 
 [[package]]
+name = "spotpy"
+version = "1.6.2"
+description = "A Statistical Parameter Optimization Tool."
+optional = false
+python-versions = ">=3.7"
+files = [
+    {file = "spotpy-1.6.2-py3-none-any.whl", hash = "sha256:cbb5f6df684b7a6bfae3f4d8904ad2ab293236b6fc80bcf38972e65efa55fe58"},
+    {file = "spotpy-1.6.2.tar.gz", hash = "sha256:5bad39a4d7605167a7874bc8b8eca72708b9ee0e7a3fb7088204333dbdf77350"},
+]
+
+[package.dependencies]
+numpy = ">=1.14.5"
+scipy = ">=1.5.0"
+
+[package.extras]
+plotting = ["matplotlib (>=3)", "pandas (>=1)"]
+test = ["click", "docutils", "matplotlib", "numba", "pandas", "pathos", "pytest-cov (>=3)", "tables"]
+
+[[package]]
 name = "sqlalchemy"
 version = "2.0.36"
 description = "Database Abstraction Library"
@@ -5644,4 +5663,4 @@ dev = ["pre-commit", "pytest", "ruff"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.10,<3.11"
-content-hash = "b45e3214d52c7f8c701563023bdd17a60a431a58255cc02f62021575d1870dfb"
+content-hash = "97f664bae7b0fee34a747cc93c52d87880482b8fdf94a348826444c60eb3ed96"
