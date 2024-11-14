@@ -22,17 +22,31 @@ from ..utils import get_simulation_uuid
 
 
 class SPOTSetup:
+	"""The SPOT calibration setup."""
+
 	def __init__(
 		self,
 		workflow: CalibrationWorkflowBase,
 		objective_function: Callable,
 		evolutionary_name: str,
 	):
+		"""SPOTSetup constructor.
+
+		Args:
+			workflow (CalibrationWorkflowBase): The calibration workflow object.
+			objective_function (Callable): The simulation objective function.
+			evolutionary_name (str): The name of the evolutionary algorithm.
+		"""
 		self.objective_function = objective_function
 		self.evolutionary_name = evolutionary_name
 		self.setup_from_workflow(workflow)
 
 	def setup_from_workflow(self, workflow: CalibrationWorkflowBase) -> None:
+		"""Configure the calibration procedure from the workflow object.
+
+		Args:
+			workflow (CalibrationWorkflowBase): The calibration workflow object.
+		"""
 		parameter_names = []
 		data_types = []
 		priors: list[Base] = []
@@ -73,9 +87,22 @@ class SPOTSetup:
 		self.evolutionary_kwargs = evolutionary_kwargs
 
 	def parameters(self) -> np.ndarray:
+		"""Generate parameters from the prior specification.
+
+		Returns:
+			np.ndarray: The generated parameters.
+		"""
 		return generate(self.priors)
 
 	def simulation(self, X: np.ndarray) -> np.ndarray:
+		"""Run the simulation.
+
+		Args:
+			X (np.ndarray): The simulation parameter vector.
+
+		Returns:
+			np.ndarray: The simulation results.
+		"""
 		parameter_set = {}
 		for i, parameter_value in enumerate(X):
 			parameter_name = self.parameter_names[i]
@@ -95,6 +122,11 @@ class SPOTSetup:
 		return result
 
 	def evaluation(self) -> np.ndarray | pd.DataFrame:
+		"""Get the observed data.
+
+		Returns:
+			np.ndarray | pd.DataFrame: The observed data.
+		"""
 		return self.observed_data
 
 	def objectivefunction(
@@ -102,11 +134,20 @@ class SPOTSetup:
 		simulation: np.ndarray | pd.DataFrame,
 		evaluation: np.ndarray | pd.DataFrame,
 	) -> float:
+		"""Call the objective function on simulated and observed data.
+
+		Args:
+			simulation (np.ndarray | pd.DataFrame): The simulated data.
+			evaluation (np.ndarray | pd.DataFrame): The observed data.
+
+		Returns:
+			float: The objective function results.
+		"""
 		if self.evolutionary_name == "dream":
-			like = self.objective_function(evaluation, simulation)
+			objective = self.objective_function(evaluation, simulation)
 		else:
-			like = -self.objective_function(evaluation, simulation)
-		return like
+			objective = -self.objective_function(evaluation, simulation)
+		return objective
 
 
 class SPOTPYEvolutionary(CalibrationWorkflowBase):

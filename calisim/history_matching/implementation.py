@@ -24,8 +24,8 @@ def get_implementations() -> dict[str, type[CalibrationWorkflowBase]]:
 	"""Get the calibration implementations for history matching.
 
 	Returns:
-		Dict[str, type[CalibrationWorkflowBase]]: The dictionary
-			of calibration implementations for history matching.
+		Dict[str, type[CalibrationWorkflowBase]]: The dictionary of
+			calibration implementations for history matching.
 	"""
 	return IMPLEMENTATIONS
 

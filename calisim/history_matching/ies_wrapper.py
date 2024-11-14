@@ -53,7 +53,7 @@ class IESHistoryMatching(CalibrationWorkflowBase):
 		    X (np.ndarray): The array of parameters.
 
 		Returns:
-		    List[Dict[str, float]: The list of parameters.
+		    List[Dict[str, float]]: The list of parameters.
 		"""
 		parameters = []
 		ensemble_size = self.specification.n_samples
