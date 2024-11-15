@@ -1,6 +1,6 @@
-"""Contains the implementations for optimisation methods using Emukit
+"""Contains the implementations for Bayesian quadrature methods using Emukit
 
-Implements the supported optimisation methods using the Emukit library.
+Implements the supported Bayesian quadrature methods using the Emukit library.
 
 """
 

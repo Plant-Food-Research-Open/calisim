@@ -6,13 +6,16 @@ Implements the supported experimental design methods.
 
 from collections.abc import Callable
 
+from pydantic import Field
+
 from ..base import CalibrationMethodBase, CalibrationWorkflowBase
 from ..data_model import CalibrationModel
 from .emukit_wrapper import EmukitExperimentalDesign
+from .skactiveml_wrapper import SkActiveMLExperimentalDesign
 
 TASK = "experimental_design"
 IMPLEMENTATIONS: dict[str, type[CalibrationWorkflowBase]] = dict(
-	emukit=EmukitExperimentalDesign
+	emukit=EmukitExperimentalDesign, skactiveml=SkActiveMLExperimentalDesign
 )
 
 
@@ -33,6 +36,11 @@ class ExperimentalDesignMethodModel(CalibrationModel):
 	    BaseModel (CalibrationModel): The calibration base model class.
 	"""
 
+	query_strategy: str = Field(
+		description="The active learning query strategy",
+		default="greedy_sampling_target",
+	)
+
 
 class ExperimentalDesignMethod(CalibrationMethodBase):
 	"""The experimental design method class."""
@@ -44,7 +52,7 @@ class ExperimentalDesignMethod(CalibrationMethodBase):
 		engine: str = "emukit",
 		implementation: CalibrationWorkflowBase | None = None,
 	) -> None:
-		"""HistoryMatchingMethod constructor.
+		"""ExperimentalDesignMethod constructor.
 
 		Args:
 			calibration_func (Callable): The calibration function.

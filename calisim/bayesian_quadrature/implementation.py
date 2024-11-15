@@ -54,7 +54,7 @@ class BayesianQuadratureMethod(CalibrationMethodBase):
 		engine: str = "emukit",
 		implementation: CalibrationWorkflowBase | None = None,
 	) -> None:
-		"""HistoryMatchingMethod constructor.
+		"""BayesianQuadratureMethod constructor.
 
 		Args:
 			calibration_func (Callable): The calibration function.

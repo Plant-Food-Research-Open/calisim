@@ -1,6 +1,6 @@
-"""Contains the implementations for optimisation methods using Emukit
+"""Contains the implementations for evolutionary algorithms using SPOTPY
 
-Implements the supported optimisation methods using the Emukit library.
+Implements the supported evolutionary algorithms using the SPOTPY library.
 
 """
 
@@ -22,7 +22,7 @@ from ..utils import get_simulation_uuid
 
 
 class SPOTSetup:
-	"""The SPOT calibration setup."""
+	"""The SPOTPY calibration setup."""
 
 	def __init__(
 		self,
@@ -151,7 +151,7 @@ class SPOTSetup:
 
 
 class SPOTPYEvolutionary(CalibrationWorkflowBase):
-	"""The SPOTPYE evolutionary algorithm method class."""
+	"""The SPOTPY evolutionary algorithm method class."""
 
 	def specify(self) -> None:
 		"""Specify the parameters of the model calibration procedure."""
