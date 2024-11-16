@@ -35,7 +35,7 @@ class PriorCollection:
 		Args:
 		    priors (list[dist.Distribution]): The list of prior distributions.
 		"""
-		self.priors = priors
+		self.parameters = priors
 
 	def sample(self, batch_shape: tuple = ()) -> torch.Tensor:
 		"""Sample from the priors.
@@ -48,7 +48,7 @@ class PriorCollection:
 		    torch.Tensor: The sampled priors.
 		"""
 		prior_sample = []
-		for prior in self.priors:
+		for prior in self.parameters:
 			prior_sample.append(prior.sample(batch_shape).squeeze())
 		return torch.stack(prior_sample).T
 
@@ -103,7 +103,7 @@ class LAMPESimulationBasedInference(CalibrationWorkflowBase):
 				prior = distribution_class(*distribution_args, **distribution_kwargs)
 
 			priors.append(prior)
-			self.priors = PriorCollection(priors)
+			self.parameters = PriorCollection(priors)
 
 	def execute(self) -> None:
 		"""Execute the simulation calibration procedure."""
@@ -125,7 +125,9 @@ class LAMPESimulationBasedInference(CalibrationWorkflowBase):
 			)
 			return torch.from_numpy(results).float()
 
-		loader = JointLoader(self.priors, simulator_func, batch_size=1, vectorized=True)
+		loader = JointLoader(
+			self.parameters, simulator_func, batch_size=1, vectorized=True
+		)
 
 		method_kwargs = self.specification.method_kwargs
 		if method_kwargs is None:

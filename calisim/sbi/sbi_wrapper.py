@@ -35,7 +35,7 @@ class SBISimulationBasedInference(CalibrationWorkflowBase):
 		parameter_spec = self.specification.parameter_spec.parameters
 
 		self.names = []
-		self.priors = []
+		self.parameters = []
 		for spec in parameter_spec:
 			name = spec.name
 			self.names.append(name)
@@ -76,7 +76,7 @@ class SBISimulationBasedInference(CalibrationWorkflowBase):
 
 				prior = distribution_class(*distribution_args, **distribution_kwargs)
 
-			self.priors.append(prior)
+			self.parameters.append(prior)
 
 	def execute(self) -> None:
 		"""Execute the simulation calibration procedure."""
@@ -98,7 +98,7 @@ class SBISimulationBasedInference(CalibrationWorkflowBase):
 			)
 			return results
 
-		simulator, prior = prepare_for_sbi(simulator_func, self.priors)
+		simulator, prior = prepare_for_sbi(simulator_func, self.parameters)
 
 		method_kwargs = self.specification.method_kwargs
 		if method_kwargs is None:

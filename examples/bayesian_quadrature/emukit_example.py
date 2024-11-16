@@ -59,7 +59,7 @@ specification = BayesianQuadratureMethodModel(
 	measure="LebesgueMeasure",
 	method_kwargs=dict(noise_var=1e-4),
 	calibration_func_kwargs=dict(t=observed_data.year),
-	vectorize=False,
+	batched=False,
 )
 
 

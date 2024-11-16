@@ -79,7 +79,7 @@ class PyABCApproximateBayesianComputation(CalibrationWorkflowBase):
 					scaling=1
 				)
 
-		self.prior = pyabc.Distribution(**distributions)
+		self.parameters = pyabc.Distribution(**distributions)
 		self.transitions = pyabc.AggregatedTransition(mapping=transition_mapping)
 
 	def execute(self) -> None:
@@ -126,7 +126,7 @@ class PyABCApproximateBayesianComputation(CalibrationWorkflowBase):
 
 		self.abc = pyabc.ABCSMC(
 			simulator_func,
-			self.prior,
+			self.parameters,
 			distance_func,
 			population_size=adaptive_pop_size,
 			transitions=self.transitions,

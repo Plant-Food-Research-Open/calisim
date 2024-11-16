@@ -120,9 +120,7 @@ class CalibrationModel(BaseModel):
 	parallel_backend: str = Field(
 		description="The backend engine to run parallel jobs", default=""
 	)
-	vectorize: bool = Field(
-		description="Whether to vectorize simulations", default=False
-	)
+	batched: bool = Field(description="Whether to batch the simulations", default=False)
 	verbose: bool = Field(
 		description="Whether to print calibration messages", default=False
 	)

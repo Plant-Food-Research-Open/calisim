@@ -7,9 +7,9 @@ from calisim.data_model import (
 	ParameterSpecification,
 )
 from calisim.example_models import LotkaVolterraModel
-from calisim.experimental_design import (
-	ExperimentalDesignMethod,
-	ExperimentalDesignMethodModel,
+from calisim.uncertainty import (
+	UncertaintyAnalysisMethod,
+	UncertaintyAnalysisMethodModel,
 )
 from calisim.utils import get_examples_outdir
 
@@ -20,21 +20,21 @@ parameter_spec = ParameterSpecification(
 	parameters=[
 		DistributionModel(
 			name="alpha",
-			distribution_name="uniform",
-			distribution_args=[0.45, 0.55],
+			distribution_name="normal",
+			distribution_args=[0.4, 0.03],
 			data_type=ParameterDataType.CONTINUOUS,
 		),
 		DistributionModel(
 			name="beta",
-			distribution_name="uniform",
-			distribution_args=[0.02, 0.03],
+			distribution_name="normal",
+			distribution_args=[0.025, 0.003],
 			data_type=ParameterDataType.CONTINUOUS,
 		),
 	]
 )
 
 
-def experimental_design_func(
+def uncertainty_func(
 	parameters: dict, simulation_id: str, observed_data: np.ndarray | None, t: pd.Series
 ) -> float | list[float]:
 	simulation_parameters = dict(h0=34.0, l0=5.9, t=t, gamma=0.84, delta=0.026)
@@ -47,26 +47,25 @@ def experimental_design_func(
 
 
 outdir = get_examples_outdir()
-specification = ExperimentalDesignMethodModel(
-	experiment_name="emukit_experimental_design",
+specification = UncertaintyAnalysisMethodModel(
+	experiment_name="chaospy_uncertainty_analysis",
 	parameter_spec=parameter_spec,
 	observed_data=observed_data.lynx.values,
 	outdir=outdir,
+	solver="linear",
+	linear_regression="least_squares",
+	method="sobol",
+	order=4,
+	n_samples=100,
 	output_labels=["Lynx"],
-	n_init=5,
-	n_iterations=10,
-	n_samples=50,
-	method="model_variance",
-	method_kwargs=dict(noise_var=1e-4),
+	verbose=True,
+	batch=False,
 	calibration_func_kwargs=dict(t=observed_data.year),
-	batched=False,
+	method_kwargs=dict(rule="cholesky", normed=False, cross_truncation=1.0),
 )
 
-
-calibrator = ExperimentalDesignMethod(
-	calibration_func=experimental_design_func,
-	specification=specification,
-	engine="emukit",
+calibrator = UncertaintyAnalysisMethod(
+	calibration_func=uncertainty_func, specification=specification, engine="chaospy"
 )
 
 calibrator.specify().execute().analyze()

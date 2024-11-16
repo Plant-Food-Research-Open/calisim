@@ -39,6 +39,9 @@ emukit = "^0.4.11"
 emcee = "^3.1.6"
 gpy = "^1.13.2"
 spotpy = "^1.6.2"
+pygpc = "^0.4.1"
+chaospy = "^4.3.17"
+gstools = "^1.6.0"
 
 
 [tool.poetry.group.dev.dependencies]

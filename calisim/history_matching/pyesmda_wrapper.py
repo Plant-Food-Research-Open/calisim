@@ -24,7 +24,7 @@ def forward_model(
 	calibration_func: Callable,
 	history_matching_kwargs: dict,
 	observed_data: pd.DataFrame | np.ndarray,
-	vectorize: bool = False,
+	batched: bool = False,
 ) -> np.ndarray:
 	"""The forward model for the ensemble simulation.
 
@@ -35,7 +35,7 @@ def forward_model(
 		history_matching_kwargs (dict): Named arguments for the
 			history matching function.
 		observed_data (pd.DataFrame | np.ndarray): The observed data.
-		vectorize (bool, optional): Whether to vectorize the history
+		batched (bool, optional): Whether to batch the history
 			matching function. Defaults to False.
 
 	Returns:
@@ -52,7 +52,7 @@ def forward_model(
 		history_matching_kwargs = {}
 
 	simulation_ids = [get_simulation_uuid() for _ in range(m_ensemble.shape[0])]
-	if vectorize:
+	if batched:
 		ensemble_outputs = calibration_func(
 			parameters, simulation_ids, observed_data, **history_matching_kwargs
 		)
@@ -131,7 +131,7 @@ class PyESMDAHistoryMatching(CalibrationWorkflowBase):
 				calibration_func=self.calibration_func,
 				history_matching_kwargs=self.specification.calibration_func_kwargs,
 				observed_data=observed_data,
-				vectorize=self.specification.vectorize,
+				batched=self.specification.batched,
 			),
 			n_assimilations=self.specification.n_iterations,
 			cov_obs=cov_obs,

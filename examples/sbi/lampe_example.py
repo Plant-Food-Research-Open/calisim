@@ -58,7 +58,7 @@ specification = SimulationBasedInferenceMethodModel(
 	lr=0.01,
 	output_labels=["Lynx"],
 	verbose=True,
-	vectorize=False,
+	batched=False,
 	calibration_func_kwargs=dict(t=observed_data.year),
 	method_kwargs=dict(transforms=20, hidden_features=[64] * 3),
 )

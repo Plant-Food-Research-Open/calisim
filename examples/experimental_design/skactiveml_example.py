@@ -60,7 +60,7 @@ specification = ExperimentalDesignMethodModel(
 	query_strategy="greedy_sampling_target",
 	method_kwargs=dict(alpha=1e-10, optimizer="fmin_l_bfgs_b"),
 	calibration_func_kwargs=dict(t=observed_data.year),
-	vectorize=False,
+	batched=False,
 )
 
 

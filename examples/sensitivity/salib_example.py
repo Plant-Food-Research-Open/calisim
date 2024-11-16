@@ -55,7 +55,7 @@ specification = SensitivityAnalysisMethodModel(
 	n_samples=128,
 	output_labels=["Lynx"],
 	verbose=True,
-	vectorize=False,
+	batched=False,
 	calibration_func_kwargs=dict(t=observed_data.year),
 	method_kwargs=dict(calc_second_order=True, scramble=True),
 	analyze_kwargs=dict(

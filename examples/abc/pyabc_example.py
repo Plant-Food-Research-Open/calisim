@@ -62,7 +62,7 @@ specification = ApproximateBayesianComputationMethodModel(
 	n_bootstrap=5,
 	min_population_size=1,
 	verbose=True,
-	vectorize=False,
+	batched=False,
 	calibration_func_kwargs=dict(t=observed_data.year),
 	method_kwargs=dict(
 		max_total_nr_simulations=200, max_nr_populations=5, min_acceptance_rate=0.0

@@ -57,7 +57,7 @@ specification = HistoryMatchingMethodModel(
 	n_iterations=10,
 	output_labels=["Lynx"],
 	verbose=True,
-	vectorize=False,
+	batched=False,
 	covariance=np.eye(observed_data.lynx.values.shape[0]),
 	calibration_func_kwargs=dict(t=observed_data.year),
 	method_kwargs=dict(save_ensembles_history=True),

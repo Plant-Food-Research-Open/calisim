@@ -15,5 +15,6 @@ API Reference
     optimisation.rst
     sbi.rst
     sensitivity.rst
+    uncertainty.rst
     statistics.rst
     utils.rst

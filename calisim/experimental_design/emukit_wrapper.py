@@ -67,7 +67,7 @@ class EmukitExperimentalDesign(CalibrationWorkflowBase):
 				parameters.append(parameter_set)
 
 			simulation_ids = [get_simulation_uuid() for _ in range(len(parameters))]
-			if self.specification.vectorize:
+			if self.specification.batched:
 				results = self.calibration_func(
 					parameters,
 					simulation_ids,
