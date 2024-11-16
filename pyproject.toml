@@ -9,7 +9,7 @@ repository = "https://github.com/PlantandFoodResearch/calisim"
 
 [tool.poetry.dependencies]
 python = ">=3.10,<3.11"
-kaleido = "0.2.1"
+kaleido = "0.4.1"
 scikit-learn = "^1.5.2"
 numpy = "<2.0.0"
 pandas = "^2.2.3"

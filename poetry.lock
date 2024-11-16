@@ -559,6 +559,20 @@ files = [
 ]
 
 [[package]]
+name = "choreographer"
+version = "0.99.6"
+description = "Devtools Protocol implementation for chrome."
+optional = false
+python-versions = ">=3.9"
+files = [
+    {file = "choreographer-0.99.6-py3-none-any.whl", hash = "sha256:8256485cae76669901bd3ab1ad6de886b9767d26ad4d13d3c030a50fb31a62d0"},
+    {file = "choreographer-0.99.6.tar.gz", hash = "sha256:280d82c961cdb7f8539ae6fb50397a7f72507eb966210c98edac69a564acb34f"},
+]
+
+[package.extras]
+dev = ["async-timeout", "pytest", "pytest-asyncio", "pytest-xdist"]
+
+[[package]]
 name = "click"
 version = "8.1.7"
 description = "Composable command line interface toolkit"
@@ -2163,18 +2177,21 @@ files = [
 
 [[package]]
 name = "kaleido"
-version = "0.2.1"
-description = "Static image export for web-based visualization libraries with zero dependencies"
+version = "0.4.1"
+description = "Plotly graph export library"
 optional = false
-python-versions = "*"
+python-versions = ">=3.9"
 files = [
-    {file = "kaleido-0.2.1-py2.py3-none-macosx_10_11_x86_64.whl", hash = "sha256:ca6f73e7ff00aaebf2843f73f1d3bacde1930ef5041093fe76b83a15785049a7"},
-    {file = "kaleido-0.2.1-py2.py3-none-macosx_11_0_arm64.whl", hash = "sha256:bb9a5d1f710357d5d432ee240ef6658a6d124c3e610935817b4b42da9c787c05"},
-    {file = "kaleido-0.2.1-py2.py3-none-manylinux1_x86_64.whl", hash = "sha256:aa21cf1bf1c78f8fa50a9f7d45e1003c387bd3d6fe0a767cfbbf344b95bdc3a8"},
-    {file = "kaleido-0.2.1-py2.py3-none-manylinux2014_aarch64.whl", hash = "sha256:845819844c8082c9469d9c17e42621fbf85c2b237ef8a86ec8a8527f98b6512a"},
-    {file = "kaleido-0.2.1-py2.py3-none-win32.whl", hash = "sha256:ecc72635860be616c6b7161807a65c0dbd9b90c6437ac96965831e2e24066552"},
-    {file = "kaleido-0.2.1-py2.py3-none-win_amd64.whl", hash = "sha256:4670985f28913c2d063c5734d125ecc28e40810141bdb0a46f15b76c1d45f23c"},
+    {file = "kaleido-0.4.1-py3-none-any.whl", hash = "sha256:be3470a98793ce7ec16fd99067c250d158ab7294fefba7e7c6bd0c5d6107edcf"},
+    {file = "kaleido-0.4.1.tar.gz", hash = "sha256:d13194cda4b2bcd9bd47deb2c4e79679d85f9791c1edb91686ccce1a01d84a24"},
 ]
+
+[package.dependencies]
+async-timeout = "*"
+choreographer = ">=0.99.6"
+
+[package.extras]
+dev = ["pytest"]
 
 [[package]]
 name = "kiwisolver"
@@ -5859,4 +5876,4 @@ dev = ["pre-commit", "pytest", "ruff"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.10,<3.11"
-content-hash = "774defcf445fbbe8beeafd73e66facbfb954d92dd6e095c2efea97f9b31c0322"
+content-hash = "429e091537d0aea3928536155552360123a73f9d9bee1de2df702246b6dffd4b"
