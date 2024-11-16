@@ -10,11 +10,12 @@ from pydantic import Field
 
 from ..base import CalibrationMethodBase, CalibrationWorkflowBase
 from ..data_model import CalibrationModel
+from .gpytorch_wrapper import GPyTorchSurrogateModel
 from .sklearn_wrapper import SklearnSurrogateModel
 
 TASK = "surrogate_modelling"
 IMPLEMENTATIONS: dict[str, type[CalibrationWorkflowBase]] = dict(
-	sklearn=SklearnSurrogateModel
+	gpytorch=GPyTorchSurrogateModel, sklearn=SklearnSurrogateModel
 )
 
 
@@ -35,6 +36,9 @@ class SurrogateModelMethodModel(CalibrationModel):
 	    BaseModel (CalibrationModel): The calibration base model class.
 	"""
 
+	batch_size: int = Field(
+		description="The batch size when training the surrogate model", default=1000
+	)
 	flatten_Y: bool = Field(description="Flatten the simulation outputs", default=False)
 
 

@@ -1,29 +1,51 @@
-"""Contains the implementations for surrogate modelling methods using Scikit-Learn
+"""Contains the implementations for surrogate modelling methods using GPyTorch
 
-Implements the supported surrogate modelling methods using the Scikit-Learn library.
+Implements the supported surrogate modelling methods using the GPyTorch library.
 
 """
 
 import os.path as osp
 
 import chaospy
+import gpytorch
 import numpy as np
 import pandas as pd
-import sklearn.ensemble as ensemble
-import sklearn.gaussian_process as gp
-import sklearn.kernel_ridge as kernel_ridge
-import sklearn.linear_model as lm
-import sklearn.neighbors as neighbors
-import sklearn.svm as svm
+import torch
 from matplotlib import pyplot as plt
+from sklearn.preprocessing import MinMaxScaler
+from torch.utils.data import DataLoader, TensorDataset
 
 from ..base import CalibrationWorkflowBase
 from ..data_model import ParameterDataType
 from ..utils import get_simulation_uuid
 
 
-class SklearnSurrogateModel(CalibrationWorkflowBase):
-	"""The Scikit-Learn surrogate modelling method class."""
+class SingleTaskGPRegressionModel(gpytorch.models.ExactGP):
+	def __init__(
+		self,
+		train_x: torch.Tensor,
+		train_y: torch.Tensor,
+		likelihood: gpytorch.likelihoods.Likelihood,
+	):
+		super().__init__(train_x, train_y, likelihood)
+
+		self.mean_module = gpytorch.means.ConstantMean()
+		self.covar_module = gpytorch.kernels.GridInterpolationKernel(
+			gpytorch.kernels.ScaleKernel(gpytorch.kernels.RBFKernel()),
+			grid_size=100,
+			num_dims=train_x.size(-1),
+		)
+
+	def forward(self, X: torch.Tensor) -> gpytorch.distributions.MultivariateNormal:
+		X = X - X.min(0)[0]
+		X = 2 * (X / X.max(0)[0]) - 1
+		mean_x = self.mean_module(X)
+		covar_x = self.covar_module(X)
+		return gpytorch.distributions.MultivariateNormal(mean_x, covar_x)
+
+
+class GPyTorchSurrogateModel(CalibrationWorkflowBase):
+	"""The GPyTorch surrogate modelling method class."""
 
 	def specify(self) -> None:
 		"""Specify the parameters of the model calibration procedure."""
@@ -113,30 +135,6 @@ class SklearnSurrogateModel(CalibrationWorkflowBase):
 			surrogate_kwargs,
 		)
 
-		emulator_name = self.specification.method
-		emulators = dict(
-			gp=gp.GaussianProcessRegressor,
-			rf=ensemble.RandomForestRegressor,
-			gb=ensemble.GradientBoostingRegressor,
-			lr=lm.LinearRegression,
-			elastic=lm.MultiTaskElasticNet,
-			ridge=lm.Ridge,
-			knn=neighbors.KNeighborsRegressor,
-			kr=kernel_ridge.KernelRidge,
-			linear_svm=svm.LinearSVR,
-			nu_svm=svm.NuSVR,
-		)
-		emulator_class = emulators.get(emulator_name, None)
-		if emulator_class is None:
-			raise ValueError(
-				f"Unsupported emulator: {emulator_name}.",
-				f"Supported emulators are {', '.join(emulators)}",
-			)
-
-		method_kwargs = self.specification.method_kwargs
-		if method_kwargs is None:
-			method_kwargs = {}
-
 		self.Y_shape = Y.shape
 		if self.specification.flatten_Y and len(self.Y_shape) > 1:
 			design_list = []
@@ -147,21 +145,68 @@ class SklearnSurrogateModel(CalibrationWorkflowBase):
 			X = np.array(design_list)
 			Y = Y.flatten()
 
-		self.emulator = emulator_class(**method_kwargs)
-		self.emulator.fit(X, Y)
+		X_scaler = MinMaxScaler()
+		X_scaler.fit(X)
+		self.X_scaler = X_scaler
 
-		self.X = X
-		self.Y = Y
+		if torch.cuda.is_available():
+			device = torch.device("cuda")
+		else:
+			device = torch.device("cpu")
+
+		X = torch.tensor(X_scaler.transform(X), device=device)
+		Y = torch.tensor(Y, device=device)
+
+		dataset = TensorDataset(X, Y)
+		batch_size = self.specification.batch_size
+		loader = DataLoader(dataset, batch_size=batch_size, shuffle=False)
+
+		likelihood = gpytorch.likelihoods.GaussianLikelihood().to(device)
+		model = SingleTaskGPRegressionModel(X, Y, likelihood).to(device)
+
+		optimizer = torch.optim.Adam(model.parameters(), lr=self.specification.lr)
+		mll = gpytorch.mlls.ExactMarginalLogLikelihood(likelihood, model)
+
+		for epoch in range(self.specification.n_iterations):
+			model.train()
+			for X_batch, Y_batch in loader:
+				optimizer.zero_grad()
+				output = model(X_batch)
+				loss = -mll(output, Y_batch)
+				loss.backward()
+				optimizer.step()
+
+			if self.specification.verbose:
+				print(
+					f"Epoch: {epoch}",
+					f"Training Loss: {loss.item()}",  # type: ignore[possibly-undefined]
+				)
+
+		self.emulator = model
+		self.likelihood = likelihood
+		self.optimizer = optimizer
+		self.loader = loader
+		self.device = device
 
 	def analyze(self) -> None:
 		"""Analyze the results of the simulation calibration procedure."""
 		task, time_now, outdir = self.prepare_analyze()
-		output_label = self.specification.output_labels[0]  # type: ignore[index]
 
-		names = self.names.copy()
-		if self.X.shape[1] > len(names):
-			names.append("_dummy_index")
-		df = pd.DataFrame(self.X, columns=names)
+		model = self.emulator
+		model.eval()
+		likelihood = self.likelihood
+		likelihood.eval()
+
+		loader = self.loader
+		X = []
+		Y = []
+		for X_batch, y_batch in loader:
+			X.extend(X_batch)
+			Y.extend(y_batch)
+		X = torch.stack(X)
+		Y = torch.stack(Y)
+		X = X.detach().cpu().numpy()
+		Y = Y.detach().cpu().numpy()
 
 		n_samples = self.specification.n_samples
 		X_sample = self.parameters.sample(n_samples, rule="sobol").T
@@ -172,10 +217,27 @@ class SklearnSurrogateModel(CalibrationWorkflowBase):
 					row = np.append(X_sample[i], j)
 					design_list.append(row)
 			X_sample = np.array(design_list)
-		Y_sample = self.emulator.predict(X_sample, return_std=False)
+		X_sample = torch.tensor(
+			self.X_scaler.transform(X_sample), dtype=torch.double, device=self.device
+		)
 
+		with torch.no_grad(), gpytorch.settings.fast_pred_var():
+			sample_predictions = likelihood(model(X_sample))
+			Y_sample = sample_predictions.mean.detach().cpu().numpy()
+			sample_lower, sample_upper = sample_predictions.confidence_region()
+			sample_lower, sample_upper = (
+				sample_lower.detach().cpu().numpy(),
+				sample_upper.detach().cpu().numpy(),
+			)
+
+		names = self.names.copy()
+		if X.shape[1] > len(names):
+			names.append("_dummy_index")
+		df = pd.DataFrame(X, columns=names)
+
+		output_label = self.specification.output_labels[0]  # type: ignore[index]
 		if len(self.Y_shape) == 1:
-			df[f"simulated_{output_label}"] = self.Y
+			df[f"simulated_{output_label}"] = Y
 			fig, axes = plt.subplots(
 				nrows=len(self.names), figsize=self.specification.figsize
 			)
@@ -197,8 +259,8 @@ class SklearnSurrogateModel(CalibrationWorkflowBase):
 			fig, axes = plt.subplots(nrows=2, figsize=self.specification.figsize)
 			df = pd.DataFrame(
 				{
-					"index": np.arange(0, self.Y.shape[0], 1),
-					"simulated": self.Y,
+					"index": np.arange(0, Y.shape[0], 1),
+					"simulated": Y,
 					"emulated": Y_sample,
 				}
 			)
@@ -219,7 +281,9 @@ class SklearnSurrogateModel(CalibrationWorkflowBase):
 				fig.show()
 		else:
 			if self.specification.flatten_Y:
-				df[f"simulated_{output_label}"] = self.Y
+				print(Y.shape)
+				return
+				df[f"simulated_{output_label}"] = Y
 				fig, axes = plt.subplots(
 					nrows=len(self.names), figsize=self.specification.figsize
 				)
@@ -260,37 +324,31 @@ class SklearnSurrogateModel(CalibrationWorkflowBase):
 					fig.savefig(outfile)
 				else:
 					fig.show()
-			else:
-				output_labels = self.specification.output_labels
-				if len(output_labels) != self.Y_shape[-1]:  # type: ignore[arg-type]
-					output_labels = [f"Output_{y}" for y in range(self.Y_shape[-1])]
 
-				fig, axes = plt.subplots(
-					nrows=len(self.names) * len(output_labels),  # type: ignore[arg-type]
-					ncols=2,
-					figsize=self.specification.figsize,
+		if outdir is None:
+			return
+
+		metrics = []
+		for metric_func in [
+			gpytorch.metrics.mean_standardized_log_loss,
+			gpytorch.metrics.mean_squared_error,
+			gpytorch.metrics.mean_absolute_error,
+			gpytorch.metrics.quantile_coverage_error,
+			gpytorch.metrics.negative_log_predictive_density,
+		]:
+			metric_name = metric_func.__name__
+			metric_score = (
+				metric_func(
+					sample_predictions,
+					torch.tensor(Y_sample, dtype=torch.double, device=self.device),
 				)
+				.cpu()
+				.detach()
+				.numpy()
+				.item()
+			)
+			metrics.append({"metric_name": metric_name, "metric_score": metric_score})
 
-				row_indx = 0
-				for x_indx, parameter_name in enumerate(self.names):
-					for y_indx, output_label in enumerate(output_labels):  # type: ignore[arg-type]
-						axes[row_indx, 0].scatter(self.X[:, x_indx], self.Y[:, y_indx])
-						axes[row_indx, 0].set_xlabel(parameter_name)
-						axes[row_indx, 0].set_ylabel(output_label)
-						axes[row_indx, 0].set_title(f"Simulated {output_label}")
-
-						axes[row_indx, 1].scatter(
-							X_sample[:, x_indx], Y_sample[:, y_indx]
-						)
-						axes[row_indx, 1].set_xlabel(parameter_name)
-						axes[row_indx, 1].set_ylabel(output_label)
-						axes[row_indx, 1].set_title(f"Emulated {output_label}")
-
-						row_indx += 1
-
-				fig.tight_layout()
-				if outdir is not None:
-					outfile = osp.join(outdir, f"{time_now}-{task}_plot_slice.png")
-					fig.savefig(outfile)
-				else:
-					fig.show()
+		metric_df = pd.DataFrame(metrics)
+		outfile = osp.join(outdir, f"{time_now}_{task}_metrics.csv")
+		metric_df.to_csv(outfile, index=False)
