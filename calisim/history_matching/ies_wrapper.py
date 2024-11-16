@@ -82,14 +82,14 @@ class IESHistoryMatching(CalibrationWorkflowBase):
 		simulation_ids = [get_simulation_uuid() for _ in range(len(parameters))]
 
 		if self.specification.batched:
-			ensemble_outputs = self.calibration_func(
+			ensemble_outputs = self.call_calibration_func(
 				parameters, simulation_ids, observed_data, **history_matching_kwargs
 			)
 		else:
 			ensemble_outputs = []
 			for i, parameter in enumerate(parameters):
 				simulation_id = simulation_ids[i]
-				outputs = self.calibration_func(
+				outputs = self.call_calibration_func(
 					parameter, simulation_id, observed_data, **history_matching_kwargs
 				)
 				ensemble_outputs.append(outputs)

@@ -55,7 +55,7 @@ class OptunaOptimisation(CalibrationWorkflowBase):
 			trial: optuna.trial.Trial,
 			parameter_spec: list[DistributionModel],
 			observed_data: np.ndarray | pd.DataFrame,
-			objective_func: Callable,
+			call_calibration_func: Callable,
 			objective_kwargs: dict,
 		) -> float | list[float]:
 			parameters = {}
@@ -74,7 +74,7 @@ class OptunaOptimisation(CalibrationWorkflowBase):
 					)
 
 			simulation_id = get_simulation_uuid()
-			return objective_func(
+			return call_calibration_func(
 				parameters, simulation_id, observed_data, **objective_kwargs
 			)
 
@@ -85,7 +85,7 @@ class OptunaOptimisation(CalibrationWorkflowBase):
 				trial,
 				parameter_spec,  # type: ignore[arg-type]
 				self.specification.observed_data,
-				objective_func=self.calibration_func,
+				call_calibration_func=self.call_calibration_func,
 				objective_kwargs=objective_kwargs,
 			),
 			n_trials=self.specification.n_samples,

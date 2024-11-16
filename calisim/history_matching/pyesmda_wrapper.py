@@ -132,7 +132,7 @@ class PyESMDAHistoryMatching(CalibrationWorkflowBase):
 			forward_model=forward_model,
 			forward_model_kwargs=dict(
 				parameter_spec=self.parameters,
-				calibration_func=self.calibration_func,
+				calibration_func=self.call_calibration_func,
 				history_matching_kwargs=history_matching_kwargs,
 				observed_data=observed_data,
 				batched=self.specification.batched,

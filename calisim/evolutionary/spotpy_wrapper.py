@@ -78,7 +78,7 @@ class SPOTSetup:
 		self.parameter_names = parameter_names
 		self.data_types = data_types
 		self.priors = priors
-		self.calibration_func = workflow.calibration_func
+		self.call_calibration_func = workflow.call_calibration_func
 		self.observed_data = workflow.specification.observed_data
 		self.evolutionary_kwargs = workflow.get_calibration_func_kwargs()
 
@@ -109,7 +109,7 @@ class SPOTSetup:
 				parameter_set[parameter_name] = int(parameter_value)
 
 		simulation_id = get_simulation_uuid()
-		result = self.calibration_func(
+		result = self.call_calibration_func(
 			parameter_set,
 			simulation_id,
 			self.observed_data,

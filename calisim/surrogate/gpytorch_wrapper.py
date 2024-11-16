@@ -105,14 +105,14 @@ class GPyTorchSurrogateModel(CalibrationWorkflowBase):
 			simulation_ids = [get_simulation_uuid() for _ in range(len(parameters))]
 
 			if self.specification.batched:
-				results = self.calibration_func(
+				results = self.call_calibration_func(
 					parameters, simulation_ids, observed_data, **surrogate_kwargs
 				)
 			else:
 				results = []
 				for i, parameter in enumerate(parameters):
 					simulation_id = simulation_ids[i]
-					result = self.calibration_func(
+					result = self.call_calibration_func(
 						parameter,
 						simulation_id,
 						observed_data,

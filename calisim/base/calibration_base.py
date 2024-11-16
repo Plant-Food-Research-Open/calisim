@@ -5,9 +5,13 @@ simulation calibration procedures.
 
 """
 
+import typing
 from abc import ABC, abstractmethod
 from collections.abc import Callable
 from functools import wraps
+
+import numpy as np
+import pandas as pd
 
 from ..data_model import CalibrationModel, DistributionModel
 from ..utils import get_datetime_now
@@ -170,6 +174,29 @@ class CalibrationWorkflowBase(ABC):
 			calibration_func_kwargs[k] = self
 
 		return calibration_func_kwargs
+
+	def prehook_calibration_func(self) -> None:
+		"""Prehook to run before calling the calibration function."""
+		pass
+
+	def posthook_calibration_func(self) -> None:
+		"""Posthook to run after calling the calibration function."""
+		pass
+
+	@typing.no_type_check
+	def call_calibration_func(
+		self, *args: list, **kwargs: dict
+	) -> float | list[float] | np.ndarray | pd.DataFrame:
+		"""Wrapper method for the calibration function.
+
+		Returns:
+			float | list[float] | np.ndarray | pd.DataFrame: The
+				calibration function results.
+		"""
+		self.prehook_calibration_func()
+		results = self.calibration_func(*args, **kwargs)
+		self.posthook_calibration_func()
+		return results
 
 
 class CalibrationMethodBase(CalibrationWorkflowBase):

@@ -35,7 +35,7 @@ class PygpcModel(AbstractModel):
 			data_types (list[str]): The parameter data types.
 		"""
 		super(type(self), self).__init__(matlab_model=False)
-		self.calibration_func = workflow.calibration_func
+		self.call_calibration_func = workflow.call_calibration_func
 		self.observed_data = workflow.specification.observed_data
 		self.batched = workflow.specification.batched
 		self.uncertainty_kwargs = workflow.get_calibration_func_kwargs()
@@ -79,7 +79,7 @@ class PygpcModel(AbstractModel):
 		simulation_ids = [get_simulation_uuid() for _ in range(len(parameters))]
 
 		if self.batched:
-			results = self.calibration_func(
+			results = self.call_calibration_func(
 				parameters,
 				simulation_ids,
 				self.observed_data,
@@ -89,7 +89,7 @@ class PygpcModel(AbstractModel):
 			results = []
 			for i, parameter in enumerate(parameters):
 				simulation_id = simulation_ids[i]
-				result = self.calibration_func(
+				result = self.call_calibration_func(
 					parameter,
 					simulation_id,
 					self.observed_data,

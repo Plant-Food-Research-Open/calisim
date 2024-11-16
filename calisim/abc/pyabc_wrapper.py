@@ -97,7 +97,7 @@ class PyABCApproximateBayesianComputation(CalibrationWorkflowBase):
 			observed_data = self.specification.observed_data
 			simulation_id = get_simulation_uuid()
 
-			results = self.calibration_func(
+			results = self.call_calibration_func(
 				parameters, simulation_id, observed_data, **abc_kwargs
 			)
 

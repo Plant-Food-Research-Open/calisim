@@ -49,7 +49,7 @@ class BoTorchOptimisation(CalibrationWorkflowBase):
 		search_space = SearchSpace(parameters=parameters)
 
 		observed_data = self.specification.observed_data
-		objective_func = self.calibration_func
+		call_calibration_func = self.call_calibration_func
 		objective_kwargs = self.get_calibration_func_kwargs()
 
 		class ObjectiveMetric(NoisyFunctionMetric):
@@ -59,7 +59,7 @@ class BoTorchOptimisation(CalibrationWorkflowBase):
 					parameters[parameter_name] = x[i]
 
 				simulation_id = get_simulation_uuid()
-				return objective_func(
+				return call_calibration_func(
 					parameters, simulation_id, observed_data, **objective_kwargs
 				)
 
