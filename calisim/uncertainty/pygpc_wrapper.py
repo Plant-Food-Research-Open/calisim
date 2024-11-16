@@ -27,6 +27,13 @@ class PygpcModel(AbstractModel):
 		parameter_names: list[str],
 		data_types: list[str],
 	):
+		"""PygpcModel constructor.
+
+		Args:
+			workflow (CalibrationWorkflowBase): The calibration workflow.
+			parameter_names (list[str]): The simulation parameter names.
+			data_types (list[str]): The parameter data types.
+		"""
 		super(type(self), self).__init__(matlab_model=False)
 		self.calibration_func = workflow.calibration_func
 		self.observed_data = workflow.specification.observed_data
@@ -41,11 +48,23 @@ class PygpcModel(AbstractModel):
 		self.data_types = data_types
 
 	def validate(self) -> None:
+		"""Validate the simulation data."""
 		pass
 
 	def simulate(
 		self, process_id: int | None = None, matlab_engine: Callable | None = None
 	) -> np.ndarray:
+		"""Run the simulation.
+
+		Args:
+			process_id (int | None, optional): The simulation process ID.
+				Defaults to None.
+			matlab_engine (Callable | None, optional): The MATLAB Python engine.
+				Defaults to None.
+
+		Returns:
+			np.ndarray: The simulation output data.
+		"""
 		parameter_name = self.parameter_names[0]
 		N = self.p[parameter_name].shape[0]
 
@@ -205,11 +224,11 @@ class PygpcUncertaintyAnalysis(CalibrationWorkflowBase):
 
 		for i in range(self.results.shape[0]):
 			axes[1].plot(X, self.results[i])
-		axes[1].set_title(f"Ensemble {output_label}")
+		axes[1].set_title(f"Emulated {output_label}")
 
 		fig.tight_layout()
 		if outdir is not None:
-			outfile = osp.join(outdir, f"{time_now}-{task}_ensemble_{output_label}.png")
+			outfile = osp.join(outdir, f"{time_now}-{task}_emulated_{output_label}.png")
 			fig.savefig(outfile)
 		else:
 			fig.show()

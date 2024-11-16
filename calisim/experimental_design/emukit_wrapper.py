@@ -157,7 +157,7 @@ class EmukitExperimentalDesign(CalibrationWorkflowBase):
 				alpha=alpha,
 			)
 
-		axes[1].set_title(f"Predicted {output_label}")
+		axes[1].set_title(f"Emulated {output_label}")
 
 		fig.tight_layout()
 		if outdir is not None:

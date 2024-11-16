@@ -184,23 +184,21 @@ class SkActiveMLExperimentalDesign(CalibrationWorkflowBase):
 			X_sample = self.extend_X(X_sample)
 		predicated = self.emulator.predict(X_sample)
 
-		names = self.names
+		names = self.names.copy()
+		output_label = self.specification.output_labels[0]  # type: ignore[index]
 		if X_sample.shape[1] > len(names):
 			names.append("_dummy_index")
-		df = pd.DataFrame(X_sample, columns=self.names)
-		df["predicted"] = predicated
+		df = pd.DataFrame(X_sample, columns=names)
+		df[f"emulated_{output_label}"] = predicated
 
-		output_label = self.specification.output_labels[0]  # type: ignore[index]
 		fig, axes = plt.subplots(
 			nrows=len(self.names), figsize=self.specification.figsize
 		)
 		for i, name in enumerate(self.names):
-			df.plot.scatter(name, "predicted", ax=axes[i])
+			df.plot.scatter(name, f"emulated_{output_label}", ax=axes[i])
 		fig.tight_layout()
 		if outdir is not None:
-			outfile = osp.join(
-				outdir, f"{time_now}-{task}_predicted_{output_label}.png"
-			)
+			outfile = osp.join(outdir, f"{time_now}-{task}_emulated_{output_label}.png")
 			fig.savefig(outfile)
 		else:
 			fig.show()
@@ -208,5 +206,5 @@ class SkActiveMLExperimentalDesign(CalibrationWorkflowBase):
 		if outdir is None:
 			return
 
-		outfile = osp.join(outdir, f"{time_now}_{task}_predicted_{output_label}.csv")
+		outfile = osp.join(outdir, f"{time_now}_{task}_emulated_{output_label}.csv")
 		df.to_csv(outfile, index=False)

@@ -71,10 +71,10 @@ class ChaospyUncertaintyAnalysis(CalibrationWorkflowBase):
 			nodes, weights = chaospy.generate_quadrature(
 				order, self.parameters, rule=rule
 			)
-			parameter_samples = nodes.T
+			X = nodes.T
 		else:
 			n_samples = self.specification.n_samples
-			parameter_samples = self.parameters.sample(n_samples, rule=rule).T
+			X = self.parameters.sample(n_samples, rule=rule).T
 
 		def uncertainty_func(
 			X: np.ndarray,
@@ -120,8 +120,8 @@ class ChaospyUncertaintyAnalysis(CalibrationWorkflowBase):
 		if uncertainty_kwargs is None:
 			uncertainty_kwargs = {}
 
-		model_evaluations = uncertainty_func(
-			parameter_samples,
+		Y = uncertainty_func(
+			X,
 			self.specification.observed_data,
 			self.names,
 			self.data_types,
@@ -154,32 +154,30 @@ class ChaospyUncertaintyAnalysis(CalibrationWorkflowBase):
 				expansion,
 				nodes,  # type: ignore[possibly-undefined]
 				weights,  # type: ignore[possibly-undefined]
-				model_evaluations,
+				Y,
 			)
 		else:
 			model_approx = chaospy.fit_regression(
 				expansion,
-				parameter_samples.T,
-				model_evaluations,
+				X.T,
+				Y,
 				model=model,
 				retall=False,
 			)
 
 		if solver_name == "gp":
-			if len(model_evaluations.shape) > 1:
+			if self.specification.flatten_Y and len(Y.shape) > 1:
 				design_list = []
-				for i in range(parameter_samples.shape[0]):
-					for j in range(model_evaluations.shape[1]):
-						row = np.append(parameter_samples[i], j)
+				for i in range(X.shape[0]):
+					for j in range(Y.shape[1]):
+						row = np.append(X[i], j)
 						design_list.append(row)
-				parameter_samples = np.array(design_list)
-				model_evaluations = model_evaluations.flatten()
+				X = np.array(design_list)
+				Y = Y.flatten()
 
-			gp = gstools.Gaussian(dim=parameter_samples.shape[-1])
-			self.krige = gstools.krige.Universal(
-				gp, parameter_samples.T, model_evaluations, list(expansion)
-			)
-			self.krige(parameter_samples)
+			gp = gstools.Gaussian(dim=X.shape[-1])
+			self.krige = gstools.krige.Universal(gp, X.T, Y, list(expansion))
+			self.krige(X)
 
 		self.emulator = model_approx
 
@@ -199,12 +197,12 @@ class ChaospyUncertaintyAnalysis(CalibrationWorkflowBase):
 		axes[0].set_title(f"Observed {output_label}")
 
 		axes[1].plot(X, expected)
-		axes[1].set_title(f"Predicted {output_label} for {solver_name} solver")
+		axes[1].set_title(f"Emulated {output_label} for {solver_name} solver")
 		axes[1].fill_between(X, expected - std, expected + std, alpha=0.5)
 
 		fig.tight_layout()
 		if outdir is not None:
-			outfile = osp.join(outdir, f"{time_now}-{task}_observed_predicted.png")
+			outfile = osp.join(outdir, f"{time_now}-{task}_emulated.png")
 			fig.savefig(outfile)
 		else:
 			fig.show()
@@ -222,7 +220,7 @@ class ChaospyUncertaintyAnalysis(CalibrationWorkflowBase):
 			axes[0].plot(X, observed_data)
 			axes[0].set_title(f"Observed {output_label}")
 			axes[1].plot(X, mu)
-			axes[1].set_title(f"Predicted {output_label} for Polynomial Kriging")
+			axes[1].set_title(f"Emulated {output_label} for Polynomial Kriging")
 			axes[1].fill_between(X, mu - sigma, mu + sigma, alpha=0.5)
 
 			fig.tight_layout()

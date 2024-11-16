@@ -1,5 +1,6 @@
 import numpy as np
 import pandas as pd
+import sklearn.gaussian_process.kernels as kernels
 
 from calisim.data_model import (
 	DistributionModel,
@@ -7,9 +8,9 @@ from calisim.data_model import (
 	ParameterSpecification,
 )
 from calisim.example_models import LotkaVolterraModel
-from calisim.uncertainty import (
-	UncertaintyAnalysisMethod,
-	UncertaintyAnalysisMethodModel,
+from calisim.surrogate import (
+	SurrogateModelMethod,
+	SurrogateModelMethodModel,
 )
 from calisim.utils import get_examples_outdir
 
@@ -20,21 +21,21 @@ parameter_spec = ParameterSpecification(
 	parameters=[
 		DistributionModel(
 			name="alpha",
-			distribution_name="normal",
-			distribution_args=[0.4, 0.03],
+			distribution_name="uniform",
+			distribution_args=[0.45, 0.55],
 			data_type=ParameterDataType.CONTINUOUS,
 		),
 		DistributionModel(
 			name="beta",
-			distribution_name="normal",
-			distribution_args=[0.025, 0.003],
+			distribution_name="uniform",
+			distribution_args=[0.02, 0.03],
 			data_type=ParameterDataType.CONTINUOUS,
 		),
 	]
 )
 
 
-def uncertainty_func(
+def surrogate_modelling_func(
 	parameters: dict, simulation_id: str, observed_data: np.ndarray | None, t: pd.Series
 ) -> float | list[float]:
 	simulation_parameters = dict(h0=34.0, l0=5.9, t=t, gamma=0.84, delta=0.026)
@@ -47,25 +48,24 @@ def uncertainty_func(
 
 
 outdir = get_examples_outdir()
-specification = UncertaintyAnalysisMethodModel(
-	experiment_name="chaospy_uncertainty_analysis",
+specification = SurrogateModelMethodModel(
+	experiment_name="sklearn_surrogate_modelling",
 	parameter_spec=parameter_spec,
 	observed_data=observed_data.lynx.values,
 	outdir=outdir,
-	solver="linear",
-	algorithm="least_squares",
-	method="sobol",
-	order=4,
-	n_samples=100,
+	method="gp",
+	n_samples=50,
 	output_labels=["Lynx"],
 	flatten_Y=True,
-	batch=False,
+	batched=False,
 	calibration_func_kwargs=dict(t=observed_data.year),
-	method_kwargs=dict(rule="cholesky", normed=False, cross_truncation=1.0),
+	method_kwargs=dict(kernel=kernels.RBF()),
 )
 
-calibrator = UncertaintyAnalysisMethod(
-	calibration_func=uncertainty_func, specification=specification, engine="chaospy"
+calibrator = SurrogateModelMethod(
+	calibration_func=surrogate_modelling_func,
+	specification=specification,
+	engine="sklearn",
 )
 
 calibrator.specify().execute().analyze()
