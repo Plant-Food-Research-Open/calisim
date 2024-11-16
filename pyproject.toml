@@ -42,6 +42,7 @@ spotpy = "^1.6.2"
 pygpc = "^0.4.1"
 chaospy = "^4.3.17"
 gstools = "^1.6.0"
+seaborn = "^0.13.2"
 
 
 [tool.poetry.group.dev.dependencies]

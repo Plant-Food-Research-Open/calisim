@@ -133,7 +133,10 @@ class SkActiveMLExperimentalDesign(CalibrationWorkflowBase):
 		)
 		surrogate_class = surrogates.get(surrogate_name, None)
 		if surrogate_class is None:
-			raise ValueError(f"Unsupported surrogate class: {surrogate_name}")
+			raise ValueError(
+				f"Unsupported surrogate class: {surrogate_name}.",
+				f"Supported surrogate classes are {', '.join(surrogates)}",
+			)
 
 		method_kwargs = self.specification.method_kwargs
 		if method_kwargs is None:
@@ -154,7 +157,10 @@ class SkActiveMLExperimentalDesign(CalibrationWorkflowBase):
 		)
 		query_class = query_stategies.get(query_name, None)
 		if query_class is None:
-			raise ValueError(f"Unsupported query strategy: {query_name}")
+			raise ValueError(
+				f"Unsupported query strategy: {query_name}.",
+				f"Supported query strategies are {', '.join(query_stategies)}",
+			)
 		query_strategy = query_class(random_state=self.specification.random_seed)
 
 		n_iterations = self.specification.n_iterations

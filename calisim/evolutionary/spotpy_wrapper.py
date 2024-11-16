@@ -173,7 +173,10 @@ class SPOTPYEvolutionary(CalibrationWorkflowBase):
 		)
 		evolutionary_class = evolutionary_algorithms.get(evolutionary_name, None)
 		if evolutionary_class is None:
-			raise ValueError(f"Unsupported evolutionary algorithm: {evolutionary_name}")
+			raise ValueError(
+				f"Unsupported evolutionary algorithm: {evolutionary_name}.",
+				f"Supported algorithms are {', '.join(evolutionary_algorithms.keys())}",
+			)
 
 		_, time_now, outdir = self.prepare_analyze()
 		dbname = self.specification.experiment_name

@@ -26,8 +26,8 @@ class BaseModel(PydanticBaseModel):
 
 
 class ParameterDataType(Enum):
-	DISCRETE = "discrete"
-	CONTINUOUS = "continuous"
+	DISCRETE: str = "discrete"
+	CONTINUOUS: str = "continuous"
 
 
 class DistributionModel(BaseModel):

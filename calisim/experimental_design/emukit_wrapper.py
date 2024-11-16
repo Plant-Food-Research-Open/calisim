@@ -109,7 +109,8 @@ class EmukitExperimentalDesign(CalibrationWorkflowBase):
 		acquisition_class = acquisitions.get(acquisition_name, None)
 		if acquisition_class is None:
 			raise ValueError(
-				f"Unsupported emulator acquisition type: {acquisition_name}"
+				f"Unsupported emulator acquisition type: {acquisition_name}.",
+				f"Supported acquisition types are {', '.join(acquisitions)}",
 			)
 		acquisition = acquisition_class(model=emulator)
 

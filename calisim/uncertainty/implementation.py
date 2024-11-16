@@ -11,10 +11,11 @@ from pydantic import Field
 from ..base import CalibrationMethodBase, CalibrationWorkflowBase
 from ..data_model import CalibrationModel
 from .chaospy_wrapper import ChaospyUncertaintyAnalysis
+from .pygpc_wrapper import PygpcUncertaintyAnalysis
 
 TASK = "uncertainty_analysis"
 IMPLEMENTATIONS: dict[str, type[CalibrationWorkflowBase]] = dict(
-	chaospy=ChaospyUncertaintyAnalysis
+	chaospy=ChaospyUncertaintyAnalysis, pygpc=PygpcUncertaintyAnalysis
 )
 
 
@@ -42,9 +43,8 @@ class UncertaintyAnalysisMethodModel(CalibrationModel):
 		description="The solver for performing the uncertainty analysis",
 		default="linear",
 	)
-	linear_regression: str = Field(
-		description="The linear regression model when the solver is 'linear'",
-		default="least_squares",
+	algorithm: str = Field(
+		description="The algorithm for the uncertainty analysis",
 	)
 
 

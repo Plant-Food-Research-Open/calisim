@@ -59,7 +59,10 @@ class ChaospyUncertaintyAnalysis(CalibrationWorkflowBase):
 		solvers = ["linear", "gp", "quadrature"]
 		solver_name = self.specification.solver
 		if solver_name not in solvers:
-			raise ValueError(f"Unsupported Chaospy solver: {solver_name}")
+			raise ValueError(
+				f"Unsupported Chaospy solver: {solver_name}.",
+				f"Supported Chaospy solvers are {', '.join(solvers)}",
+			)
 
 		order = self.specification.order
 		rule = self.specification.method
@@ -94,7 +97,7 @@ class ChaospyUncertaintyAnalysis(CalibrationWorkflowBase):
 
 			simulation_ids = [get_simulation_uuid() for _ in range(len(parameters))]
 
-			if self.specification.batch:
+			if self.specification.batched:
 				results = self.calibration_func(
 					parameters, simulation_ids, observed_data, **uncertainty_kwargs
 				)
@@ -143,7 +146,7 @@ class ChaospyUncertaintyAnalysis(CalibrationWorkflowBase):
 			lars=lm.Lars(**linear_kwargs),
 			ridge=lm.Ridge(**linear_kwargs),
 		)
-		linear_regression = self.specification.linear_regression
+		linear_regression = self.specification.algorithm
 		model = linear_models.get(linear_regression, None)
 
 		if solver_name == "quadrature":

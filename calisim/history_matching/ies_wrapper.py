@@ -115,7 +115,8 @@ class IESHistoryMatching(CalibrationWorkflowBase):
 		smoother_class = smoothers.get(smoother_name, None)
 		if smoother_class is None:
 			raise ValueError(
-				f"Unsupported iterative ensemble smoother: {smoother_name}"
+				f"Unsupported iterative ensemble smoother: {smoother_name}.",
+				f"Supported iterative ensemble smoothers are {', '.join(smoothers)}",
 			)
 
 		param_values = np.array([distr for distr in self.parameters.values()])

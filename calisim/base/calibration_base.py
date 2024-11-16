@@ -189,7 +189,8 @@ class CalibrationMethodBase(CalibrationWorkflowBase):
 			implementation_class = implementations.get(engine, None)
 			if implementation_class is None:
 				raise ValueError(
-					f"{self.task} implementation not defined for: {engine}"
+					f"{self.task} implementation not defined for: {engine}.",
+					f"Supported engines are {', '.join(self.supported_engines)}",
 				)
 			self.implementation = implementation_class(
 				calibration_func, specification, task

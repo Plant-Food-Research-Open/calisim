@@ -116,7 +116,10 @@ class EmukitOptimisation(CalibrationWorkflowBase):
 		)
 		acquisition_func = acquisition_funcs.get(acquisition_name, None)
 		if acquisition_func is None:
-			raise ValueError(f"Unsupported acquisition function: {acquisition_name}")
+			raise ValueError(
+				f"Unsupported acquisition function: {acquisition_name}.",
+				f"Supported acquisition functions are {', '.join(acquisition_funcs)}",
+			)
 		acquisition = acquisition_func(model=emulator)
 
 		optimisation_loop = BayesianOptimizationLoop(

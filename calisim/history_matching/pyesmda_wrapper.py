@@ -103,7 +103,10 @@ class PyESMDAHistoryMatching(CalibrationWorkflowBase):
 		smoothers = dict(esmda=ESMDA, esmda_rs=ESMDA_RS)
 		smoother_class = smoothers.get(smoother_name, None)
 		if smoother_class is None:
-			raise ValueError(f"Unsupported ensemble smoother: {smoother_name}")
+			raise ValueError(
+				f"Unsupported ensemble smoother: {smoother_name}.",
+				f"Supported ensemble smoothers are {', '.join(smoothers)}",
+			)
 
 		n_jobs = self.specification.n_jobs
 		if n_jobs > 1:

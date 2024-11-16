@@ -32,7 +32,10 @@ class OptunaOptimisation(CalibrationWorkflowBase):
 		)
 		sampler_class = supported_samplers.get(sampler_name, None)
 		if sampler_class is None:
-			raise ValueError(f"Unsupported Optuna sampler: {sampler_name}")
+			raise ValueError(
+				f"Unsupported Optuna sampler: {sampler_name}.",
+				f"Supported Optuna samplers are {', '.join(supported_samplers)}",
+			)
 		sampler_kwargs = self.specification.method_kwargs
 		if sampler_kwargs is None:
 			sampler_kwargs = {}
