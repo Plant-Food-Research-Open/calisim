@@ -63,10 +63,7 @@ class PyMCApproximateBayesianComputation(CalibrationWorkflowBase):
 			for i, name in enumerate(self.names):
 				parameters[name] = parameter_values[i].item()
 
-			abc_kwargs = self.specification.calibration_func_kwargs
-			if abc_kwargs is None:
-				abc_kwargs = {}
-
+			abc_kwargs = self.get_calibration_func_kwargs()
 			simulation_id = get_simulation_uuid()
 			observed_data = self.specification.observed_data
 			results = self.calibration_func(

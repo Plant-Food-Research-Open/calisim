@@ -87,9 +87,7 @@ class SBISimulationBasedInference(CalibrationWorkflowBase):
 			for i, name in enumerate(self.names):
 				parameters[name] = theta[i]
 
-			sbi_kwargs = self.specification.calibration_func_kwargs
-			if sbi_kwargs is None:
-				sbi_kwargs = {}
+			sbi_kwargs = self.get_calibration_func_kwargs()
 
 			observed_data = self.specification.observed_data
 			simulation_id = get_simulation_uuid()

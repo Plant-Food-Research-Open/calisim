@@ -78,9 +78,7 @@ class OptunaOptimisation(CalibrationWorkflowBase):
 				parameters, simulation_id, observed_data, **objective_kwargs
 			)
 
-		objective_kwargs = self.specification.calibration_func_kwargs
-		if objective_kwargs is None:
-			objective_kwargs = {}
+		objective_kwargs = self.get_calibration_func_kwargs()
 
 		self.study.optimize(
 			lambda trial: objective(

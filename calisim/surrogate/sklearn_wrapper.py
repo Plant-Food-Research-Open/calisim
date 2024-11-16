@@ -101,9 +101,7 @@ class SklearnSurrogateModel(CalibrationWorkflowBase):
 			results = np.array(results)
 			return results
 
-		surrogate_kwargs = self.specification.calibration_func_kwargs
-		if surrogate_kwargs is None:
-			surrogate_kwargs = {}
+		surrogate_kwargs = self.get_calibration_func_kwargs()
 
 		Y = surrogate_func(
 			X,

@@ -51,10 +51,7 @@ class EmukitExperimentalDesign(CalibrationWorkflowBase):
 
 	def execute(self) -> None:
 		"""Execute the simulation calibration procedure."""
-		experimental_design_kwargs = self.specification.calibration_func_kwargs
-		if experimental_design_kwargs is None:
-			experimental_design_kwargs = {}
-
+		experimental_design_kwargs = self.get_calibration_func_kwargs()
 		observed_data = self.specification.observed_data
 
 		def target_function(X: np.ndarray) -> np.ndarray:

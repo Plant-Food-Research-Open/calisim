@@ -87,6 +87,10 @@ class CalibrationModel(BaseModel):
 	calibration_func_kwargs: dict[str, Any] | None = Field(
 		description="The calibration function named arguments", default=None
 	)
+	pass_calibration_workflow: bool | str | None = Field(
+		description="Pass the calibration workflow into the calibration function",
+		default=None,
+	)
 	analyze_kwargs: dict[str, Any] | None = Field(
 		description="The analyze step named arguments", default=None
 	)

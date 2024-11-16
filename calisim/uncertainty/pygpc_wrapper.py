@@ -38,11 +38,7 @@ class PygpcModel(AbstractModel):
 		self.calibration_func = workflow.calibration_func
 		self.observed_data = workflow.specification.observed_data
 		self.batched = workflow.specification.batched
-
-		uncertainty_kwargs = workflow.specification.calibration_func_kwargs
-		if uncertainty_kwargs is None:
-			uncertainty_kwargs = {}
-		self.uncertainty_kwargs = uncertainty_kwargs
+		self.uncertainty_kwargs = workflow.get_calibration_func_kwargs()
 
 		self.parameter_names = parameter_names
 		self.data_types = data_types

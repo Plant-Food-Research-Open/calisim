@@ -52,10 +52,7 @@ class EmukitBayesianQuadrature(CalibrationWorkflowBase):
 
 	def execute(self) -> None:
 		"""Execute the simulation calibration procedure."""
-		bayesian_quadrature_kwargs = self.specification.calibration_func_kwargs
-		if bayesian_quadrature_kwargs is None:
-			bayesian_quadrature_kwargs = {}
-
+		bayesian_quadrature_kwargs = self.get_calibration_func_kwargs()
 		observed_data = self.specification.observed_data
 
 		def target_function(X: np.ndarray) -> np.ndarray:

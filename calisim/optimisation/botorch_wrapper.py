@@ -50,9 +50,7 @@ class BoTorchOptimisation(CalibrationWorkflowBase):
 
 		observed_data = self.specification.observed_data
 		objective_func = self.calibration_func
-		objective_kwargs = self.specification.calibration_func_kwargs
-		if objective_kwargs is None:
-			objective_kwargs = {}
+		objective_kwargs = self.get_calibration_func_kwargs()
 
 		class ObjectiveMetric(NoisyFunctionMetric):
 			def f(self, x: np.ndarray) -> float:
@@ -61,7 +59,7 @@ class BoTorchOptimisation(CalibrationWorkflowBase):
 					parameters[parameter_name] = x[i]
 
 				simulation_id = get_simulation_uuid()
-				return objective_func(  # type: ignore[arg-type]
+				return objective_func(
 					parameters, simulation_id, observed_data, **objective_kwargs
 				)
 

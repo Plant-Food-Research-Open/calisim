@@ -80,11 +80,7 @@ class SPOTSetup:
 		self.priors = priors
 		self.calibration_func = workflow.calibration_func
 		self.observed_data = workflow.specification.observed_data
-
-		evolutionary_kwargs = workflow.specification.calibration_func_kwargs
-		if evolutionary_kwargs is None:
-			evolutionary_kwargs = {}
-		self.evolutionary_kwargs = evolutionary_kwargs
+		self.evolutionary_kwargs = workflow.get_calibration_func_kwargs()
 
 	def parameters(self) -> np.ndarray:
 		"""Generate parameters from the prior specification.

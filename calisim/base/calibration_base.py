@@ -152,6 +152,25 @@ class CalibrationWorkflowBase(ABC):
 
 		raise ValueError(f"Invalid parameter specification for {spec.name}")
 
+	def get_calibration_func_kwargs(self) -> dict:
+		"""Get the calibration function named arguments.
+
+		Returns:
+			dict: The calibration function named arguments.
+		"""
+		calibration_func_kwargs = self.specification.calibration_func_kwargs
+		if calibration_func_kwargs is None:
+			calibration_func_kwargs = {}
+
+		pass_calibration_workflow = self.specification.pass_calibration_workflow
+		if pass_calibration_workflow is not None:
+			k = "calibration_workflow"
+			if isinstance(pass_calibration_workflow, str):
+				k = pass_calibration_workflow
+			calibration_func_kwargs[k] = self
+
+		return calibration_func_kwargs
+
 
 class CalibrationMethodBase(CalibrationWorkflowBase):
 	"""The calibration method abstract class."""

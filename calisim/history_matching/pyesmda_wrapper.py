@@ -125,6 +125,7 @@ class PyESMDAHistoryMatching(CalibrationWorkflowBase):
 
 		m_init = [self.parameters[k] for k in self.parameters]
 		m_init = np.array(m_init).T
+		history_matching_kwargs = self.get_calibration_func_kwargs()
 		self.solver = smoother_class(
 			obs=observed_data,
 			m_init=m_init,
@@ -132,7 +133,7 @@ class PyESMDAHistoryMatching(CalibrationWorkflowBase):
 			forward_model_kwargs=dict(
 				parameter_spec=self.parameters,
 				calibration_func=self.calibration_func,
-				history_matching_kwargs=self.specification.calibration_func_kwargs,
+				history_matching_kwargs=history_matching_kwargs,
 				observed_data=observed_data,
 				batched=self.specification.batched,
 			),

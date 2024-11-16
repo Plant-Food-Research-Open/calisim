@@ -57,9 +57,7 @@ class EmukitOptimisation(CalibrationWorkflowBase):
 
 	def execute(self) -> None:
 		"""Execute the simulation calibration procedure."""
-		objective_kwargs = self.specification.calibration_func_kwargs
-		if objective_kwargs is None:
-			objective_kwargs = {}
+		objective_kwargs = self.get_calibration_func_kwargs()
 
 		observed_data = self.specification.observed_data
 

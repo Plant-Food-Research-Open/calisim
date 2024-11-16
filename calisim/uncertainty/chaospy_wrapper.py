@@ -116,9 +116,7 @@ class ChaospyUncertaintyAnalysis(CalibrationWorkflowBase):
 			results = np.array(results)
 			return results
 
-		uncertainty_kwargs = self.specification.calibration_func_kwargs
-		if uncertainty_kwargs is None:
-			uncertainty_kwargs = {}
+		uncertainty_kwargs = self.get_calibration_func_kwargs()
 
 		Y = uncertainty_func(
 			X,
