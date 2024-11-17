@@ -102,7 +102,7 @@ class SkActiveMLExperimentalDesign(CalibrationWorkflowBase):
 						**experimental_design_kwargs,
 					)
 
-					results.append(result)
+					results.append(result)  # type: ignore[arg-type]
 			results = np.array(results)
 			return results
 
@@ -112,8 +112,12 @@ class SkActiveMLExperimentalDesign(CalibrationWorkflowBase):
 			method_kwargs = {}
 
 		design = RandomDesign(self.parameter_space)
-		X = design.get_samples(n_init)
-		Y_true = target_function(X)
+		X = self.specification.X
+		if X is None:
+			X = design.get_samples(n_init)
+		Y_true = self.specification.Y
+		if Y_true is None:
+			Y_true = target_function(X)
 
 		self.Y_shape = 1
 		if len(Y_true.shape) > 1:

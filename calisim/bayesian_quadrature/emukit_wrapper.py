@@ -83,7 +83,7 @@ class EmukitBayesianQuadrature(CalibrationWorkflowBase):
 						**bayesian_quadrature_kwargs,
 					)
 
-					results.append(result)
+					results.append(result)  # type: ignore[arg-type]
 			results = np.array(results)
 			return results
 
@@ -93,8 +93,12 @@ class EmukitBayesianQuadrature(CalibrationWorkflowBase):
 			method_kwargs = {}
 
 		design = RandomDesign(self.parameter_space)
-		X = design.get_samples(n_init)
-		Y = target_function(X)
+		X = self.specification.X
+		if X is None:
+			X = design.get_samples(n_init)
+		Y = self.specification.Y
+		if Y is None:
+			Y = target_function(X)
 
 		gp = GPRegression(X, Y, **method_kwargs)
 		emukit_rbf = RBFGPy(gp.kern)

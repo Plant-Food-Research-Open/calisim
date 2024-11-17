@@ -123,8 +123,11 @@ class PyESMDAHistoryMatching(CalibrationWorkflowBase):
 		if method_kwargs is None:
 			method_kwargs = {}
 
-		m_init = [self.parameters[k] for k in self.parameters]
-		m_init = np.array(m_init).T
+		m_init = self.specification.X
+		if m_init is None:
+			m_init = [self.parameters[k] for k in self.parameters]
+			m_init = np.array(m_init).T
+
 		history_matching_kwargs = self.get_calibration_func_kwargs()
 		self.solver = smoother_class(
 			obs=observed_data,

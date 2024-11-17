@@ -6,6 +6,8 @@ Implements the supported simulation-based inference methods.
 
 from collections.abc import Callable
 
+from pydantic import Field
+
 from ..base import CalibrationMethodBase, CalibrationWorkflowBase
 from ..data_model import CalibrationModel
 from .lampe_wrapper import LAMPESimulationBasedInference
@@ -33,6 +35,10 @@ class SimulationBasedInferenceMethodModel(CalibrationModel):
 	Args:
 	    BaseModel (CalibrationModel): The calibration base model class.
 	"""
+
+	num_simulations: int = Field(
+		description="The number of simulations to run", default=25
+	)
 
 
 class SimulationBasedInferenceMethod(CalibrationMethodBase):

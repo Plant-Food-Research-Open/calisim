@@ -53,7 +53,9 @@ class BoTorchOptimisation(CalibrationWorkflowBase):
 		objective_kwargs = self.get_calibration_func_kwargs()
 
 		class ObjectiveMetric(NoisyFunctionMetric):
-			def f(self, x: np.ndarray) -> float:
+			def f(
+				self, x: np.ndarray
+			) -> float | list[float] | np.ndarray | pd.DataFrame:
 				parameters = {}
 				for i, parameter_name in enumerate(parameter_names):
 					parameters[parameter_name] = x[i]

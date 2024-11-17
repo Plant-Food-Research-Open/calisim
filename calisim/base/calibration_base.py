@@ -224,6 +224,13 @@ class CalibrationWorkflowBase(ABC):
 	) -> float | list[float] | np.ndarray | pd.DataFrame:
 		"""Wrapper method for the calibration function.
 
+		Args:
+			results (np.ndarray | pd.DataFrame | float): The simulation
+				results.
+			parameters (dict | List[dict]): The simulation parameters.
+			simulation_id (str | List[str]): The simulation IDs.
+			observed_data (np.ndarray | None): The observed data.
+
 		Returns:
 			float | list[float] | np.ndarray | pd.DataFrame: The
 				calibration function results.

@@ -95,7 +95,7 @@ class PygpcModel(AbstractModel):
 					self.observed_data,
 					**self.uncertainty_kwargs,
 				)
-				results.append(result)
+				results.append(result)  # type: ignore[arg-type]
 		results = np.array(results)
 
 		if len(results.shape) == 1:

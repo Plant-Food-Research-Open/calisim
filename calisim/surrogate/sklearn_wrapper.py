@@ -58,8 +58,6 @@ class SklearnSurrogateModel(CalibrationWorkflowBase):
 
 	def execute(self) -> None:
 		"""Execute the simulation calibration procedure."""
-		n_samples = self.specification.n_samples
-		X = self.parameters.sample(n_samples, rule="sobol").T
 
 		def surrogate_func(
 			X: np.ndarray,
@@ -96,20 +94,27 @@ class SklearnSurrogateModel(CalibrationWorkflowBase):
 						observed_data,
 						**surrogate_kwargs,
 					)
-					results.append(result)
+					results.append(result)  # type: ignore[arg-type]
 
 			results = np.array(results)
 			return results
 
 		surrogate_kwargs = self.get_calibration_func_kwargs()
+		n_samples = self.specification.n_samples
 
-		Y = surrogate_func(
-			X,
-			self.specification.observed_data,
-			self.names,
-			self.data_types,
-			surrogate_kwargs,
-		)
+		X = self.specification.X
+		if X is None:
+			X = self.parameters.sample(n_samples, rule="sobol").T
+
+		Y = self.specification.Y
+		if Y is None:
+			Y = surrogate_func(
+				X,
+				self.specification.observed_data,
+				self.names,
+				self.data_types,
+				surrogate_kwargs,
+			)
 
 		emulator_name = self.specification.method
 		emulators = dict(
@@ -136,7 +141,11 @@ class SklearnSurrogateModel(CalibrationWorkflowBase):
 			method_kwargs = {}
 
 		self.Y_shape = Y.shape
-		if self.specification.flatten_Y and len(self.Y_shape) > 1:
+		if (
+			self.specification.flatten_Y
+			and len(self.Y_shape) > 1
+			and self.specification.X is None
+		):
 			design_list = []
 			for i in range(X.shape[0]):
 				for j in range(self.Y_shape[1]):

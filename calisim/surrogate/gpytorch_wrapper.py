@@ -80,8 +80,6 @@ class GPyTorchSurrogateModel(CalibrationWorkflowBase):
 
 	def execute(self) -> None:
 		"""Execute the simulation calibration procedure."""
-		n_samples = self.specification.n_samples
-		X = self.parameters.sample(n_samples, rule="sobol").T
 
 		def surrogate_func(
 			X: np.ndarray,
@@ -118,12 +116,15 @@ class GPyTorchSurrogateModel(CalibrationWorkflowBase):
 						observed_data,
 						**surrogate_kwargs,
 					)
-					results.append(result)
+					results.append(result)  # type: ignore[arg-type]
 
 			results = np.array(results)
 			return results
 
 		surrogate_kwargs = self.get_calibration_func_kwargs()
+
+		n_samples = self.specification.n_samples
+		X = self.parameters.sample(n_samples, rule="sobol").T
 
 		Y = surrogate_func(
 			X,

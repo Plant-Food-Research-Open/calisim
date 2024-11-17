@@ -94,6 +94,12 @@ class CalibrationModel(BaseModel):
 	analyze_kwargs: dict[str, Any] | None = Field(
 		description="The analyze step named arguments", default=None
 	)
+	X: np.ndarray | pd.DataFrame | list | None = Field(
+		description="The simulation input data", default=None
+	)
+	Y: np.ndarray | pd.DataFrame | list | None = Field(
+		description="The simulation output data", default=None
+	)
 	observed_data: np.ndarray | pd.DataFrame | None = Field(
 		description="The empirical or observed data", default=None
 	)
@@ -102,9 +108,6 @@ class CalibrationModel(BaseModel):
 	n_init: int = Field(description="The number of initial samples or steps", default=1)
 	n_iterations: int = Field(
 		description="The number of iterations for sequential calibrators", default=1
-	)
-	num_simulations: int = Field(
-		description="The number of simulations to run", default=25
 	)
 	lr: float = Field(
 		description="The learning rate of the model",

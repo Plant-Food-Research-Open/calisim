@@ -92,21 +92,26 @@ class IESHistoryMatching(CalibrationWorkflowBase):
 				outputs = self.call_calibration_func(
 					parameter, simulation_id, observed_data, **history_matching_kwargs
 				)
-				ensemble_outputs.append(outputs)
+				ensemble_outputs.append(outputs)  # type: ignore[arg-type]
 
 		ensemble_outputs = np.array(ensemble_outputs).T
 		return ensemble_outputs
 
 	def execute(self) -> None:
 		"""Execute the simulation calibration procedure."""
-		parameters = []
-		ensemble_size = self.specification.n_samples
-		for i in range(ensemble_size):
-			parameter_set = {}
-			for k in self.parameters:
-				parameter_set[k] = self.parameters[k][i]
-			parameters.append(parameter_set)
-		ensemble_outputs = self.run_simulation(parameters)
+		parameters = self.specification.X
+		if parameters is None:
+			parameters = []
+			ensemble_size = self.specification.n_samples
+			for i in range(ensemble_size):
+				parameter_set = {}
+				for k in self.parameters:
+					parameter_set[k] = self.parameters[k][i]
+				parameters.append(parameter_set)
+
+		ensemble_outputs = self.specification.Y
+		if ensemble_outputs is None:
+			ensemble_outputs = self.run_simulation(parameters)
 
 		smoother_name = self.specification.method
 		smoothers = dict(sies=ies.SIES, esmda=ies.ESMDA)

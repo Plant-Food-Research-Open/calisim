@@ -110,11 +110,16 @@ class SBISimulationBasedInference(CalibrationWorkflowBase):
 		)
 
 		inference = SNPE(prior=prior, density_estimator=neural_posterior)
-		theta, x = simulate_for_sbi(
-			simulator,
-			proposal=prior,
-			num_simulations=self.specification.num_simulations,
-		)
+
+		theta = self.specification.X
+		x = self.specification.Y
+		if theta is None or x is None:
+			theta, x = simulate_for_sbi(
+				simulator,
+				proposal=prior,
+				num_simulations=self.specification.num_simulations,
+			)
+
 		inference = inference.append_simulations(theta, x)
 		density_estimator = inference.train(
 			max_num_epochs=self.specification.n_iterations

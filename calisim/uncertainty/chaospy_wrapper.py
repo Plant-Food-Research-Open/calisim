@@ -64,18 +64,6 @@ class ChaospyUncertaintyAnalysis(CalibrationWorkflowBase):
 				f"Supported Chaospy solvers are {', '.join(solvers)}",
 			)
 
-		order = self.specification.order
-		rule = self.specification.method
-
-		if solver_name == "quadrature":
-			nodes, weights = chaospy.generate_quadrature(
-				order, self.parameters, rule=rule
-			)
-			X = nodes.T
-		else:
-			n_samples = self.specification.n_samples
-			X = self.parameters.sample(n_samples, rule=rule).T
-
 		def uncertainty_func(
 			X: np.ndarray,
 			observed_data: pd.DataFrame | np.ndarray,
@@ -111,20 +99,34 @@ class ChaospyUncertaintyAnalysis(CalibrationWorkflowBase):
 						observed_data,
 						**uncertainty_kwargs,
 					)
-					results.append(result)
+					results.append(result)  # type: ignore[arg-type]
 
 			results = np.array(results)
 			return results
 
-		uncertainty_kwargs = self.get_calibration_func_kwargs()
+		order = self.specification.order
+		rule = self.specification.method
+		X = self.specification.X
+		if X is None:
+			if solver_name == "quadrature":
+				nodes, weights = chaospy.generate_quadrature(
+					order, self.parameters, rule=rule
+				)
+				X = nodes.T
+			else:
+				n_samples = self.specification.n_samples
+				X = self.parameters.sample(n_samples, rule=rule).T
 
-		Y = uncertainty_func(
-			X,
-			self.specification.observed_data,
-			self.names,
-			self.data_types,
-			uncertainty_kwargs,
-		)
+		uncertainty_kwargs = self.get_calibration_func_kwargs()
+		Y = self.specification.Y
+		if Y is None:
+			Y = uncertainty_func(
+				X,
+				self.specification.observed_data,
+				self.names,
+				self.data_types,
+				uncertainty_kwargs,
+			)
 
 		method_kwargs = self.specification.method_kwargs
 		if method_kwargs is None:
@@ -164,7 +166,11 @@ class ChaospyUncertaintyAnalysis(CalibrationWorkflowBase):
 			)
 
 		if solver_name == "gp":
-			if self.specification.flatten_Y and len(Y.shape) > 1:
+			if (
+				self.specification.flatten_Y
+				and len(Y.shape) > 1
+				and self.specification.X is None
+			):
 				design_list = []
 				for i in range(X.shape[0]):
 					for j in range(Y.shape[1]):

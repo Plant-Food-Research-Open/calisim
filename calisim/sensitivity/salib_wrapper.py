@@ -104,18 +104,23 @@ class SALibSensitivityAnalysis(CalibrationWorkflowBase):
 						observed_data,
 						**sensitivity_kwargs,
 					)
-					results.append(result)
+					results.append(result)  # type: ignore[arg-type]
 			results = np.array(results)
 			return results
 
 		sensitivity_kwargs = self.get_calibration_func_kwargs()
-		self.sp.evaluate(
-			sensitivity_func,
-			self.specification.observed_data,
-			self.names,
-			self.data_types,
-			sensitivity_kwargs,
-		)
+
+		sp_results = self.specification.Y
+		if sp_results is None:
+			self.sp.evaluate(
+				sensitivity_func,
+				self.specification.observed_data,
+				self.names,
+				self.data_types,
+				sensitivity_kwargs,
+			)
+		else:
+			self.sp.results = sp_results
 
 		analyze_func = getattr(self.sp, f"analyze_{sampler_name}")
 		analyze_kwargs = self.specification.analyze_kwargs
