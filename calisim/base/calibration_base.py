@@ -5,7 +5,6 @@ simulation calibration procedures.
 
 """
 
-import typing
 from abc import ABC, abstractmethod
 from collections.abc import Callable
 from functools import wraps
@@ -175,17 +174,53 @@ class CalibrationWorkflowBase(ABC):
 
 		return calibration_func_kwargs
 
-	def prehook_calibration_func(self) -> None:
-		"""Prehook to run before calling the calibration function."""
-		pass
+	def prehook_calibration_func(
+		self,
+		parameters: dict | list[dict],
+		simulation_id: str | list[str],
+		observed_data: np.ndarray | None,
+		**method_kwargs: dict,
+	) -> tuple:
+		"""Prehook to run before calling the calibration function
 
-	def posthook_calibration_func(self) -> None:
-		"""Posthook to run after calling the calibration function."""
-		pass
+		Args:
+			parameters (dict | List[dict]): The simulation parameters.
+			simulation_id (str | List[str]): The simulation IDs.
+			observed_data (np.ndarray | None): The observed data.
 
-	@typing.no_type_check
+		Returns:
+			tuple: The calibration function parameters.
+		"""
+		return parameters, simulation_id, observed_data, method_kwargs
+
+	def posthook_calibration_func(
+		self,
+		results: np.ndarray | pd.DataFrame | float,
+		parameters: dict | list[dict],
+		simulation_id: str | list[str],
+		observed_data: np.ndarray | None,
+		**method_kwargs: dict,
+	) -> tuple:
+		"""Posthook to run after calling the calibration function
+
+		Args:
+			results (np.ndarray | pd.DataFrame | float): The simulation
+				results.
+			parameters (dict | List[dict]): The simulation parameters.
+			simulation_id (str | List[str]): The simulation IDs.
+			observed_data (np.ndarray | None): The observed data.
+
+		Returns:
+			tuple: The calibration function results and parameters.
+		"""
+		return results, parameters, simulation_id, observed_data, method_kwargs
+
 	def call_calibration_func(
-		self, *args: list, **kwargs: dict
+		self,
+		parameters: dict | list[dict],
+		simulation_id: str | list[str],
+		observed_data: np.ndarray | None,
+		**method_kwargs: dict,
 	) -> float | list[float] | np.ndarray | pd.DataFrame:
 		"""Wrapper method for the calibration function.
 
@@ -193,9 +228,18 @@ class CalibrationWorkflowBase(ABC):
 			float | list[float] | np.ndarray | pd.DataFrame: The
 				calibration function results.
 		"""
-		self.prehook_calibration_func()
-		results = self.calibration_func(*args, **kwargs)
-		self.posthook_calibration_func()
+		prehook_results = self.prehook_calibration_func(
+			parameters, simulation_id, observed_data, **method_kwargs
+		)
+		parameters, simulation_id, observed_data, method_kwargs = prehook_results
+
+		results = self.calibration_func(
+			parameters, simulation_id, observed_data, **method_kwargs
+		)
+
+		results, *_ = self.posthook_calibration_func(
+			results, parameters, simulation_id, observed_data, **method_kwargs
+		)
 		return results
 
 
