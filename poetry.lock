@@ -3023,12 +3023,13 @@ files = [
 
 [[package]]
 name = "numpoly"
-version = "1.3.2"
+version = "1.2.14"
 description = "Polynomials as a numpy datatype"
 optional = false
 python-versions = ">=3.7"
 files = [
-    {file = "numpoly-1.3.2.tar.gz", hash = "sha256:4812907a52ca2e7ae2993477687b0f2c4121f91ec1821ee64b12aee5af436b35"},
+    {file = "numpoly-1.2.14-py3-none-any.whl", hash = "sha256:8dbdc29de9212b415661577bebe186a1d35e14edab80c2969e61a421f2865ea5"},
+    {file = "numpoly-1.2.14.tar.gz", hash = "sha256:3479ef6a6436a41d60567417a12a3cf1b176df53bb5c434d53cf50ea989fd2fa"},
 ]
 
 [package.dependencies]
@@ -3037,7 +3038,7 @@ numpy = ">=1.20"
 setuptools = ">=40.9.0"
 
 [package.extras]
-dev = ["Sphinx", "black (==23.3.0)", "codecov", "coverage (>=5.0)", "pydata_sphinx_theme (==0.15.2)", "pydocstyle (==3.0.0)", "pylint (==2.15.5)", "pytest", "pytest-cov", "sphinx_automodapi", "sympy"]
+dev = ["Sphinx", "black (==23.3.0)", "codecov", "coverage (>=5.0)", "pydata-sphinx-theme (==0.15.2)", "pydocstyle (==3.0.0)", "pylint (==2.15.5)", "pytest", "pytest-cov", "sphinx-automodapi", "sympy"]
 
 [[package]]
 name = "numpy"
@@ -5872,4 +5873,4 @@ dev = ["pre-commit", "pytest", "ruff"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.10,<3.11"
-content-hash = "e42311027b54bf9938e489d5673497319b973c856a67eacd41eb7913edcce332"
+content-hash = "ce4589c747c32f07ce5f7a18ab78d40b58c1a0abcc6f1d1b13c94e73ca26e4d1"

@@ -13,11 +13,10 @@ from emukit.experimental_design.acquisitions import (
 	IntegratedVarianceReduction,
 	ModelVariance,
 )
-from emukit.model_wrappers import GPyModelWrapper
-from GPy.models import GPRegression
 from matplotlib import pyplot as plt
 
 from ..base import EmukitBase
+from ..estimators import EmukitEstimator
 from ..utils import calibration_func_wrapper
 
 
@@ -39,9 +38,6 @@ class EmukitExperimentalDesign(EmukitBase):
 			)
 
 		n_init = self.specification.n_init
-		method_kwargs = self.specification.method_kwargs
-		if method_kwargs is None:
-			method_kwargs = {}
 
 		design = RandomDesign(self.parameter_space)
 		X = self.specification.X
@@ -51,8 +47,9 @@ class EmukitExperimentalDesign(EmukitBase):
 		if Y is None:
 			Y = target_function(X)
 
-		gp = GPRegression(X, Y, **method_kwargs)
-		emulator = GPyModelWrapper(gp)
+		method_kwargs = self.specification.method_kwargs
+		estimator = EmukitEstimator(method_kwargs)
+		estimator.fit(X, Y)
 
 		acquisition_name = self.specification.method
 		acquisitions = dict(
@@ -65,10 +62,10 @@ class EmukitExperimentalDesign(EmukitBase):
 				f"Unsupported emulator acquisition type: {acquisition_name}.",
 				f"Supported acquisition types are {', '.join(acquisitions)}",
 			)
-		acquisition = acquisition_class(model=emulator)
+		acquisition = acquisition_class(model=estimator.emulator)
 
 		design_loop = ExperimentalDesignLoop(
-			model=emulator,
+			model=estimator.emulator,
 			space=self.parameter_space,
 			acquisition=acquisition,
 			batch_size=1,
@@ -76,7 +73,7 @@ class EmukitExperimentalDesign(EmukitBase):
 		n_iterations = self.specification.n_iterations
 		design_loop.run_loop(target_function, stopping_condition=n_iterations)
 
-		self.emulator = emulator
+		self.emulator = estimator
 		self.design_loop = design_loop
 
 	def analyze(self) -> None:
@@ -87,7 +84,7 @@ class EmukitExperimentalDesign(EmukitBase):
 		n_samples = self.specification.n_samples
 		X_sample = design.get_samples(n_samples)
 
-		predicted_mu, predicted_var = self.design_loop.model.predict(X_sample)
+		predicted_mu, predicted_var = self.emulator.predict(X_sample, return_var=True)
 
 		observed_data = self.specification.observed_data
 		output_label = self.specification.output_labels[0]  # type: ignore[index]

@@ -19,11 +19,10 @@ from emukit.bayesian_optimization.acquisitions.local_penalization import (
 from emukit.bayesian_optimization.acquisitions.log_acquisition import LogAcquisition
 from emukit.bayesian_optimization.loops import BayesianOptimizationLoop
 from emukit.core.initial_designs import RandomDesign
-from emukit.model_wrappers import GPyModelWrapper
-from GPy.models import GPRegression
 from matplotlib import pyplot as plt
 
 from ..base import EmukitBase
+from ..estimators import EmukitEstimator
 from ..utils import calibration_func_wrapper
 
 
@@ -46,10 +45,6 @@ class EmukitOptimisation(EmukitBase):
 			)
 
 		n_init = self.specification.n_init
-		method_kwargs = self.specification.method_kwargs
-		if method_kwargs is None:
-			method_kwargs = {}
-
 		design = RandomDesign(self.parameter_space)
 		X = self.specification.X
 		if X is None:
@@ -58,8 +53,9 @@ class EmukitOptimisation(EmukitBase):
 		if Y is None:
 			Y = target_function(X)
 
-		gp = GPRegression(X, Y, **method_kwargs)
-		emulator = GPyModelWrapper(gp)
+		method_kwargs = self.specification.method_kwargs
+		estimator = EmukitEstimator(method_kwargs)
+		estimator.fit(X, Y)
 
 		acquisition_name = self.specification.acquisition_func
 		acquisition_funcs = dict(
@@ -75,10 +71,10 @@ class EmukitOptimisation(EmukitBase):
 				f"Unsupported acquisition function: {acquisition_name}.",
 				f"Supported acquisition functions are {', '.join(acquisition_funcs)}",
 			)
-		acquisition = acquisition_func(model=emulator)
+		acquisition = acquisition_func(model=estimator.emulator)
 
 		optimisation_loop = BayesianOptimizationLoop(
-			model=emulator,
+			model=estimator.emulator,
 			space=self.parameter_space,
 			acquisition=acquisition,
 			batch_size=1,
@@ -86,7 +82,7 @@ class EmukitOptimisation(EmukitBase):
 
 		n_iterations = self.specification.n_iterations
 		optimisation_loop.run_loop(target_function, n_iterations)
-		self.emulator = emulator
+		self.emulator = estimator
 		self.optimisation_loop = optimisation_loop
 
 	def analyze(self) -> None:
