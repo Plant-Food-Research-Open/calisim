@@ -11,11 +11,14 @@ from pydantic import Field
 from ..base import CalibrationMethodBase, CalibrationWorkflowBase
 from ..data_model import CalibrationModel
 from .chaospy_wrapper import ChaospyUncertaintyAnalysis
+from .openturns_wrapper import OpenTurnsUncertaintyAnalysis
 from .pygpc_wrapper import PygpcUncertaintyAnalysis
 
 TASK = "uncertainty_analysis"
 IMPLEMENTATIONS: dict[str, type[CalibrationWorkflowBase]] = dict(
-	chaospy=ChaospyUncertaintyAnalysis, pygpc=PygpcUncertaintyAnalysis
+	chaospy=ChaospyUncertaintyAnalysis,
+	pygpc=PygpcUncertaintyAnalysis,
+	openturns=OpenTurnsUncertaintyAnalysis,
 )
 
 
@@ -36,6 +39,7 @@ class UncertaintyAnalysisMethodModel(CalibrationModel):
 	    BaseModel (CalibrationModel): The calibration base model class.
 	"""
 
+	n_out: int = Field(description="Number of simulation outputs", default=1)
 	flatten_Y: bool = Field(description="Flatten the simulation outputs", default=False)
 	order: int = Field(
 		description="The order for polynomial chaos expansion", default=2
@@ -45,7 +49,7 @@ class UncertaintyAnalysisMethodModel(CalibrationModel):
 		default="linear",
 	)
 	algorithm: str = Field(
-		description="The algorithm for the uncertainty analysis",
+		description="The algorithm for the uncertainty analysis", default=""
 	)
 
 

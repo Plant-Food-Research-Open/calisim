@@ -6,7 +6,6 @@ Implements the supported surrogate modelling methods using the GPyTorch library.
 
 import os.path as osp
 
-import chaospy
 import gpytorch
 import numpy as np
 import pandas as pd
@@ -15,9 +14,8 @@ from matplotlib import pyplot as plt
 from sklearn.preprocessing import MinMaxScaler
 from torch.utils.data import DataLoader, TensorDataset
 
-from ..base import CalibrationWorkflowBase
-from ..data_model import ParameterDataType
-from ..utils import get_simulation_uuid
+from ..base import SurrogateBase
+from ..utils import calibration_func_wrapper, extend_X
 
 
 class SingleTaskGPRegressionModel(gpytorch.models.ExactGP):
@@ -30,11 +28,7 @@ class SingleTaskGPRegressionModel(gpytorch.models.ExactGP):
 		super().__init__(train_x, train_y, likelihood)
 
 		self.mean_module = gpytorch.means.ConstantMean()
-		self.covar_module = gpytorch.kernels.GridInterpolationKernel(
-			gpytorch.kernels.ScaleKernel(gpytorch.kernels.RBFKernel()),
-			grid_size=100,
-			num_dims=train_x.size(-1),
-		)
+		self.covar_module = gpytorch.kernels.ScaleKernel(gpytorch.kernels.RBFKernel())
 
 	def forward(self, X: torch.Tensor) -> gpytorch.distributions.MultivariateNormal:
 		X = X - X.min(0)[0]
@@ -44,104 +38,32 @@ class SingleTaskGPRegressionModel(gpytorch.models.ExactGP):
 		return gpytorch.distributions.MultivariateNormal(mean_x, covar_x)
 
 
-class GPyTorchSurrogateModel(CalibrationWorkflowBase):
+class GPyTorchSurrogateModel(SurrogateBase):
 	"""The GPyTorch surrogate modelling method class."""
-
-	def specify(self) -> None:
-		"""Specify the parameters of the model calibration procedure."""
-		self.names = []
-		self.data_types = []
-		parameters = []
-
-		parameter_spec = self.specification.parameter_spec.parameters
-		for spec in parameter_spec:
-			parameter_name = spec.name
-			self.names.append(parameter_name)
-
-			data_type = spec.data_type
-			self.data_types.append(data_type)
-
-			distribution_name = (
-				spec.distribution_name.replace("_", " ").title().replace(" ", "")
-			)
-			distribution_args = spec.distribution_args
-			if distribution_args is None:
-				distribution_args = []
-
-			distribution_kwargs = spec.distribution_kwargs
-			if distribution_kwargs is None:
-				distribution_kwargs = {}
-
-			dist_instance = getattr(chaospy, distribution_name)
-			parameter = dist_instance(*distribution_args, **distribution_kwargs)
-			parameters.append(parameter)
-
-		self.parameters = chaospy.J(*parameters)
 
 	def execute(self) -> None:
 		"""Execute the simulation calibration procedure."""
-
-		def surrogate_func(
-			X: np.ndarray,
-			observed_data: pd.DataFrame | np.ndarray,
-			parameter_names: list[str],
-			data_types: list[ParameterDataType],
-			surrogate_kwargs: dict,
-		) -> np.ndarray:
-			parameters = []
-			for theta in X:
-				parameter_set = {}
-				for i, parameter_value in enumerate(theta):
-					parameter_name = parameter_names[i]
-					data_type = data_types[i]
-					if data_type == ParameterDataType.CONTINUOUS:
-						parameter_set[parameter_name] = parameter_value
-					else:
-						parameter_set[parameter_name] = int(parameter_value)
-				parameters.append(parameter_set)
-
-			simulation_ids = [get_simulation_uuid() for _ in range(len(parameters))]
-
-			if self.specification.batched:
-				results = self.call_calibration_func(
-					parameters, simulation_ids, observed_data, **surrogate_kwargs
-				)
-			else:
-				results = []
-				for i, parameter in enumerate(parameters):
-					simulation_id = simulation_ids[i]
-					result = self.call_calibration_func(
-						parameter,
-						simulation_id,
-						observed_data,
-						**surrogate_kwargs,
-					)
-					results.append(result)  # type: ignore[arg-type]
-
-			results = np.array(results)
-			return results
-
 		surrogate_kwargs = self.get_calibration_func_kwargs()
-
 		n_samples = self.specification.n_samples
-		X = self.parameters.sample(n_samples, rule="sobol").T
 
-		Y = surrogate_func(
-			X,
-			self.specification.observed_data,
-			self.names,
-			self.data_types,
-			surrogate_kwargs,
-		)
+		X = self.specification.X
+		if X is None:
+			X = self.sample_parameters(n_samples)
+
+		Y = self.specification.Y
+		if Y is None:
+			Y = calibration_func_wrapper(
+				X,
+				self,
+				self.specification.observed_data,
+				self.names,
+				self.data_types,
+				surrogate_kwargs,
+			)
 
 		self.Y_shape = Y.shape
 		if self.specification.flatten_Y and len(self.Y_shape) > 1:
-			design_list = []
-			for i in range(X.shape[0]):
-				for j in range(self.Y_shape[1]):
-					row = np.append(X[i], j)
-					design_list.append(row)
-			X = np.array(design_list)
+			X = extend_X(X, self.Y_shape[1])
 			Y = Y.flatten()
 
 		X_scaler = MinMaxScaler()
@@ -153,15 +75,15 @@ class GPyTorchSurrogateModel(CalibrationWorkflowBase):
 		else:
 			device = torch.device("cpu")
 
-		X = torch.tensor(X_scaler.transform(X), device=device)
-		Y = torch.tensor(Y, device=device)
+		X = torch.tensor(X_scaler.transform(X), dtype=torch.double, device=device)
+		Y = torch.tensor(Y, dtype=torch.double, device=device)
 
 		dataset = TensorDataset(X, Y)
 		batch_size = self.specification.batch_size
 		loader = DataLoader(dataset, batch_size=batch_size, shuffle=False)
 
-		likelihood = gpytorch.likelihoods.GaussianLikelihood().to(device)
-		model = SingleTaskGPRegressionModel(X, Y, likelihood).to(device)
+		likelihood = gpytorch.likelihoods.GaussianLikelihood().to(device).double()
+		model = SingleTaskGPRegressionModel(X, Y, likelihood).to(device).double()
 
 		optimizer = torch.optim.Adam(model.parameters(), lr=self.specification.lr)
 		mll = gpytorch.mlls.ExactMarginalLogLikelihood(likelihood, model)
@@ -186,6 +108,8 @@ class GPyTorchSurrogateModel(CalibrationWorkflowBase):
 		self.optimizer = optimizer
 		self.loader = loader
 		self.device = device
+		self.X = X
+		self.Y = Y
 
 	def analyze(self) -> None:
 		"""Analyze the results of the simulation calibration procedure."""
@@ -210,12 +134,7 @@ class GPyTorchSurrogateModel(CalibrationWorkflowBase):
 		n_samples = self.specification.n_samples
 		X_sample = self.parameters.sample(n_samples, rule="sobol").T
 		if self.specification.flatten_Y and len(self.Y_shape) > 1:
-			design_list = []
-			for i in range(X_sample.shape[0]):
-				for j in range(self.Y_shape[1]):
-					row = np.append(X_sample[i], j)
-					design_list.append(row)
-			X_sample = np.array(design_list)
+			X_sample = extend_X(X_sample, self.Y_shape[1])
 		X_sample = torch.tensor(
 			self.X_scaler.transform(X_sample), dtype=torch.double, device=self.device
 		)
@@ -280,8 +199,6 @@ class GPyTorchSurrogateModel(CalibrationWorkflowBase):
 				fig.show()
 		else:
 			if self.specification.flatten_Y:
-				print(Y.shape)
-				return
 				df[f"simulated_{output_label}"] = Y
 				fig, axes = plt.subplots(
 					nrows=len(self.names), figsize=self.specification.figsize
@@ -301,9 +218,9 @@ class GPyTorchSurrogateModel(CalibrationWorkflowBase):
 				else:
 					fig.show()
 
-				Y_sample = Y_sample.reshape(self.Y_shape)
-				Y = self.Y.reshape(self.Y_shape)
-				indx = np.arange(0, Y_sample.shape[1], 1)
+				reshaped_Y_sample = Y_sample.reshape(self.Y_shape)
+				Y = self.Y.reshape(self.Y_shape).detach().cpu().numpy()
+				indx = np.arange(0, reshaped_Y_sample.shape[1], 1)
 
 				fig, axes = plt.subplots(nrows=2, figsize=self.specification.figsize)
 
@@ -311,8 +228,8 @@ class GPyTorchSurrogateModel(CalibrationWorkflowBase):
 					axes[0].plot(indx, Y[i])
 				axes[0].set_title(f"Simulated {output_label}")
 
-				for i in range(Y_sample.shape[0]):
-					axes[1].plot(indx, Y_sample[i])
+				for i in range(reshaped_Y_sample.shape[0]):
+					axes[1].plot(indx, reshaped_Y_sample[i])
 				axes[1].set_title(f"Emulated {output_label}")
 
 				fig.tight_layout()

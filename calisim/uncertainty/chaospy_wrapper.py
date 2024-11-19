@@ -11,13 +11,11 @@ import os.path as osp
 import chaospy
 import gstools
 import numpy as np
-import pandas as pd
 import sklearn.linear_model as lm
 from matplotlib import pyplot as plt
 
 from ..base import CalibrationWorkflowBase
-from ..data_model import ParameterDataType
-from ..utils import get_simulation_uuid
+from ..utils import calibration_func_wrapper, extend_X
 
 
 class ChaospyUncertaintyAnalysis(CalibrationWorkflowBase):
@@ -64,46 +62,6 @@ class ChaospyUncertaintyAnalysis(CalibrationWorkflowBase):
 				f"Supported Chaospy solvers are {', '.join(solvers)}",
 			)
 
-		def uncertainty_func(
-			X: np.ndarray,
-			observed_data: pd.DataFrame | np.ndarray,
-			parameter_names: list[str],
-			data_types: list[ParameterDataType],
-			uncertainty_kwargs: dict,
-		) -> np.ndarray:
-			parameters = []
-			for theta in X:
-				parameter_set = {}
-				for i, parameter_value in enumerate(theta):
-					parameter_name = parameter_names[i]
-					data_type = data_types[i]
-					if data_type == ParameterDataType.CONTINUOUS:
-						parameter_set[parameter_name] = parameter_value
-					else:
-						parameter_set[parameter_name] = int(parameter_value)
-				parameters.append(parameter_set)
-
-			simulation_ids = [get_simulation_uuid() for _ in range(len(parameters))]
-
-			if self.specification.batched:
-				results = self.call_calibration_func(
-					parameters, simulation_ids, observed_data, **uncertainty_kwargs
-				)
-			else:
-				results = []
-				for i, parameter in enumerate(parameters):
-					simulation_id = simulation_ids[i]
-					result = self.call_calibration_func(
-						parameter,
-						simulation_id,
-						observed_data,
-						**uncertainty_kwargs,
-					)
-					results.append(result)  # type: ignore[arg-type]
-
-			results = np.array(results)
-			return results
-
 		order = self.specification.order
 		rule = self.specification.method
 		X = self.specification.X
@@ -120,8 +78,9 @@ class ChaospyUncertaintyAnalysis(CalibrationWorkflowBase):
 		uncertainty_kwargs = self.get_calibration_func_kwargs()
 		Y = self.specification.Y
 		if Y is None:
-			Y = uncertainty_func(
+			Y = calibration_func_wrapper(
 				X,
+				self,
 				self.specification.observed_data,
 				self.names,
 				self.data_types,
@@ -171,12 +130,7 @@ class ChaospyUncertaintyAnalysis(CalibrationWorkflowBase):
 				and len(Y.shape) > 1
 				and self.specification.X is None
 			):
-				design_list = []
-				for i in range(X.shape[0]):
-					for j in range(Y.shape[1]):
-						row = np.append(X[i], j)
-						design_list.append(row)
-				X = np.array(design_list)
+				X = extend_X(X, Y.shape[1])
 				Y = Y.flatten()
 
 			gp = gstools.Gaussian(dim=X.shape[-1])

@@ -11,7 +11,6 @@ from itertools import islice
 
 import numpy as np
 import torch
-import torch.distributions as dist
 import torch.optim as optim
 from lampe.data import JointLoader
 from lampe.diagnostics import expected_coverage_mc
@@ -21,106 +20,35 @@ from lampe.utils import GDStep
 from matplotlib import pyplot as plt
 from sbi import analysis as analysis
 
-from ..base import CalibrationWorkflowBase
-from ..data_model import ParameterDataType
-from ..utils import get_simulation_uuid
+from ..base import SimulationBasedInferenceBase
+from ..utils import PriorCollection, calibration_func_wrapper
 
 
-class PriorCollection:
-	"""A wrapper around a collection of priors."""
-
-	def __init__(self, priors: list[dist.Distribution]) -> None:
-		"""PriorCollection constructor.
-
-		Args:
-		    priors (list[dist.Distribution]): The list of prior distributions.
-		"""
-		self.parameters = priors
-
-	def sample(self, batch_shape: tuple = ()) -> torch.Tensor:
-		"""Sample from the priors.
-
-		Args:
-		    batch_shape (tuple, optional): The batch shape of
-				the sampled priors. Defaults to ().
-
-		Returns:
-		    torch.Tensor: The sampled priors.
-		"""
-		prior_sample = []
-		for prior in self.parameters:
-			prior_sample.append(prior.sample(batch_shape).squeeze())
-		return torch.stack(prior_sample).T
-
-
-class LAMPESimulationBasedInference(CalibrationWorkflowBase):
+class LAMPESimulationBasedInference(SimulationBasedInferenceBase):
 	"""The LAMPE simulation-based inference method class."""
 
 	def specify(self) -> None:
 		"""Specify the parameters of the model calibration procedure."""
-		parameter_spec = self.specification.parameter_spec.parameters
-
-		self.names = []
-		priors = []
-		for spec in parameter_spec:
-			name = spec.name
-			self.names.append(name)
-
-			data_type = spec.data_type
-			if data_type == ParameterDataType.DISCRETE:
-				lower_bound, upper_bound = self.get_parameter_bounds(spec)
-				lower_bound = np.floor(lower_bound).astype("int")
-				upper_bound = np.floor(upper_bound).astype("int")
-				replicates = np.floor(upper_bound - lower_bound).astype("int")
-				probabilities = torch.tensor([1 / replicates])
-				probabilities = probabilities.repeat(replicates)
-				base_distribution = dist.Categorical(probabilities)
-				transforms = [
-					dist.AffineTransform(
-						loc=torch.Tensor([lower_bound]), scale=torch.Tensor([1])
-					)
-				]
-				prior = dist.TransformedDistribution(base_distribution, transforms)
-			else:
-				distribution_name = (
-					spec.distribution_name.replace("_", " ").title().replace(" ", "")
-				)
-
-				distribution_args = spec.distribution_args
-				if distribution_args is None:
-					distribution_args = []
-				distribution_args = [torch.Tensor([arg]) for arg in distribution_args]
-
-				distribution_kwargs = spec.distribution_kwargs
-				if distribution_kwargs is None:
-					distribution_kwargs = {}
-				distribution_kwargs = {
-					k: torch.Tensor([v]) for k, v in distribution_kwargs.items()
-				}
-
-				distribution_class = getattr(dist, distribution_name)
-
-				prior = distribution_class(*distribution_args, **distribution_kwargs)
-
-			priors.append(prior)
-			self.parameters = PriorCollection(priors)
+		super().specify()
+		self.parameters: PriorCollection = PriorCollection(self.parameters)  # type: ignore[assignment]
 
 	def execute(self) -> None:
 		"""Execute the simulation calibration procedure."""
 
-		def simulator_func(theta: np.ndarray) -> np.ndarray:
-			theta = theta.detach().cpu().numpy().T
-			parameters = {}
-			for i, name in enumerate(self.names):
-				parameters[name] = theta[i]
+		sbi_kwargs = self.get_calibration_func_kwargs()
 
-			sbi_kwargs = self.get_calibration_func_kwargs()
-
-			observed_data = self.specification.observed_data
-			simulation_id = get_simulation_uuid()
-			results = self.call_calibration_func(
-				parameters, simulation_id, observed_data, **sbi_kwargs
+		def simulator_func(X: np.ndarray) -> np.ndarray:
+			X = X.detach().cpu().numpy().T
+			X = [X]
+			results = calibration_func_wrapper(
+				X,
+				self,
+				self.specification.observed_data,
+				self.names,
+				self.data_types,
+				sbi_kwargs,
 			)
+			results = results[0]
 			return torch.from_numpy(results).float()
 
 		loader = JointLoader(

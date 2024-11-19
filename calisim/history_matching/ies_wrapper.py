@@ -14,11 +14,11 @@ import pandas as pd
 from iterative_ensemble_smoother.utils import steplength_exponential
 from matplotlib import pyplot as plt
 
-from ..base import CalibrationWorkflowBase
+from ..base import HistoryMatchingBase
 from ..utils import get_simulation_uuid
 
 
-class IESHistoryMatching(CalibrationWorkflowBase):
+class IESHistoryMatching(HistoryMatchingBase):
 	"""The iterative_ensemble_smoother history matching method class."""
 
 	def specify(self) -> None:

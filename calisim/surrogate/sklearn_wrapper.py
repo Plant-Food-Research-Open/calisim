@@ -6,7 +6,6 @@ Implements the supported surrogate modelling methods using the Scikit-Learn libr
 
 import os.path as osp
 
-import chaospy
 import numpy as np
 import pandas as pd
 import sklearn.ensemble as ensemble
@@ -17,99 +16,27 @@ import sklearn.neighbors as neighbors
 import sklearn.svm as svm
 from matplotlib import pyplot as plt
 
-from ..base import CalibrationWorkflowBase
-from ..data_model import ParameterDataType
-from ..utils import get_simulation_uuid
+from ..base import SurrogateBase
+from ..utils import calibration_func_wrapper, extend_X
 
 
-class SklearnSurrogateModel(CalibrationWorkflowBase):
+class SklearnSurrogateModel(SurrogateBase):
 	"""The Scikit-Learn surrogate modelling method class."""
-
-	def specify(self) -> None:
-		"""Specify the parameters of the model calibration procedure."""
-		self.names = []
-		self.data_types = []
-		parameters = []
-
-		parameter_spec = self.specification.parameter_spec.parameters
-		for spec in parameter_spec:
-			parameter_name = spec.name
-			self.names.append(parameter_name)
-
-			data_type = spec.data_type
-			self.data_types.append(data_type)
-
-			distribution_name = (
-				spec.distribution_name.replace("_", " ").title().replace(" ", "")
-			)
-			distribution_args = spec.distribution_args
-			if distribution_args is None:
-				distribution_args = []
-
-			distribution_kwargs = spec.distribution_kwargs
-			if distribution_kwargs is None:
-				distribution_kwargs = {}
-
-			dist_instance = getattr(chaospy, distribution_name)
-			parameter = dist_instance(*distribution_args, **distribution_kwargs)
-			parameters.append(parameter)
-
-		self.parameters = chaospy.J(*parameters)
 
 	def execute(self) -> None:
 		"""Execute the simulation calibration procedure."""
-
-		def surrogate_func(
-			X: np.ndarray,
-			observed_data: pd.DataFrame | np.ndarray,
-			parameter_names: list[str],
-			data_types: list[ParameterDataType],
-			surrogate_kwargs: dict,
-		) -> np.ndarray:
-			parameters = []
-			for theta in X:
-				parameter_set = {}
-				for i, parameter_value in enumerate(theta):
-					parameter_name = parameter_names[i]
-					data_type = data_types[i]
-					if data_type == ParameterDataType.CONTINUOUS:
-						parameter_set[parameter_name] = parameter_value
-					else:
-						parameter_set[parameter_name] = int(parameter_value)
-				parameters.append(parameter_set)
-
-			simulation_ids = [get_simulation_uuid() for _ in range(len(parameters))]
-
-			if self.specification.batched:
-				results = self.call_calibration_func(
-					parameters, simulation_ids, observed_data, **surrogate_kwargs
-				)
-			else:
-				results = []
-				for i, parameter in enumerate(parameters):
-					simulation_id = simulation_ids[i]
-					result = self.call_calibration_func(
-						parameter,
-						simulation_id,
-						observed_data,
-						**surrogate_kwargs,
-					)
-					results.append(result)  # type: ignore[arg-type]
-
-			results = np.array(results)
-			return results
-
 		surrogate_kwargs = self.get_calibration_func_kwargs()
 		n_samples = self.specification.n_samples
 
 		X = self.specification.X
 		if X is None:
-			X = self.parameters.sample(n_samples, rule="sobol").T
+			X = self.sample_parameters(n_samples)
 
 		Y = self.specification.Y
 		if Y is None:
-			Y = surrogate_func(
+			Y = calibration_func_wrapper(
 				X,
+				self,
 				self.specification.observed_data,
 				self.names,
 				self.data_types,
@@ -146,12 +73,7 @@ class SklearnSurrogateModel(CalibrationWorkflowBase):
 			and len(self.Y_shape) > 1
 			and self.specification.X is None
 		):
-			design_list = []
-			for i in range(X.shape[0]):
-				for j in range(self.Y_shape[1]):
-					row = np.append(X[i], j)
-					design_list.append(row)
-			X = np.array(design_list)
+			X = extend_X(X, self.Y_shape[1])
 			Y = Y.flatten()
 
 		self.emulator = emulator_class(**method_kwargs)
@@ -171,14 +93,9 @@ class SklearnSurrogateModel(CalibrationWorkflowBase):
 		df = pd.DataFrame(self.X, columns=names)
 
 		n_samples = self.specification.n_samples
-		X_sample = self.parameters.sample(n_samples, rule="sobol").T
+		X_sample = self.sample_parameters(n_samples)
 		if self.specification.flatten_Y and len(self.Y_shape) > 1:
-			design_list = []
-			for i in range(X_sample.shape[0]):
-				for j in range(self.Y_shape[1]):
-					row = np.append(X_sample[i], j)
-					design_list.append(row)
-			X_sample = np.array(design_list)
+			X_sample = extend_X(X_sample, self.Y_shape[1])
 		Y_sample = self.emulator.predict(X_sample, return_std=False)
 
 		if len(self.Y_shape) == 1:

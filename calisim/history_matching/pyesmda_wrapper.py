@@ -14,7 +14,7 @@ import pandas as pd
 from matplotlib import pyplot as plt
 from pyesmda import ESMDA, ESMDA_RS
 
-from ..base import CalibrationWorkflowBase
+from ..base import HistoryMatchingBase
 from ..utils import get_simulation_uuid
 
 
@@ -69,33 +69,8 @@ def forward_model(
 	return ensemble_outputs
 
 
-class PyESMDAHistoryMatching(CalibrationWorkflowBase):
+class PyESMDAHistoryMatching(HistoryMatchingBase):
 	"""The pyESMDA history matching method class."""
-
-	def specify(self) -> None:
-		"""Specify the parameters of the model calibration procedure."""
-		ensemble_size = self.specification.n_samples
-		parameter_spec = self.specification.parameter_spec.parameters
-		self.rng = np.random.default_rng(self.specification.random_seed)
-
-		self.parameters = {}
-		for spec in parameter_spec:
-			parameter_name = spec.name
-			distribution_name = spec.distribution_name.replace(" ", "_").lower()
-
-			distribution_args = spec.distribution_args
-			if distribution_args is None:
-				distribution_args = []
-
-			distribution_kwargs = spec.distribution_kwargs
-			if distribution_kwargs is None:
-				distribution_kwargs = {}
-			distribution_kwargs["size"] = ensemble_size
-
-			dist_instance = getattr(self.rng, distribution_name)
-			self.parameters[parameter_name] = dist_instance(
-				*distribution_args, **distribution_kwargs
-			)
 
 	def execute(self) -> None:
 		"""Execute the simulation calibration procedure."""

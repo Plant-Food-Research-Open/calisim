@@ -17,8 +17,7 @@ from spotpy.algorithms import NSGAII, abc, demcz, dream, fscabc, sceua
 from spotpy.parameter import Base, generate
 
 from ..base import CalibrationWorkflowBase
-from ..data_model import ParameterDataType
-from ..utils import get_simulation_uuid
+from ..utils import calibration_func_wrapper
 
 
 class SPOTSetup:
@@ -81,6 +80,7 @@ class SPOTSetup:
 		self.call_calibration_func = workflow.call_calibration_func
 		self.observed_data = workflow.specification.observed_data
 		self.evolutionary_kwargs = workflow.get_calibration_func_kwargs()
+		self.workflow = workflow
 
 	def parameters(self) -> np.ndarray:
 		"""Generate parameters from the prior specification.
@@ -99,23 +99,16 @@ class SPOTSetup:
 		Returns:
 			np.ndarray: The simulation results.
 		"""
-		parameter_set = {}
-		for i, parameter_value in enumerate(X):
-			parameter_name = self.parameter_names[i]
-			data_type = self.data_types[i]
-			if data_type == ParameterDataType.CONTINUOUS:
-				parameter_set[parameter_name] = parameter_value
-			else:
-				parameter_set[parameter_name] = int(parameter_value)
-
-		simulation_id = get_simulation_uuid()
-		result = self.call_calibration_func(
-			parameter_set,
-			simulation_id,
+		X = [X]
+		results = calibration_func_wrapper(
+			X,
+			self.workflow,
 			self.observed_data,
-			**self.evolutionary_kwargs,
+			self.parameter_names,
+			self.data_types,
+			self.evolutionary_kwargs,
 		)
-		return result
+		return results[0]
 
 	def evaluation(self) -> np.ndarray | pd.DataFrame:
 		"""Get the observed data.

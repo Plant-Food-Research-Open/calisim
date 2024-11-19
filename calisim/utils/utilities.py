@@ -9,6 +9,13 @@ import os.path as osp
 import uuid
 from datetime import datetime
 
+import numpy as np
+import pandas as pd
+import torch
+import torch.distributions as dist
+
+from ..data_model import ParameterDataType
+
 
 def get_datetime_now() -> str:
 	"""Get the current datetime for now.
@@ -36,6 +43,67 @@ def get_examples_outdir() -> str:
 	    str: The output directory.
 	"""
 	return osp.join("examples", "outdir")
+
+
+def calibration_func_wrapper(
+	X: np.ndarray,
+	workflow: "CalibrationWorkflowBase",  # type: ignore[name-defined] # noqa: F821
+	observed_data: pd.DataFrame | np.ndarray,
+	parameter_names: list[str],
+	data_types: list[ParameterDataType],
+	calibration_kwargs: dict,
+	wrap_values: bool = False,
+) -> np.ndarray:
+	"""Wrapper function for the calibration function.
+
+	Args:
+		X (np.ndarray): The parameter set matrix.
+		workflow (CalibrationWorkflowBase): The calibration workflow.
+		observed_data (pd.DataFrame | np.ndarray): The observed data.
+		parameter_names (list[str]): The list of simulation parameter names.
+		data_types (list[ParameterDataType]): The data types for each parameter.
+		calibration_kwargs (dict): Arguments to supply to the calibration function.
+		wrap_values (bool): Whether to wrap scalar values with a list.
+			Defaults to False.
+
+	Returns:
+		np.ndarray: The simulation output data.
+	"""
+	import numpy as np
+
+	parameters = []
+	for theta in X:
+		parameter_set = {}
+		for i, parameter_value in enumerate(theta):
+			parameter_name = parameter_names[i]
+			data_type = data_types[i]
+			if data_type == ParameterDataType.CONTINUOUS:
+				parameter_set[parameter_name] = parameter_value
+			else:
+				parameter_set[parameter_name] = int(parameter_value)
+		parameters.append(parameter_set)
+
+	simulation_ids = [get_simulation_uuid() for _ in range(len(parameters))]
+
+	if workflow.specification.batched:
+		results = workflow.call_calibration_func(
+			parameters, simulation_ids, observed_data, **calibration_kwargs
+		)
+	else:
+		results = []
+		for i, parameter in enumerate(parameters):
+			simulation_id = simulation_ids[i]
+			result = workflow.call_calibration_func(
+				parameter,
+				simulation_id,
+				observed_data,
+				**calibration_kwargs,
+			)
+			if wrap_values and not isinstance(result, list):
+				result = [result]
+			results.append(result)
+	results = np.array(results)
+	return results
 
 
 class EarlyStopper:
@@ -72,3 +140,49 @@ class EarlyStopper:
 			if self.counter >= self.patience:
 				return True
 		return False
+
+
+class PriorCollection:
+	"""A wrapper around a collection of priors."""
+
+	def __init__(self, priors: list[dist.Distribution]) -> None:
+		"""PriorCollection constructor.
+
+		Args:
+		    priors (list[dist.Distribution]): The list of prior distributions.
+		"""
+		self.parameters = priors
+
+	def sample(self, batch_shape: tuple = ()) -> torch.Tensor:
+		"""Sample from the priors.
+
+		Args:
+		    batch_shape (tuple, optional): The batch shape of
+				the sampled priors. Defaults to ().
+
+		Returns:
+		    torch.Tensor: The sampled priors.
+		"""
+		prior_sample = []
+		for prior in self.parameters:
+			prior_sample.append(prior.sample(batch_shape).squeeze())
+		return torch.stack(prior_sample).T
+
+
+def extend_X(X: np.ndarray, Y_rows: int) -> np.ndarray:
+	"""Extend the number of rows for X with a dummy index column.
+
+	Args:
+		X (np.ndarray): The input matrix.
+		Y_rows (int) The number of rows for the simulation outputs.
+
+	Returns:
+		np.ndarray: The extended input matrix with a dummy column.
+	"""
+	design_list = []
+	for i in range(X.shape[0]):
+		for j in range(Y_rows):
+			row = np.append(X[i], j)
+			design_list.append(row)
+	X = np.array(design_list)
+	return X

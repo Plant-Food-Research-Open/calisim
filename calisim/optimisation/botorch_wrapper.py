@@ -19,7 +19,7 @@ from plotly.subplots import make_subplots
 
 from ..base import CalibrationWorkflowBase
 from ..data_model import ParameterDataType
-from ..utils import get_simulation_uuid
+from ..utils import calibration_func_wrapper
 
 
 class BoTorchOptimisation(CalibrationWorkflowBase):
@@ -29,13 +29,17 @@ class BoTorchOptimisation(CalibrationWorkflowBase):
 		"""Specify the parameters of the model calibration procedure."""
 		parameters = []
 		parameter_names = []
+		data_types = []
+
 		parameter_spec = self.specification.parameter_spec.parameters
 		for spec in parameter_spec:
 			name = spec.name
 			parameter_names.append(name)
-			lower, upper = self.get_parameter_bounds(spec)
-			data_type = spec.data_type
 
+			lower, upper = self.get_parameter_bounds(spec)
+
+			data_type = spec.data_type
+			data_types.append(data_type)
 			if data_type == ParameterDataType.CONTINUOUS:
 				parameter_type = ParameterType.FLOAT
 			else:
@@ -47,23 +51,24 @@ class BoTorchOptimisation(CalibrationWorkflowBase):
 				)
 			)
 		search_space = SearchSpace(parameters=parameters)
-
-		observed_data = self.specification.observed_data
-		call_calibration_func = self.call_calibration_func
 		objective_kwargs = self.get_calibration_func_kwargs()
+
+		workflow = self
 
 		class ObjectiveMetric(NoisyFunctionMetric):
 			def f(
 				self, x: np.ndarray
 			) -> float | list[float] | np.ndarray | pd.DataFrame:
-				parameters = {}
-				for i, parameter_name in enumerate(parameter_names):
-					parameters[parameter_name] = x[i]
-
-				simulation_id = get_simulation_uuid()
-				return call_calibration_func(
-					parameters, simulation_id, observed_data, **objective_kwargs
+				X = [x]
+				results = calibration_func_wrapper(
+					X,
+					workflow,
+					workflow.specification.observed_data,
+					parameter_names,
+					data_types,
+					objective_kwargs,
 				)
+				return results[0]
 
 		optimization_config = OptimizationConfig(
 			objective=Objective(

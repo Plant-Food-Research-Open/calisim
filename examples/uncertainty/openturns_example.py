@@ -48,24 +48,24 @@ def uncertainty_func(
 
 outdir = get_examples_outdir()
 specification = UncertaintyAnalysisMethodModel(
-	experiment_name="chaospy_uncertainty_analysis",
+	experiment_name="openturns_uncertainty_analysis",
 	parameter_spec=parameter_spec,
 	observed_data=observed_data.lynx.values,
 	outdir=outdir,
-	solver="linear",
+	solver="kriging",
+	method="linear",
 	algorithm="least_squares",
-	method="sobol",
 	order=4,
 	n_samples=100,
+	n_out=len(observed_data),
 	output_labels=["Lynx"],
-	flatten_Y=True,
 	batch=False,
 	calibration_func_kwargs=dict(t=observed_data.year),
 	method_kwargs=dict(rule="cholesky", normed=False, cross_truncation=1.0),
 )
 
 calibrator = UncertaintyAnalysisMethod(
-	calibration_func=uncertainty_func, specification=specification, engine="chaospy"
+	calibration_func=uncertainty_func, specification=specification, engine="openturns"
 )
 
 calibrator.specify().execute().analyze()
