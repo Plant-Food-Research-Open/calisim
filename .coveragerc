@@ -4,7 +4,7 @@ omit =
     */tmp*
     */Temp/*
     */usr/local/lib*
-    *test/*
+    *tests/*
 
 [report]
 skip_empty = true
@@ -13,4 +13,4 @@ omit =
     */tmp*
     */Temp/*
     */usr/local/lib*
-    *test/*
+    *tests/*
