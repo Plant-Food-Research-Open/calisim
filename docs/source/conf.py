@@ -9,7 +9,7 @@ author = "James Bristow"
 release = "0.1.0"
 
 extensions = [
-	"sphinx.ext.napoleon",
+	# "sphinx.ext.napoleon",
 	"sphinx.ext.autodoc",
 	"sphinx.ext.intersphinx",
 	"sphinx.ext.ifconfig",
