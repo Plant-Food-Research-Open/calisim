@@ -52,13 +52,13 @@ class EmukitEstimator(MultiOutputMixin, RegressorMixin, BaseEstimator):
 
 		return self
 
-	def predict(self, X: np.ndarray, return_var: bool = False) -> np.ndarray | tuple:
+	def predict(self, X: np.ndarray, return_std: bool = False) -> np.ndarray | tuple:
 		"""Make a prediction.
 
 		Args:
 		    X (np.ndarray): The simulation inputs.
-		    return_var (bool, optional): Whether to return the variance.
-		        Defaults to False.
+		    return_std (bool, optional): Whether to return the standard
+				deviation. Defaults to False.
 
 		Returns:
 		    np.ndarray | tuple: The model predictions.
@@ -66,10 +66,10 @@ class EmukitEstimator(MultiOutputMixin, RegressorMixin, BaseEstimator):
 		check_is_fitted(self, "is_fitted_")
 		X = check_array(X, ensure_2d=True, dtype="numeric")
 
-		y_mu, y_std = self.emulator.predict(X)
+		y_mu, y_var = self.emulator.predict(X)
 
-		if return_var:
-			return y_mu, y_std
+		if return_std:
+			return y_mu, np.sqrt(y_var)
 		else:
 			return y_mu
 

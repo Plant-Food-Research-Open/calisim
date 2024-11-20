@@ -84,7 +84,7 @@ class EmukitExperimentalDesign(EmukitBase):
 		n_samples = self.specification.n_samples
 		X_sample = design.get_samples(n_samples)
 
-		predicted_mu, predicted_var = self.emulator.predict(X_sample, return_var=True)
+		predicted_mu, predicted_std = self.emulator.predict(X_sample, return_std=True)
 
 		observed_data = self.specification.observed_data
 		output_label = self.specification.output_labels[0]  # type: ignore[index]
@@ -95,14 +95,14 @@ class EmukitExperimentalDesign(EmukitBase):
 		axes[0].set_title(f"Observed {output_label}")
 
 		mean_predicted_mu = predicted_mu.mean(axis=0)
-		mean_predicted_var = predicted_var.mean(axis=0)
+		mean_predicted_std = predicted_std.mean(axis=0)
 		axes[1].plot(X, mean_predicted_mu)
 
 		for mult, alpha in [(1, 0.6), (2, 0.4), (3, 0.2)]:
 			axes[1].fill_between(
 				X,
-				mean_predicted_mu - mult * np.sqrt(mean_predicted_var),
-				mean_predicted_mu + mult * np.sqrt(mean_predicted_var),
+				mean_predicted_mu - mult * np.sqrt(mean_predicted_std),
+				mean_predicted_mu + mult * np.sqrt(mean_predicted_std),
 				color="C0",
 				alpha=alpha,
 			)
