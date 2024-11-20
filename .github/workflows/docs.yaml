@@ -42,7 +42,7 @@ jobs:
 
     - name: Install dependencies
       run: |
-         poetry install --no-interaction --no-root
+         poetry install --no-interaction
 
     - name: Generate documentation
       run: |
