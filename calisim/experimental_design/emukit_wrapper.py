@@ -101,8 +101,8 @@ class EmukitExperimentalDesign(EmukitBase):
 		for mult, alpha in [(1, 0.6), (2, 0.4), (3, 0.2)]:
 			axes[1].fill_between(
 				X,
-				mean_predicted_mu - mult * np.sqrt(mean_predicted_std),
-				mean_predicted_mu + mult * np.sqrt(mean_predicted_std),
+				mean_predicted_mu - mult * mean_predicted_std,
+				mean_predicted_mu + mult * mean_predicted_std,
 				color="C0",
 				alpha=alpha,
 			)
