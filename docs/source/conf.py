@@ -8,9 +8,6 @@ copyright = "2024, James Bristow"
 author = "James Bristow"
 release = "0.1.0"
 
-# -- General configuration ---------------------------------------------------
-# https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
-
 extensions = [
 	"sphinx.ext.napoleon",
 	"sphinx.ext.autodoc",
@@ -21,6 +18,7 @@ extensions = [
 	"sphinxarg.ext",
 	"sphinxcontrib.autodoc_pydantic",
 	"myst_nb",
+	"sphinx_multiversion",
 ]
 
 numpydoc_show_class_members = False
@@ -29,16 +27,14 @@ templates_path = ["_templates"]
 
 source_suffix = ".rst"
 
-# -- Options for HTML output -------------------------------------------------
-# https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output
-
 html_theme = "sphinx_rtd_theme"
 
 html_static_path = ["_static"]
 
-# The master toctree document.
 master_doc = "index"
 
-# Datetime
-
 today_fmt = "%d/%m/%y"
+
+smv_branch_whitelist = "main"
+smv_remote_whitelist: str | None = None
+smv_released_pattern = r"^refs/tags/.*$"
