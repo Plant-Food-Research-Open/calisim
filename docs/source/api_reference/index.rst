@@ -7,6 +7,7 @@ API Reference
     base.rst
     data_model.rst
     example_models.rst
+    estimators.rst
     abc.rst
     bayesian_quadrature.rst
     evolutionary.rst

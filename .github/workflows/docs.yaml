@@ -51,7 +51,7 @@ jobs:
         OUT_DIR=html
         rm -rf $OUT_DIR
         cd docs
-        make ${OUT_DIR}
+        make $OUT_DIR
         sphinx-multiversion source build/${OUT_DIR}
         cp index.html build/${OUT_DIR}
         mv build/${OUT_DIR} ..

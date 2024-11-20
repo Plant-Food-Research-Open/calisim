@@ -1,6 +1,8 @@
 import os
 import sys
 
+import calisim  # noqa: F401
+
 sys.path.insert(0, os.path.abspath("../.."))
 
 project = "calisim"
@@ -9,7 +11,7 @@ author = "James Bristow"
 release = "0.1.0"
 
 extensions = [
-	# "sphinx.ext.napoleon",
+	"sphinx.ext.napoleon",
 	"sphinx.ext.autodoc",
 	"sphinx.ext.intersphinx",
 	"sphinx.ext.ifconfig",
