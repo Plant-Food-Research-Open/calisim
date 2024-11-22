@@ -158,13 +158,7 @@ class PyESMDAHistoryMatching(HistoryMatchingBase):
 				alpha=0.5,
 			)
 			axes[i].legend()
-
-		fig.tight_layout()
-		if outdir is not None:
-			outfile = self.join(outdir, f"{time_now}-{task}_plot_slice.png")
-			fig.savefig(outfile)
-		else:
-			fig.show()
+		self.present_fig(fig, outdir, time_now, task, "plot_slice")
 
 		pred_dfs = [pd.DataFrame(preds) for preds in self.solver.d_pred]
 		output_label = self.specification.output_labels[0]  # type: ignore[index]
@@ -178,13 +172,7 @@ class PyESMDAHistoryMatching(HistoryMatchingBase):
 			pred_df[0].plot(ax=axes[1])
 		axes[1].set_title(f"Ensemble {output_label}")
 		fig.tight_layout()
-		if outdir is not None:
-			outfile = self.join(
-				outdir, f"{time_now}-{task}_ensemble_{output_label}.png"
-			)
-			fig.savefig(outfile)
-		else:
-			fig.show()
+		self.present_fig(fig, outdir, time_now, task, f"ensemble_{output_label}")
 
 		if outdir is None:
 			return

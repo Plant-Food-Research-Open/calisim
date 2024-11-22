@@ -163,13 +163,7 @@ class GPyTorchSurrogateModel(SurrogateBase):
 					ax=axes[i],
 					title=f"simulated_{output_label} against {parameter_name}",
 				)
-
-			fig.tight_layout()
-			if outdir is not None:
-				outfile = self.join(outdir, f"{time_now}-{task}_plot_slice.png")
-				fig.savefig(outfile)
-			else:
-				fig.show()
+			self.present_fig(fig, outdir, time_now, task, "plot_slice")
 
 			fig, axes = plt.subplots(nrows=2, figsize=self.specification.figsize)
 			df = pd.DataFrame(
@@ -185,15 +179,7 @@ class GPyTorchSurrogateModel(SurrogateBase):
 			df.plot.scatter(
 				"index", "emulated", ax=axes[1], title=f"Emulated {output_label}"
 			)
-
-			fig.tight_layout()
-			if outdir is not None:
-				outfile = self.join(
-					outdir, f"{time_now}-{task}_emulated_{output_label}.png"
-				)
-				fig.savefig(outfile)
-			else:
-				fig.show()
+			self.present_fig(fig, outdir, time_now, task, f"emulated_{output_label}")
 		else:
 			if self.specification.flatten_Y:
 				df[f"simulated_{output_label}"] = Y
@@ -207,13 +193,7 @@ class GPyTorchSurrogateModel(SurrogateBase):
 						ax=axes[i],
 						title=f"simulated_{output_label} against {parameter_name}",
 					)
-
-				fig.tight_layout()
-				if outdir is not None:
-					outfile = self.join(outdir, f"{time_now}-{task}_plot_slice.png")
-					fig.savefig(outfile)
-				else:
-					fig.show()
+				self.present_fig(fig, outdir, time_now, task, "plot_slice")
 
 				reshaped_Y_sample = Y_sample.reshape(self.Y_shape)
 				Y = self.Y.reshape(self.Y_shape).detach().cpu().numpy()
@@ -228,15 +208,9 @@ class GPyTorchSurrogateModel(SurrogateBase):
 				for i in range(reshaped_Y_sample.shape[0]):
 					axes[1].plot(indx, reshaped_Y_sample[i])
 				axes[1].set_title(f"Emulated {output_label}")
-
-				fig.tight_layout()
-				if outdir is not None:
-					outfile = self.join(
-						outdir, f"{time_now}-{task}_emulated_{output_label}.png"
-					)
-					fig.savefig(outfile)
-				else:
-					fig.show()
+				self.present_fig(
+					fig, outdir, time_now, task, f"emulated_{output_label}"
+				)
 
 		if outdir is None:
 			return

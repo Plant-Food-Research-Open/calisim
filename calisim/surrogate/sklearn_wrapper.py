@@ -109,13 +109,7 @@ class SklearnSurrogateModel(SurrogateBase):
 					ax=axes[i],
 					title=f"simulated_{output_label} against {parameter_name}",
 				)
-
-			fig.tight_layout()
-			if outdir is not None:
-				outfile = self.join(outdir, f"{time_now}-{task}_plot_slice.png")
-				fig.savefig(outfile)
-			else:
-				fig.show()
+			self.present_fig(fig, outdir, time_now, task, "plot_slice")
 
 			fig, axes = plt.subplots(nrows=2, figsize=self.specification.figsize)
 			df = pd.DataFrame(
@@ -131,15 +125,7 @@ class SklearnSurrogateModel(SurrogateBase):
 			df.plot.scatter(
 				"index", "emulated", ax=axes[1], title=f"Emulated {output_label}"
 			)
-
-			fig.tight_layout()
-			if outdir is not None:
-				outfile = self.join(
-					outdir, f"{time_now}-{task}_emulated_{output_label}.png"
-				)
-				fig.savefig(outfile)
-			else:
-				fig.show()
+			self.present_fig(fig, outdir, time_now, task, f"emulated_{output_label}")
 		else:
 			if self.specification.flatten_Y:
 				df[f"simulated_{output_label}"] = self.Y
@@ -153,13 +139,7 @@ class SklearnSurrogateModel(SurrogateBase):
 						ax=axes[i],
 						title=f"simulated_{output_label} against {parameter_name}",
 					)
-
-				fig.tight_layout()
-				if outdir is not None:
-					outfile = self.join(outdir, f"{time_now}-{task}_plot_slice.png")
-					fig.savefig(outfile)
-				else:
-					fig.show()
+				self.present_fig(fig, outdir, time_now, task, "plot_slice")
 
 				Y_sample = Y_sample.reshape(self.Y_shape)
 				Y = self.Y.reshape(self.Y_shape)
@@ -174,15 +154,9 @@ class SklearnSurrogateModel(SurrogateBase):
 				for i in range(Y_sample.shape[0]):
 					axes[1].plot(indx, Y_sample[i])
 				axes[1].set_title(f"Emulated {output_label}")
-
-				fig.tight_layout()
-				if outdir is not None:
-					outfile = self.join(
-						outdir, f"{time_now}-{task}_emulated_{output_label}.png"
-					)
-					fig.savefig(outfile)
-				else:
-					fig.show()
+				self.present_fig(
+					fig, outdir, time_now, task, f"emulated_{output_label}"
+				)
 			else:
 				output_labels = self.specification.output_labels
 				if len(output_labels) != self.Y_shape[-1]:  # type: ignore[arg-type]
@@ -211,9 +185,4 @@ class SklearnSurrogateModel(SurrogateBase):
 
 						row_indx += 1
 
-				fig.tight_layout()
-				if outdir is not None:
-					outfile = self.join(outdir, f"{time_now}-{task}_plot_slice.png")
-					fig.savefig(outfile)
-				else:
-					fig.show()
+				self.present_fig(fig, outdir, time_now, task, "plot_slice")

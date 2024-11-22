@@ -222,15 +222,7 @@ class PygpcUncertaintyAnalysis(CalibrationWorkflowBase):
 		for i in range(self.results.shape[0]):
 			axes[1].plot(X, self.results[i])
 		axes[1].set_title(f"Emulated {output_label}")
-
-		fig.tight_layout()
-		if outdir is not None:
-			outfile = self.join(
-				outdir, f"{time_now}-{task}_emulated_{output_label}.png"
-			)
-			fig.savefig(outfile)
-		else:
-			fig.show()
+		self.present_fig(fig, outdir, time_now, task, f"emulated_{output_label}")
 
 		plot_func = pygpc.validate_gpc_mc
 		if outdir is not None:

@@ -337,6 +337,15 @@ class CalibrationWorkflowBase(ABC):
 	def present_fig(
 		self, fig: Figure, outdir: str | None, time_now: str, task: str, suffix: str
 	) -> None:
+		"""Present the figure by showing or writing to file.
+
+		Args:
+			fig (Figure): The matplotlib figure.
+			outdir (str | None): The image output directory.
+			time_now (str): The current time.
+			task (str): The current calibration task.
+			suffix (str): The file name suffix.
+		"""
 		fig.tight_layout()
 		if outdir is not None:
 			outfile = self.join(outdir, f"{time_now}-{task}_{suffix}.png")

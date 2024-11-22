@@ -86,15 +86,7 @@ class EmukitOptimisation(EmukitBase):
 		t = np.arange(0, len(trial_history), 1)
 		ax.plot(t, trial_history)
 		ax.set_title("Optimisation history")
-
-		fig.tight_layout()
-		if outdir is not None:
-			outfile = self.join(
-				outdir, f"{time_now}-{task}_plot_optimization_history.png"
-			)
-			fig.savefig(outfile)
-		else:
-			fig.show()
+		self.present_fig(fig, outdir, time_now, task, "plot_optimization_history")
 
 		if outdir is None:
 			return

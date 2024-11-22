@@ -90,11 +90,7 @@ class SBISimulationBasedInference(SimulationBasedInferenceBase):
 		for plot_func in [analysis.pairplot, analysis.marginal_plot]:
 			plt.rcParams.update({"font.size": 8})
 			fig, _ = plot_func(posterior_samples, figsize=(24, 24), labels=self.names)
-			if outdir is not None:
-				outfile = self.join(outdir, f"{time_now}-{plot_func.__name__}.png")
-				fig.savefig(outfile)
-			else:
-				fig.show()
+			self.present_fig(fig, outdir, time_now, task, plot_func.__name__)
 
 		limits = []
 		lower_limits, _ = posterior_samples.min(axis=0)
@@ -114,11 +110,7 @@ class SBISimulationBasedInference(SimulationBasedInferenceBase):
 				labels=self.names,
 				limits=limits,
 			)
-			if outdir is not None:
-				outfile = self.join(outdir, f"{time_now}-{plot_func.__name__}.png")
-				fig.savefig(outfile)
-			else:
-				fig.show()
+			self.present_fig(fig, outdir, time_now, task, plot_func.__name__)
 
 		thetas = self.prior.sample((n_draws,))
 		xs = self.simulator(thetas)
@@ -139,14 +131,8 @@ class SBISimulationBasedInference(SimulationBasedInferenceBase):
 				plot_type=plot_type,
 				parameter_labels=self.names,
 			)
-			if outdir is not None:
-				outfile = self.join(
-					outdir,
-					f"{time_now}-{analysis.sbc_rank_plot.__name__}_{plot_type}.png",
-				)
-				fig.savefig(outfile)
-			else:
-				fig.show()
+			fig_suffix = f"{analysis.sbc_rank_plot.__name__}_{plot_type}"
+			self.present_fig(fig, outdir, time_now, task, fig_suffix)
 
 		if outdir is None:
 			return

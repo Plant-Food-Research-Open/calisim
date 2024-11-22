@@ -93,11 +93,7 @@ class LAMPESimulationBasedInference(SimulationBasedInferenceBase):
 		for plot_func in [analysis.pairplot, analysis.marginal_plot]:
 			plt.rcParams.update({"font.size": 8})
 			fig, _ = plot_func(posterior_samples, figsize=(24, 24), labels=self.names)
-			if outdir is not None:
-				outfile = self.join(outdir, f"{time_now}-{plot_func.__name__}.png")
-				fig.savefig(outfile)
-			else:
-				fig.show()
+			self.present_fig(fig, outdir, time_now, task, plot_func.__name__)
 
 		n_simulations = self.specification.num_simulations
 		levels, coverages = expected_coverage_mc(
@@ -106,11 +102,4 @@ class LAMPESimulationBasedInference(SimulationBasedInferenceBase):
 		)
 
 		fig = coverage_plot(levels, coverages, legend=task)
-		if outdir is not None:
-			outfile = self.join(
-				outdir,
-				f"{time_now}-{coverage_plot.__name__}.png",
-			)
-			fig.savefig(outfile)
-		else:
-			fig.show()
+		self.present_fig(fig, outdir, time_now, task, coverage_plot.__name__)

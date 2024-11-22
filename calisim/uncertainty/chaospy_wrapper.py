@@ -154,13 +154,7 @@ class ChaospyUncertaintyAnalysis(CalibrationWorkflowBase):
 		axes[1].plot(X, expected)
 		axes[1].set_title(f"Emulated {output_label} for {solver_name} solver")
 		axes[1].fill_between(X, expected - std, expected + std, alpha=0.5)
-
-		fig.tight_layout()
-		if outdir is not None:
-			outfile = self.join(outdir, f"{time_now}-{task}_emulated.png")
-			fig.savefig(outfile)
-		else:
-			fig.show()
+		self.present_fig(fig, outdir, time_now, task, "emulated")
 
 		if solver_name == "gp":
 			mu, sigma = self.krige.field, np.sqrt(self.krige.krige_var)
@@ -177,10 +171,4 @@ class ChaospyUncertaintyAnalysis(CalibrationWorkflowBase):
 			axes[1].plot(X, mu)
 			axes[1].set_title(f"Emulated {output_label} for Polynomial Kriging")
 			axes[1].fill_between(X, mu - sigma, mu + sigma, alpha=0.5)
-
-			fig.tight_layout()
-			if outdir is not None:
-				outfile = self.join(outdir, f"{time_now}-{task}_polynomial_kriging.png")
-				fig.savefig(outfile)
-			else:
-				fig.show()
+			self.present_fig(fig, outdir, time_now, task, "polynomial_kriging")
