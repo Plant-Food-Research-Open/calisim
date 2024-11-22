@@ -4,7 +4,6 @@ Implements the supported evolutionary algorithms using the SPOTPY library.
 
 """
 
-import os.path as osp
 from collections.abc import Callable
 
 import numpy as np
@@ -17,7 +16,6 @@ from spotpy.algorithms import NSGAII, abc, demcz, dream, fscabc, sceua
 from spotpy.parameter import Base, generate
 
 from ..base import CalibrationWorkflowBase
-from ..utils import calibration_func_wrapper
 
 
 class SPOTSetup:
@@ -100,7 +98,7 @@ class SPOTSetup:
 			np.ndarray: The simulation results.
 		"""
 		X = [X]
-		results = calibration_func_wrapper(
+		results = self.workflow.calibration_func_wrapper(
 			X,
 			self.workflow,
 			self.observed_data,
@@ -173,7 +171,7 @@ class SPOTPYEvolutionary(CalibrationWorkflowBase):
 			dbformat = "ram"
 		else:
 			dbformat = "csv"
-			dbname = osp.join(outdir, f"{time_now}_{dbname}")
+			dbname = self.join(outdir, f"{time_now}_{dbname}")
 
 		self.sampler = evolutionary_class(
 			spot_setup=self.spot_setup,
@@ -203,7 +201,7 @@ class SPOTPYEvolutionary(CalibrationWorkflowBase):
 			analyser.plot_parameterInteraction,
 		]:
 			plot_func_name = plot_func.__name__
-			outfile = osp.join(outdir, f"{time_now}_{task}_{plot_func_name}.png")
+			outfile = self.join(outdir, f"{time_now}_{task}_{plot_func_name}.png")
 			plot_func(results, fig_name=outfile)
 
 		evaluation = self.specification.observed_data
@@ -212,11 +210,11 @@ class SPOTPYEvolutionary(CalibrationWorkflowBase):
 			analyser.plot_regression,
 		]:
 			plot_func_name = plot_func.__name__
-			outfile = osp.join(outdir, f"{time_now}_{task}_{plot_func_name}.png")
+			outfile = self.join(outdir, f"{time_now}_{task}_{plot_func_name}.png")
 			plot_func(results, evaluation, fig_name=outfile)
 
 		if self.specification.method == "dream":
 			plot_func = analyser.plot_gelman_rubin
 			plot_func_name = plot_func.__name__
-			outfile = osp.join(outdir, f"{time_now}_{task}_{plot_func_name}.png")
+			outfile = self.join(outdir, f"{time_now}_{task}_{plot_func_name}.png")
 			plot_func(results, self.sample_results, outfile)

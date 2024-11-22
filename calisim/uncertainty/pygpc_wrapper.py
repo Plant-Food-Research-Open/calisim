@@ -6,7 +6,6 @@ the Pygpc library.
 
 """
 
-import os.path as osp
 from collections import OrderedDict
 from collections.abc import Callable
 
@@ -17,7 +16,6 @@ from pygpc.AbstractModel import AbstractModel
 
 from ..base import CalibrationWorkflowBase
 from ..data_model import ParameterDataType
-from ..utils import get_simulation_uuid
 
 
 class PygpcModel(AbstractModel):
@@ -39,6 +37,7 @@ class PygpcModel(AbstractModel):
 		self.observed_data = workflow.specification.observed_data
 		self.batched = workflow.specification.batched
 		self.uncertainty_kwargs = workflow.get_calibration_func_kwargs()
+		self.workflow = workflow
 
 		self.parameter_names = parameter_names
 		self.data_types = data_types
@@ -76,7 +75,9 @@ class PygpcModel(AbstractModel):
 					parameter_set[parameter_name] = int(parameter_value)
 			parameters.append(parameter_set)
 
-		simulation_ids = [get_simulation_uuid() for _ in range(len(parameters))]
+		simulation_ids = [
+			self.workflow.get_simulation_uuid() for _ in range(len(parameters))
+		]
 
 		if self.batched:
 			results = self.call_calibration_func(
@@ -162,7 +163,7 @@ class PygpcUncertaintyAnalysis(CalibrationWorkflowBase):
 			fn_results = None
 		else:
 			experiment_name = self.specification.experiment_name
-			fn_results = osp.join(outdir, f"{time_now}_{experiment_name}")
+			fn_results = self.join(outdir, f"{time_now}_{experiment_name}")
 
 		options = self.specification.method_kwargs
 		if options is None:
@@ -224,14 +225,16 @@ class PygpcUncertaintyAnalysis(CalibrationWorkflowBase):
 
 		fig.tight_layout()
 		if outdir is not None:
-			outfile = osp.join(outdir, f"{time_now}-{task}_emulated_{output_label}.png")
+			outfile = self.join(
+				outdir, f"{time_now}-{task}_emulated_{output_label}.png"
+			)
 			fig.savefig(outfile)
 		else:
 			fig.show()
 
 		plot_func = pygpc.validate_gpc_mc
 		if outdir is not None:
-			outfile = osp.join(outdir, f"{time_now}_{task}_{plot_func.__name__}")
+			outfile = self.join(outdir, f"{time_now}_{task}_{plot_func.__name__}")
 		plot_func(
 			session=self.session,
 			coeffs=self.coeffs,
@@ -244,7 +247,7 @@ class PygpcUncertaintyAnalysis(CalibrationWorkflowBase):
 
 		plot_func = pygpc.validate_gpc_plot
 		if outdir is not None:
-			outfile = osp.join(outdir, f"{time_now}_{task}_{plot_func.__name__}")
+			outfile = self.join(outdir, f"{time_now}_{task}_{plot_func.__name__}")
 		plot_func(
 			session=self.session,
 			coeffs=self.coeffs,

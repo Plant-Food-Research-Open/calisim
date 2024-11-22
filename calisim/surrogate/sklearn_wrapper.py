@@ -4,8 +4,6 @@ Implements the supported surrogate modelling methods using the Scikit-Learn libr
 
 """
 
-import os.path as osp
-
 import numpy as np
 import pandas as pd
 import sklearn.ensemble as ensemble
@@ -17,7 +15,7 @@ import sklearn.svm as svm
 from matplotlib import pyplot as plt
 
 from ..base import SurrogateBase
-from ..utils import calibration_func_wrapper, extend_X
+from ..estimators import EmukitEstimator
 
 
 class SklearnSurrogateModel(SurrogateBase):
@@ -34,7 +32,7 @@ class SklearnSurrogateModel(SurrogateBase):
 
 		Y = self.specification.Y
 		if Y is None:
-			Y = calibration_func_wrapper(
+			Y = self.calibration_func_wrapper(
 				X,
 				self,
 				self.specification.observed_data,
@@ -46,6 +44,7 @@ class SklearnSurrogateModel(SurrogateBase):
 		emulator_name = self.specification.method
 		emulators = dict(
 			gp=gp.GaussianProcessRegressor,
+			emukit_gp=EmukitEstimator,
 			rf=ensemble.RandomForestRegressor,
 			gb=ensemble.GradientBoostingRegressor,
 			lr=lm.LinearRegression,
@@ -73,7 +72,7 @@ class SklearnSurrogateModel(SurrogateBase):
 			and len(self.Y_shape) > 1
 			and self.specification.X is None
 		):
-			X = extend_X(X, self.Y_shape[1])
+			X = self.extend_X(X, self.Y_shape[1])
 			Y = Y.flatten()
 
 		self.emulator = emulator_class(**method_kwargs)
@@ -95,7 +94,7 @@ class SklearnSurrogateModel(SurrogateBase):
 		n_samples = self.specification.n_samples
 		X_sample = self.sample_parameters(n_samples)
 		if self.specification.flatten_Y and len(self.Y_shape) > 1:
-			X_sample = extend_X(X_sample, self.Y_shape[1])
+			X_sample = self.extend_X(X_sample, self.Y_shape[1])
 		Y_sample = self.emulator.predict(X_sample, return_std=False)
 
 		if len(self.Y_shape) == 1:
@@ -113,7 +112,7 @@ class SklearnSurrogateModel(SurrogateBase):
 
 			fig.tight_layout()
 			if outdir is not None:
-				outfile = osp.join(outdir, f"{time_now}-{task}_plot_slice.png")
+				outfile = self.join(outdir, f"{time_now}-{task}_plot_slice.png")
 				fig.savefig(outfile)
 			else:
 				fig.show()
@@ -135,7 +134,7 @@ class SklearnSurrogateModel(SurrogateBase):
 
 			fig.tight_layout()
 			if outdir is not None:
-				outfile = osp.join(
+				outfile = self.join(
 					outdir, f"{time_now}-{task}_emulated_{output_label}.png"
 				)
 				fig.savefig(outfile)
@@ -157,7 +156,7 @@ class SklearnSurrogateModel(SurrogateBase):
 
 				fig.tight_layout()
 				if outdir is not None:
-					outfile = osp.join(outdir, f"{time_now}-{task}_plot_slice.png")
+					outfile = self.join(outdir, f"{time_now}-{task}_plot_slice.png")
 					fig.savefig(outfile)
 				else:
 					fig.show()
@@ -178,7 +177,7 @@ class SklearnSurrogateModel(SurrogateBase):
 
 				fig.tight_layout()
 				if outdir is not None:
-					outfile = osp.join(
+					outfile = self.join(
 						outdir, f"{time_now}-{task}_emulated_{output_label}.png"
 					)
 					fig.savefig(outfile)
@@ -214,7 +213,7 @@ class SklearnSurrogateModel(SurrogateBase):
 
 				fig.tight_layout()
 				if outdir is not None:
-					outfile = osp.join(outdir, f"{time_now}-{task}_plot_slice.png")
+					outfile = self.join(outdir, f"{time_now}-{task}_plot_slice.png")
 					fig.savefig(outfile)
 				else:
 					fig.show()

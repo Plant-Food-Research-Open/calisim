@@ -6,8 +6,6 @@ the SBI library.
 
 """
 
-import os.path as osp
-
 import numpy as np
 import pandas as pd
 import torch.nn as nn
@@ -21,7 +19,6 @@ from sbi.inference import (
 )
 
 from ..base import SimulationBasedInferenceBase
-from ..utils import calibration_func_wrapper
 
 
 class SBISimulationBasedInference(SimulationBasedInferenceBase):
@@ -35,7 +32,7 @@ class SBISimulationBasedInference(SimulationBasedInferenceBase):
 		def simulator_func(X: np.ndarray) -> np.ndarray:
 			X = X.detach().cpu().numpy()
 			X = [X]
-			results = calibration_func_wrapper(
+			results = self.calibration_func_wrapper(
 				X,
 				self,
 				self.specification.observed_data,
@@ -94,7 +91,7 @@ class SBISimulationBasedInference(SimulationBasedInferenceBase):
 			plt.rcParams.update({"font.size": 8})
 			fig, _ = plot_func(posterior_samples, figsize=(24, 24), labels=self.names)
 			if outdir is not None:
-				outfile = osp.join(outdir, f"{time_now}-{plot_func.__name__}.png")
+				outfile = self.join(outdir, f"{time_now}-{plot_func.__name__}.png")
 				fig.savefig(outfile)
 			else:
 				fig.show()
@@ -118,7 +115,7 @@ class SBISimulationBasedInference(SimulationBasedInferenceBase):
 				limits=limits,
 			)
 			if outdir is not None:
-				outfile = osp.join(outdir, f"{time_now}-{plot_func.__name__}.png")
+				outfile = self.join(outdir, f"{time_now}-{plot_func.__name__}.png")
 				fig.savefig(outfile)
 			else:
 				fig.show()
@@ -143,7 +140,7 @@ class SBISimulationBasedInference(SimulationBasedInferenceBase):
 				parameter_labels=self.names,
 			)
 			if outdir is not None:
-				outfile = osp.join(
+				outfile = self.join(
 					outdir,
 					f"{time_now}-{analysis.sbc_rank_plot.__name__}_{plot_type}.png",
 				)
@@ -168,5 +165,5 @@ class SBISimulationBasedInference(SimulationBasedInferenceBase):
 				metric_dict[col_name] = score
 
 		check_stats_df = pd.DataFrame(check_stats_list)
-		outfile = osp.join(outdir, f"{time_now}-{task}_diagnostics.csv")
+		outfile = self.join(outdir, f"{time_now}-{task}_diagnostics.csv")
 		check_stats_df.to_csv(outfile, index=False)

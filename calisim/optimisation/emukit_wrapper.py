@@ -4,8 +4,6 @@ Implements the supported optimisation methods using the Emukit library.
 
 """
 
-import os.path as osp
-
 import numpy as np
 import pandas as pd
 from emukit.bayesian_optimization.acquisitions import (
@@ -18,12 +16,10 @@ from emukit.bayesian_optimization.acquisitions.local_penalization import (
 )
 from emukit.bayesian_optimization.acquisitions.log_acquisition import LogAcquisition
 from emukit.bayesian_optimization.loops import BayesianOptimizationLoop
-from emukit.core.initial_designs import RandomDesign
 from matplotlib import pyplot as plt
 
 from ..base import EmukitBase
 from ..estimators import EmukitEstimator
-from ..utils import calibration_func_wrapper
 
 
 class EmukitOptimisation(EmukitBase):
@@ -34,7 +30,7 @@ class EmukitOptimisation(EmukitBase):
 		objective_kwargs = self.get_calibration_func_kwargs()
 
 		def target_function(X: np.ndarray) -> np.ndarray:
-			return calibration_func_wrapper(
+			return self.calibration_func_wrapper(
 				X,
 				self,
 				self.specification.observed_data,
@@ -45,14 +41,7 @@ class EmukitOptimisation(EmukitBase):
 			)
 
 		n_init = self.specification.n_init
-		design = RandomDesign(self.parameter_space)
-		X = self.specification.X
-		if X is None:
-			X = design.get_samples(n_init)
-		Y = self.specification.Y
-		if Y is None:
-			Y = target_function(X)
-
+		X, Y = self.get_X_Y(n_init, target_function)
 		method_kwargs = self.specification.method_kwargs
 		estimator = EmukitEstimator(method_kwargs)
 		estimator.fit(X, Y)
@@ -100,7 +89,7 @@ class EmukitOptimisation(EmukitBase):
 
 		fig.tight_layout()
 		if outdir is not None:
-			outfile = osp.join(
+			outfile = self.join(
 				outdir, f"{time_now}-{task}_plot_optimization_history.png"
 			)
 			fig.savefig(outfile)
@@ -115,5 +104,5 @@ class EmukitOptimisation(EmukitBase):
 		for i, name in enumerate(self.names):
 			parameter_dict[name] = optimised_parameters[i]
 		parameter_df = pd.DataFrame(parameter_dict, index=[0])
-		outfile = osp.join(outdir, f"{time_now}_{task}_parameters.csv")
+		outfile = self.join(outdir, f"{time_now}_{task}_parameters.csv")
 		parameter_df.to_csv(outfile, index=False)

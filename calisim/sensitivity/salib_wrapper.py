@@ -4,14 +4,11 @@ Implements the supported sensitivity analysis methods using the SALib library.
 
 """
 
-import os.path as osp
-
 import pandas as pd
 from matplotlib import pyplot as plt
 from SALib import ProblemSpec
 
 from ..base import CalibrationWorkflowBase
-from ..utils import calibration_func_wrapper
 
 
 class SALibSensitivityAnalysis(CalibrationWorkflowBase):
@@ -74,7 +71,7 @@ class SALibSensitivityAnalysis(CalibrationWorkflowBase):
 		sp_results = self.specification.Y
 		if sp_results is None:
 			self.sp.evaluate(
-				calibration_func_wrapper,
+				self.calibration_func_wrapper,
 				self,
 				self.specification.observed_data,
 				self.names,
@@ -99,7 +96,7 @@ class SALibSensitivityAnalysis(CalibrationWorkflowBase):
 		self.sp.plot()
 		plt.tight_layout()
 		if outdir is not None:
-			outfile = osp.join(outdir, f"{time_now}-{task}_indices.png")
+			outfile = self.join(outdir, f"{time_now}-{task}_indices.png")
 			plt.savefig(outfile)
 		else:
 			plt.show()
@@ -108,7 +105,7 @@ class SALibSensitivityAnalysis(CalibrationWorkflowBase):
 		self.sp.heatmap()
 		plt.tight_layout()
 		if outdir is not None:
-			outfile = osp.join(outdir, f"{time_now}-{task}_heatmap.png")
+			outfile = self.join(outdir, f"{time_now}-{task}_heatmap.png")
 			plt.savefig(outfile)
 		else:
 			plt.show()
@@ -124,7 +121,7 @@ class SALibSensitivityAnalysis(CalibrationWorkflowBase):
 			else:
 				si_df = dfs.reset_index().rename(columns={"index": "parameter"})
 				si_type = si_df.columns[1]
-				outfile = osp.join(outdir, f"{time_now}_{task}_{si_type}.csv")
+				outfile = self.join(outdir, f"{time_now}_{task}_{si_type}.csv")
 				si_df.to_csv(outfile, index=False)
 
 		si_dfs = self.sp.to_df()
@@ -132,5 +129,5 @@ class SALibSensitivityAnalysis(CalibrationWorkflowBase):
 			recursive_write_csv(si_dfs)
 		else:
 			si_df = si_dfs.reset_index().rename(columns={"index": "parameter"})
-			outfile = osp.join(outdir, f"{time_now}_{task}_{sampler_name}.csv")
+			outfile = self.join(outdir, f"{time_now}_{task}_{sampler_name}.csv")
 			si_df.to_csv(outfile, index=False)

@@ -4,8 +4,6 @@ Implements the supported experimental design methods using the scikit-activeml l
 
 """
 
-import os.path as osp
-
 import numpy as np
 import pandas as pd
 from emukit.core.initial_designs import RandomDesign
@@ -22,7 +20,6 @@ from skactiveml.regressor import NICKernelRegressor, SklearnRegressor
 from sklearn.gaussian_process import GaussianProcessRegressor
 
 from ..base import EmukitBase
-from ..utils import calibration_func_wrapper, extend_X
 
 
 class SkActiveMLExperimentalDesign(EmukitBase):
@@ -33,7 +30,7 @@ class SkActiveMLExperimentalDesign(EmukitBase):
 		experimental_design_kwargs = self.get_calibration_func_kwargs()
 
 		def target_function(X: np.ndarray) -> np.ndarray:
-			return calibration_func_wrapper(
+			return self.calibration_func_wrapper(
 				X,
 				self,
 				self.specification.observed_data,
@@ -47,19 +44,12 @@ class SkActiveMLExperimentalDesign(EmukitBase):
 		if method_kwargs is None:
 			method_kwargs = {}
 
-		design = RandomDesign(self.parameter_space)
-		X = self.specification.X
-		if X is None:
-			X = design.get_samples(n_init)
-		Y_true = self.specification.Y
-		if Y_true is None:
-			Y_true = target_function(X)
-
+		X, Y_true = self.get_X_Y(n_init, target_function)
 		self.Y_shape = 1
 		if len(Y_true.shape) > 1:
 			self.Y_shape = Y_true.shape[1]
 			if self.Y_shape > 1:
-				X = extend_X(X, self.Y_shape)
+				X = self.extend_X(X, self.Y_shape)
 				Y_true = Y_true.flatten()
 
 		Y = np.full_like(Y_true, np.nan)
@@ -118,7 +108,7 @@ class SkActiveMLExperimentalDesign(EmukitBase):
 		n_samples = self.specification.n_samples
 		X_sample = design.get_samples(n_samples)
 		if self.Y_shape > 1:
-			X_sample = extend_X(X_sample, self.Y_shape)
+			X_sample = self.extend_X(X_sample, self.Y_shape)
 		predicated = self.emulator.predict(X_sample)
 
 		names = self.names.copy()
@@ -133,15 +123,10 @@ class SkActiveMLExperimentalDesign(EmukitBase):
 		)
 		for i, name in enumerate(self.names):
 			df.plot.scatter(name, f"emulated_{output_label}", ax=axes[i])
-		fig.tight_layout()
-		if outdir is not None:
-			outfile = osp.join(outdir, f"{time_now}-{task}_emulated_{output_label}.png")
-			fig.savefig(outfile)
-		else:
-			fig.show()
+		self.present_fig(fig, outdir, time_now, task, f"emulated_{output_label}")
 
 		if outdir is None:
 			return
 
-		outfile = osp.join(outdir, f"{time_now}_{task}_emulated_{output_label}.csv")
+		outfile = self.join(outdir, f"{time_now}_{task}_emulated_{output_label}.csv")
 		df.to_csv(outfile, index=False)

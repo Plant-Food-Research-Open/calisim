@@ -4,8 +4,6 @@ Implements the supported surrogate modelling methods using the GPyTorch library.
 
 """
 
-import os.path as osp
-
 import gpytorch
 import numpy as np
 import pandas as pd
@@ -15,7 +13,6 @@ from sklearn.preprocessing import MinMaxScaler
 from torch.utils.data import DataLoader, TensorDataset
 
 from ..base import SurrogateBase
-from ..utils import calibration_func_wrapper, extend_X
 
 
 class SingleTaskGPRegressionModel(gpytorch.models.ExactGP):
@@ -52,7 +49,7 @@ class GPyTorchSurrogateModel(SurrogateBase):
 
 		Y = self.specification.Y
 		if Y is None:
-			Y = calibration_func_wrapper(
+			Y = self.calibration_func_wrapper(
 				X,
 				self,
 				self.specification.observed_data,
@@ -63,7 +60,7 @@ class GPyTorchSurrogateModel(SurrogateBase):
 
 		self.Y_shape = Y.shape
 		if self.specification.flatten_Y and len(self.Y_shape) > 1:
-			X = extend_X(X, self.Y_shape[1])
+			X = self.extend_X(X, self.Y_shape[1])
 			Y = Y.flatten()
 
 		X_scaler = MinMaxScaler()
@@ -134,7 +131,7 @@ class GPyTorchSurrogateModel(SurrogateBase):
 		n_samples = self.specification.n_samples
 		X_sample = self.parameters.sample(n_samples, rule="sobol").T
 		if self.specification.flatten_Y and len(self.Y_shape) > 1:
-			X_sample = extend_X(X_sample, self.Y_shape[1])
+			X_sample = self.extend_X(X_sample, self.Y_shape[1])
 		X_sample = torch.tensor(
 			self.X_scaler.transform(X_sample), dtype=torch.double, device=self.device
 		)
@@ -169,7 +166,7 @@ class GPyTorchSurrogateModel(SurrogateBase):
 
 			fig.tight_layout()
 			if outdir is not None:
-				outfile = osp.join(outdir, f"{time_now}-{task}_plot_slice.png")
+				outfile = self.join(outdir, f"{time_now}-{task}_plot_slice.png")
 				fig.savefig(outfile)
 			else:
 				fig.show()
@@ -191,7 +188,7 @@ class GPyTorchSurrogateModel(SurrogateBase):
 
 			fig.tight_layout()
 			if outdir is not None:
-				outfile = osp.join(
+				outfile = self.join(
 					outdir, f"{time_now}-{task}_emulated_{output_label}.png"
 				)
 				fig.savefig(outfile)
@@ -213,7 +210,7 @@ class GPyTorchSurrogateModel(SurrogateBase):
 
 				fig.tight_layout()
 				if outdir is not None:
-					outfile = osp.join(outdir, f"{time_now}-{task}_plot_slice.png")
+					outfile = self.join(outdir, f"{time_now}-{task}_plot_slice.png")
 					fig.savefig(outfile)
 				else:
 					fig.show()
@@ -234,7 +231,7 @@ class GPyTorchSurrogateModel(SurrogateBase):
 
 				fig.tight_layout()
 				if outdir is not None:
-					outfile = osp.join(
+					outfile = self.join(
 						outdir, f"{time_now}-{task}_emulated_{output_label}.png"
 					)
 					fig.savefig(outfile)
@@ -266,5 +263,5 @@ class GPyTorchSurrogateModel(SurrogateBase):
 			metrics.append({"metric_name": metric_name, "metric_score": metric_score})
 
 		metric_df = pd.DataFrame(metrics)
-		outfile = osp.join(outdir, f"{time_now}_{task}_metrics.csv")
+		outfile = self.join(outdir, f"{time_now}_{task}_metrics.csv")
 		metric_df.to_csv(outfile, index=False)

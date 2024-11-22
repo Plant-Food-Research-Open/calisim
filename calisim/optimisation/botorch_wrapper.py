@@ -4,8 +4,6 @@ Implements Bayesian optimisation methods using the BoTorch library.
 
 """
 
-import os.path as osp
-
 import numpy as np
 import pandas as pd
 import plotly.graph_objects as go
@@ -19,7 +17,6 @@ from plotly.subplots import make_subplots
 
 from ..base import CalibrationWorkflowBase
 from ..data_model import ParameterDataType
-from ..utils import calibration_func_wrapper
 
 
 class BoTorchOptimisation(CalibrationWorkflowBase):
@@ -60,7 +57,7 @@ class BoTorchOptimisation(CalibrationWorkflowBase):
 				self, x: np.ndarray
 			) -> float | list[float] | np.ndarray | pd.DataFrame:
 				X = [x]
-				results = calibration_func_wrapper(
+				results = workflow.calibration_func_wrapper(
 					X,
 					workflow,
 					workflow.specification.observed_data,
@@ -141,7 +138,7 @@ class BoTorchOptimisation(CalibrationWorkflowBase):
 		)
 
 		if outdir is not None:
-			outfile = osp.join(outdir, f"{time_now}_{task}_objective.csv")
+			outfile = self.join(outdir, f"{time_now}_{task}_objective.csv")
 			trials_df.to_csv(outfile, index=False)
 
 		parameter_names = [col for col in trials_df if col.startswith("param_")]
@@ -157,7 +154,7 @@ class BoTorchOptimisation(CalibrationWorkflowBase):
 
 		fig.update_layout(yaxis_title="Score", showlegend=False)
 		if outdir is not None:
-			outfile = osp.join(outdir, f"{time_now}_{task}_slice_plot.png")
+			outfile = self.join(outdir, f"{time_now}_{task}_slice_plot.png")
 			fig.write_image(outfile)
 		else:
 			fig.show()
@@ -167,7 +164,7 @@ class BoTorchOptimisation(CalibrationWorkflowBase):
 		)
 		fig.update_layout(xaxis_title="Trial", yaxis_title="Score", showlegend=False)
 		if outdir is not None:
-			outfile = osp.join(outdir, f"{time_now}_{task}_trial_history.png")
+			outfile = self.join(outdir, f"{time_now}_{task}_trial_history.png")
 			fig.write_image(outfile)
 		else:
 			fig.show()

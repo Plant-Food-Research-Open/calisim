@@ -4,12 +4,9 @@ Implements the supported Bayesian quadrature methods using the Emukit library.
 
 """
 
-import os.path as osp
-
 import emukit.quadrature.kernels
 import emukit.quadrature.measures
 import numpy as np
-from emukit.core.initial_designs import RandomDesign
 from emukit.model_wrappers.gpy_quadrature_wrappers import BaseGaussianProcessGPy, RBFGPy
 from emukit.quadrature.loop import VanillaBayesianQuadratureLoop
 from emukit.quadrature.methods import VanillaBayesianQuadrature
@@ -17,7 +14,6 @@ from GPy.models import GPRegression
 from matplotlib import pyplot as plt
 
 from ..base import EmukitBase
-from ..utils import calibration_func_wrapper
 
 
 class EmukitBayesianQuadrature(EmukitBase):
@@ -28,7 +24,7 @@ class EmukitBayesianQuadrature(EmukitBase):
 		bayesian_quadrature_kwargs = self.get_calibration_func_kwargs()
 
 		def target_function(X: np.ndarray) -> np.ndarray:
-			return calibration_func_wrapper(
+			return self.calibration_func_wrapper(
 				X,
 				self,
 				self.specification.observed_data,
@@ -42,14 +38,7 @@ class EmukitBayesianQuadrature(EmukitBase):
 		if method_kwargs is None:
 			method_kwargs = {}
 
-		design = RandomDesign(self.parameter_space)
-		X = self.specification.X
-		if X is None:
-			X = design.get_samples(n_init)
-		Y = self.specification.Y
-		if Y is None:
-			Y = target_function(X)
-
+		X, Y = self.get_X_Y(n_init, target_function)
 		gp = GPRegression(X, Y, **method_kwargs)
 		emukit_rbf = RBFGPy(gp.kern)
 
@@ -77,7 +66,7 @@ class EmukitBayesianQuadrature(EmukitBase):
 		integral_mean, integral_variance = self.quadrature_loop.model.integrate()
 		fig, ax = plt.subplots(figsize=self.specification.figsize)
 		ax.set_title("Integral density")
-		self.rng = np.random.default_rng(self.specification.random_seed)
+		self.rng = self.get_default_rng(self.specification.random_seed)
 		integral_samples = self.rng.normal(
 			integral_mean, integral_variance, size=self.specification.n_samples
 		)
@@ -86,9 +75,4 @@ class EmukitBayesianQuadrature(EmukitBase):
 			alpha=0.5,
 		)
 		ax.legend()
-		fig.tight_layout()
-		if outdir is not None:
-			outfile = osp.join(outdir, f"{time_now}-{task}_integral_density.png")
-			fig.savefig(outfile)
-		else:
-			fig.show()
+		self.present_fig(fig, outdir, time_now, task, "integral_density")

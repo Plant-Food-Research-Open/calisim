@@ -4,7 +4,6 @@ Implements the supported optimisation methods using the Optuna library.
 
 """
 
-import os.path as osp
 from collections.abc import Callable
 
 import numpy as np
@@ -14,7 +13,6 @@ import pandas as pd
 
 from ..base import CalibrationWorkflowBase
 from ..data_model import DistributionModel, ParameterDataType
-from ..utils import get_simulation_uuid
 
 
 class OptunaOptimisation(CalibrationWorkflowBase):
@@ -73,7 +71,7 @@ class OptunaOptimisation(CalibrationWorkflowBase):
 						parameter_name, lower_bound, upper_bound
 					)
 
-			simulation_id = get_simulation_uuid()
+			simulation_id = self.get_simulation_uuid()
 			return call_calibration_func(
 				parameters, simulation_id, observed_data, **objective_kwargs
 			)
@@ -105,7 +103,7 @@ class OptunaOptimisation(CalibrationWorkflowBase):
 		]:
 			optimisation_plot = plot_func(self.study)
 			if outdir is not None:
-				outfile = osp.join(
+				outfile = self.join(
 					outdir, f"{time_now}_{task}_{plot_func.__name__}.png"
 				)
 				optimisation_plot.write_image(outfile)
@@ -118,5 +116,5 @@ class OptunaOptimisation(CalibrationWorkflowBase):
 		trials_df: pd.DataFrame = self.study.trials_dataframe().sort_values(
 			"value", ascending=True
 		)
-		outfile = osp.join(outdir, f"{time_now}_{task}_trials.csv")
+		outfile = self.join(outdir, f"{time_now}_{task}_trials.csv")
 		trials_df.to_csv(outfile, index=False)

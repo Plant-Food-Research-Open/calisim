@@ -4,8 +4,6 @@ The defined base class for performing history matching.
 
 """
 
-import numpy as np
-
 from .calibration_base import CalibrationWorkflowBase
 
 
@@ -16,7 +14,7 @@ class HistoryMatchingBase(CalibrationWorkflowBase):
 		"""Specify the parameters of the model calibration procedure."""
 		ensemble_size = self.specification.n_samples
 		parameter_spec = self.specification.parameter_spec.parameters
-		self.rng = np.random.default_rng(self.specification.random_seed)
+		self.rng = self.get_default_rng(self.specification.random_seed)
 
 		self.parameters = {}
 		for spec in parameter_spec:

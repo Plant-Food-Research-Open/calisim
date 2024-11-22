@@ -4,8 +4,11 @@ The defined base class for the Emukit library.
 
 """
 
+from collections.abc import Callable
+
 import numpy as np
 from emukit.core import ContinuousParameter, DiscreteParameter, ParameterSpace
+from emukit.core.initial_designs import RandomDesign
 
 from ..data_model import ParameterDataType
 from .calibration_base import CalibrationWorkflowBase
@@ -43,3 +46,26 @@ class EmukitBase(CalibrationWorkflowBase):
 			parameters.append(parameter)
 
 		self.parameter_space = ParameterSpace(parameters)
+
+	def get_X_Y(
+		self, n_init: int, target_function: Callable
+	) -> tuple[np.ndarray, np.ndarray]:
+		"""Get the X and Y matrices.
+
+		Args:
+			n_init (int): The number of samples to take
+				from the random design.
+			target_function (Callable):
+				The simulation function.
+
+		Returns:
+			tuple[np.ndarray, np.ndarray]: The X and Y matrices.
+		"""
+		design = RandomDesign(self.parameter_space)
+		X = self.specification.X
+		if X is None:
+			X = design.get_samples(n_init)
+		Y = self.specification.Y
+		if Y is None:
+			Y = target_function(X)
+		return X, Y

@@ -11,7 +11,6 @@ import openturns as ot
 
 from ..base import CalibrationWorkflowBase
 from ..data_model import ParameterDataType
-from ..utils import get_simulation_uuid
 
 
 class OpenTurnsUncertaintyAnalysis(CalibrationWorkflowBase):
@@ -69,7 +68,9 @@ class OpenTurnsUncertaintyAnalysis(CalibrationWorkflowBase):
 						parameter_set[parameter_name] = int(parameter_value)
 				parameters.append(parameter_set)
 
-			simulation_ids = [get_simulation_uuid() for _ in range(len(parameters))]
+			simulation_ids = [
+				self.get_simulation_uuid() for _ in range(len(parameters))
+			]
 
 			if self.specification.batched:
 				results = self.call_calibration_func(

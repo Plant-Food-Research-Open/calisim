@@ -6,8 +6,6 @@ the iterative_ensemble_smoother library.
 
 """
 
-import os.path as osp
-
 import iterative_ensemble_smoother as ies
 import numpy as np
 import pandas as pd
@@ -15,36 +13,10 @@ from iterative_ensemble_smoother.utils import steplength_exponential
 from matplotlib import pyplot as plt
 
 from ..base import HistoryMatchingBase
-from ..utils import get_simulation_uuid
 
 
 class IESHistoryMatching(HistoryMatchingBase):
 	"""The iterative_ensemble_smoother history matching method class."""
-
-	def specify(self) -> None:
-		"""Specify the parameters of the model calibration procedure."""
-		ensemble_size = self.specification.n_samples
-		parameter_spec = self.specification.parameter_spec.parameters
-		self.rng = np.random.default_rng(self.specification.random_seed)
-
-		self.parameters = {}
-		for spec in parameter_spec:
-			parameter_name = spec.name
-			distribution_name = spec.distribution_name.replace(" ", "_").lower()
-
-			distribution_args = spec.distribution_args
-			if distribution_args is None:
-				distribution_args = []
-
-			distribution_kwargs = spec.distribution_kwargs
-			if distribution_kwargs is None:
-				distribution_kwargs = {}
-			distribution_kwargs["size"] = ensemble_size
-
-			dist_instance = getattr(self.rng, distribution_name)
-			self.parameters[parameter_name] = dist_instance(
-				*distribution_args, **distribution_kwargs
-			)
 
 	def convert_parameters(self, X: np.ndarray) -> list[dict[str, float]]:
 		"""Convert the parameters from an array to a list of records.
@@ -79,7 +51,7 @@ class IESHistoryMatching(HistoryMatchingBase):
 		observed_data = self.specification.observed_data
 		history_matching_kwargs = self.get_calibration_func_kwargs()
 
-		simulation_ids = [get_simulation_uuid() for _ in range(len(parameters))]
+		simulation_ids = [self.get_simulation_uuid() for _ in range(len(parameters))]
 
 		if self.specification.batched:
 			ensemble_outputs = self.call_calibration_func(
@@ -192,7 +164,7 @@ class IESHistoryMatching(HistoryMatchingBase):
 
 		fig.tight_layout()
 		if outdir is not None:
-			outfile = osp.join(outdir, f"{time_now}-{task}_plot_slice.png")
+			outfile = self.join(outdir, f"{time_now}-{task}_plot_slice.png")
 			fig.savefig(outfile)
 		else:
 			fig.show()
@@ -212,7 +184,9 @@ class IESHistoryMatching(HistoryMatchingBase):
 
 		fig.tight_layout()
 		if outdir is not None:
-			outfile = osp.join(outdir, f"{time_now}-{task}_ensemble_{output_label}.png")
+			outfile = self.join(
+				outdir, f"{time_now}-{task}_ensemble_{output_label}.png"
+			)
 			fig.savefig(outfile)
 		else:
 			fig.show()
@@ -221,12 +195,12 @@ class IESHistoryMatching(HistoryMatchingBase):
 			return
 
 		X_IES_df = pd.DataFrame(self.X_IES.T, columns=parameter_names)
-		outfile = osp.join(outdir, f"{time_now}_{task}_posterior.csv")
+		outfile = self.join(outdir, f"{time_now}_{task}_posterior.csv")
 		X_IES_df.to_csv(outfile, index=False)
 
 		Y_IES_df = pd.DataFrame(
 			self.Y_IES.T,
 			columns=[f"{output_label}_{i + 1}" for i in range(self.Y_IES.shape[0])],
 		)
-		outfile = osp.join(outdir, f"{time_now}_{task}_ensemble_{output_label}.csv")
+		outfile = self.join(outdir, f"{time_now}_{task}_ensemble_{output_label}.csv")
 		Y_IES_df.to_csv(outfile, index=False)

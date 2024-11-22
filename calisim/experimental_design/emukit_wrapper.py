@@ -4,8 +4,6 @@ Implements the supported experimental design methods using the Emukit library.
 
 """
 
-import os.path as osp
-
 import numpy as np
 from emukit.core.initial_designs import RandomDesign
 from emukit.experimental_design import ExperimentalDesignLoop
@@ -17,7 +15,6 @@ from matplotlib import pyplot as plt
 
 from ..base import EmukitBase
 from ..estimators import EmukitEstimator
-from ..utils import calibration_func_wrapper
 
 
 class EmukitExperimentalDesign(EmukitBase):
@@ -28,7 +25,7 @@ class EmukitExperimentalDesign(EmukitBase):
 		experimental_design_kwargs = self.get_calibration_func_kwargs()
 
 		def target_function(X: np.ndarray) -> np.ndarray:
-			return calibration_func_wrapper(
+			return self.calibration_func_wrapper(
 				X,
 				self,
 				self.specification.observed_data,
@@ -38,15 +35,7 @@ class EmukitExperimentalDesign(EmukitBase):
 			)
 
 		n_init = self.specification.n_init
-
-		design = RandomDesign(self.parameter_space)
-		X = self.specification.X
-		if X is None:
-			X = design.get_samples(n_init)
-		Y = self.specification.Y
-		if Y is None:
-			Y = target_function(X)
-
+		X, Y = self.get_X_Y(n_init, target_function)
 		method_kwargs = self.specification.method_kwargs
 		estimator = EmukitEstimator(method_kwargs)
 		estimator.fit(X, Y)
@@ -109,9 +98,4 @@ class EmukitExperimentalDesign(EmukitBase):
 
 		axes[1].set_title(f"Emulated {output_label}")
 
-		fig.tight_layout()
-		if outdir is not None:
-			outfile = osp.join(outdir, f"{time_now}-{task}_ensemble_{output_label}.png")
-			fig.savefig(outfile)
-		else:
-			fig.show()
+		self.present_fig(fig, outdir, time_now, task, f"emulated_{output_label}")

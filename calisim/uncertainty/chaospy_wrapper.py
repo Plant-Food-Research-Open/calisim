@@ -6,8 +6,6 @@ the Chaospy library.
 
 """
 
-import os.path as osp
-
 import chaospy
 import gstools
 import numpy as np
@@ -15,7 +13,6 @@ import sklearn.linear_model as lm
 from matplotlib import pyplot as plt
 
 from ..base import CalibrationWorkflowBase
-from ..utils import calibration_func_wrapper, extend_X
 
 
 class ChaospyUncertaintyAnalysis(CalibrationWorkflowBase):
@@ -78,7 +75,7 @@ class ChaospyUncertaintyAnalysis(CalibrationWorkflowBase):
 		uncertainty_kwargs = self.get_calibration_func_kwargs()
 		Y = self.specification.Y
 		if Y is None:
-			Y = calibration_func_wrapper(
+			Y = self.calibration_func_wrapper(
 				X,
 				self,
 				self.specification.observed_data,
@@ -130,7 +127,7 @@ class ChaospyUncertaintyAnalysis(CalibrationWorkflowBase):
 				and len(Y.shape) > 1
 				and self.specification.X is None
 			):
-				X = extend_X(X, Y.shape[1])
+				X = self.extend_X(X, Y.shape[1])
 				Y = Y.flatten()
 
 			gp = gstools.Gaussian(dim=X.shape[-1])
@@ -160,7 +157,7 @@ class ChaospyUncertaintyAnalysis(CalibrationWorkflowBase):
 
 		fig.tight_layout()
 		if outdir is not None:
-			outfile = osp.join(outdir, f"{time_now}-{task}_emulated.png")
+			outfile = self.join(outdir, f"{time_now}-{task}_emulated.png")
 			fig.savefig(outfile)
 		else:
 			fig.show()
@@ -183,7 +180,7 @@ class ChaospyUncertaintyAnalysis(CalibrationWorkflowBase):
 
 			fig.tight_layout()
 			if outdir is not None:
-				outfile = osp.join(outdir, f"{time_now}-{task}_polynomial_kriging.png")
+				outfile = self.join(outdir, f"{time_now}-{task}_polynomial_kriging.png")
 				fig.savefig(outfile)
 			else:
 				fig.show()

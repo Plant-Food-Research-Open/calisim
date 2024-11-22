@@ -6,7 +6,6 @@ the PyMC library.
 
 """
 
-import os.path as osp
 from collections.abc import Callable
 
 import arviz as az
@@ -15,7 +14,6 @@ import pymc as pm
 from matplotlib import pyplot as plt
 
 from ..base import CalibrationWorkflowBase
-from ..utils import get_simulation_uuid
 
 
 class PyMCApproximateBayesianComputation(CalibrationWorkflowBase):
@@ -64,7 +62,7 @@ class PyMCApproximateBayesianComputation(CalibrationWorkflowBase):
 				parameters[name] = parameter_values[i].item()
 
 			abc_kwargs = self.get_calibration_func_kwargs()
-			simulation_id = get_simulation_uuid()
+			simulation_id = self.get_simulation_uuid()
 			observed_data = self.specification.observed_data
 			results = self.call_calibration_func(
 				parameters, simulation_id, observed_data, **abc_kwargs
@@ -112,7 +110,7 @@ class PyMCApproximateBayesianComputation(CalibrationWorkflowBase):
 			)
 
 			if outdir is not None:
-				outfile = osp.join(outdir, f"{time_now}_{task}_{plot}.png")
+				outfile = self.join(outdir, f"{time_now}_{task}_{plot}.png")
 				plt.tight_layout()
 				plt.savefig(outfile)
 				plt.close()
@@ -122,7 +120,7 @@ class PyMCApproximateBayesianComputation(CalibrationWorkflowBase):
 		def _create_plot(plot_func: Callable, plot_kwargs: dict) -> None:
 			plot_func(self.trace, **plot_kwargs)
 			if outdir is not None:
-				outfile = osp.join(
+				outfile = self.join(
 					outdir, f"{time_now}_{task}_{plot_func.__name__}.png"
 				)
 				plt.tight_layout()
@@ -153,9 +151,9 @@ class PyMCApproximateBayesianComputation(CalibrationWorkflowBase):
 			return
 
 		trace_df = self.trace.to_dataframe(include_coords=False, groups="posterior")
-		outfile = osp.join(outdir, f"{time_now}_{task}_trace.csv")
+		outfile = self.join(outdir, f"{time_now}_{task}_trace.csv")
 		trace_df.to_csv(outfile, index=False)
 
 		trace_summary_df = az.summary(self.trace)
-		outfile = osp.join(outdir, f"{time_now}_{task}_trace_summary.csv")
+		outfile = self.join(outdir, f"{time_now}_{task}_trace_summary.csv")
 		trace_summary_df.to_csv(outfile, index=False)

@@ -5,15 +5,22 @@ simulation calibration procedures.
 
 """
 
+import os.path as osp
 from abc import ABC, abstractmethod
 from collections.abc import Callable
 from functools import wraps
 
 import numpy as np
 import pandas as pd
+from matplotlib.figure import Figure
 
-from ..data_model import CalibrationModel, DistributionModel
-from ..utils import get_datetime_now
+from ..data_model import CalibrationModel, DistributionModel, ParameterDataType
+from ..utils import (
+	calibration_func_wrapper,
+	extend_X,
+	get_datetime_now,
+	get_simulation_uuid,
+)
 
 
 def pre_post_hooks(f: Callable) -> Callable:
@@ -126,6 +133,49 @@ class CalibrationWorkflowBase(ABC):
 		self.time_now = time_now
 		outdir = self.specification.outdir
 		return task, time_now, outdir
+
+	def get_simulation_uuid(self) -> str:
+		"""Get a new simulation uuid.
+
+		Returns:
+			str: The simulation uuid.
+		"""
+		return get_simulation_uuid()
+
+	def extend_X(self, X: np.ndarray, Y_rows: int) -> np.ndarray:
+		"""Extend the number of rows for X with a dummy index column.
+
+		Args:
+			X (np.ndarray): The input matrix.
+			Y_rows (int) The number of rows for the simulation outputs.
+
+		Returns:
+			np.ndarray: The extended input matrix with a dummy column.
+		"""
+		return extend_X(X, Y_rows)
+
+	def get_default_rng(self, random_seed: int | None = None) -> np.random.Generator:
+		"""Get a numpy random number generator.
+
+		Args:
+			random_seed (int | None, optional): The
+				random seed. Defaults to None.
+
+		Returns:
+			np.random.Generator: The random number generator.
+		"""
+		return np.random.default_rng(random_seed)
+
+	def join(self, *paths: str) -> str:
+		"""Join file paths.
+
+		Args:
+			paths (str): The file paths.
+
+		Returns:
+			str: The joined file paths.
+		"""
+		return osp.join(*paths)
 
 	def get_parameter_bounds(self, spec: DistributionModel) -> tuple[float, float]:
 		"""Get the lower and upper bounds from a parameter specification.
@@ -248,6 +298,51 @@ class CalibrationWorkflowBase(ABC):
 			results, parameters, simulation_id, observed_data, **method_kwargs
 		)
 		return results
+
+	def calibration_func_wrapper(
+		self,
+		X: np.ndarray,
+		workflow: "CalibrationWorkflowBase",
+		observed_data: pd.DataFrame | np.ndarray,
+		parameter_names: list[str],
+		data_types: list[ParameterDataType],
+		calibration_kwargs: dict,
+		wrap_values: bool = False,
+	) -> np.ndarray:
+		"""Wrapper function for the calibration function.
+
+		Args:
+			X (np.ndarray): The parameter set matrix.
+			workflow (CalibrationWorkflowBase): The calibration workflow.
+			observed_data (pd.DataFrame | np.ndarray): The observed data.
+			parameter_names (list[str]): The list of simulation parameter names.
+			data_types (list[ParameterDataType]): The data types for each parameter.
+			calibration_kwargs (dict): Arguments to supply to the calibration function.
+			wrap_values (bool): Whether to wrap scalar values with a list.
+				Defaults to False.
+
+		Returns:
+			np.ndarray: The simulation output data.
+		"""
+		return calibration_func_wrapper(
+			X,
+			workflow,
+			observed_data,
+			parameter_names,
+			data_types,
+			calibration_kwargs,
+			wrap_values,
+		)
+
+	def present_fig(
+		self, fig: Figure, outdir: str | None, time_now: str, task: str, suffix: str
+	) -> None:
+		fig.tight_layout()
+		if outdir is not None:
+			outfile = self.join(outdir, f"{time_now}-{task}_{suffix}.png")
+			fig.savefig(outfile)
+		else:
+			fig.show()
 
 
 class CalibrationMethodBase(CalibrationWorkflowBase):

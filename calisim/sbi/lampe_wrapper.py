@@ -6,7 +6,6 @@ the LAMPE library.
 
 """
 
-import os.path as osp
 from itertools import islice
 
 import numpy as np
@@ -21,7 +20,7 @@ from matplotlib import pyplot as plt
 from sbi import analysis as analysis
 
 from ..base import SimulationBasedInferenceBase
-from ..utils import PriorCollection, calibration_func_wrapper
+from ..utils import PriorCollection
 
 
 class LAMPESimulationBasedInference(SimulationBasedInferenceBase):
@@ -40,7 +39,7 @@ class LAMPESimulationBasedInference(SimulationBasedInferenceBase):
 		def simulator_func(X: np.ndarray) -> np.ndarray:
 			X = X.detach().cpu().numpy().T
 			X = [X]
-			results = calibration_func_wrapper(
+			results = self.calibration_func_wrapper(
 				X,
 				self,
 				self.specification.observed_data,
@@ -95,7 +94,7 @@ class LAMPESimulationBasedInference(SimulationBasedInferenceBase):
 			plt.rcParams.update({"font.size": 8})
 			fig, _ = plot_func(posterior_samples, figsize=(24, 24), labels=self.names)
 			if outdir is not None:
-				outfile = osp.join(outdir, f"{time_now}-{plot_func.__name__}.png")
+				outfile = self.join(outdir, f"{time_now}-{plot_func.__name__}.png")
 				fig.savefig(outfile)
 			else:
 				fig.show()
@@ -108,7 +107,7 @@ class LAMPESimulationBasedInference(SimulationBasedInferenceBase):
 
 		fig = coverage_plot(levels, coverages, legend=task)
 		if outdir is not None:
-			outfile = osp.join(
+			outfile = self.join(
 				outdir,
 				f"{time_now}-{coverage_plot.__name__}.png",
 			)

@@ -36,6 +36,9 @@ class EmukitEstimator(MultiOutputMixin, RegressorMixin, BaseEstimator):
 		Returns:
 		    EmukitEstimator: The estimator.
 		"""
+		if len(y.shape) == 1:
+			y = np.expand_dims(y, axis=1)
+
 		X, y = check_X_y(
 			X,
 			y,

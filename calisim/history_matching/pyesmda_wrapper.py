@@ -6,7 +6,6 @@ the pyESMDA library.
 
 """
 
-import os.path as osp
 from collections.abc import Callable
 
 import numpy as np
@@ -15,11 +14,11 @@ from matplotlib import pyplot as plt
 from pyesmda import ESMDA, ESMDA_RS
 
 from ..base import HistoryMatchingBase
-from ..utils import get_simulation_uuid
 
 
 def forward_model(
 	m_ensemble: np.ndarray,
+	workflow: HistoryMatchingBase,
 	parameter_spec: dict,
 	calibration_func: Callable,
 	history_matching_kwargs: dict,
@@ -30,6 +29,7 @@ def forward_model(
 
 	Args:
 		m_ensemble (np.ndarray): The ensemble simulation parameters.
+		workflow (HistoryMatchingBase) The calibration workflow.
 		parameter_spec (dict): The parameter specification.
 		calibration_func (Callable): The history matching function.
 		history_matching_kwargs (dict): Named arguments for the
@@ -51,7 +51,9 @@ def forward_model(
 	if history_matching_kwargs is None:
 		history_matching_kwargs = {}
 
-	simulation_ids = [get_simulation_uuid() for _ in range(m_ensemble.shape[0])]
+	simulation_ids = [
+		workflow.get_simulation_uuid() for _ in range(m_ensemble.shape[0])
+	]
 	if batched:
 		ensemble_outputs = calibration_func(
 			parameters, simulation_ids, observed_data, **history_matching_kwargs
@@ -109,6 +111,7 @@ class PyESMDAHistoryMatching(HistoryMatchingBase):
 			m_init=m_init,
 			forward_model=forward_model,
 			forward_model_kwargs=dict(
+				workflow=self,
 				parameter_spec=self.parameters,
 				calibration_func=self.call_calibration_func,
 				history_matching_kwargs=history_matching_kwargs,
@@ -158,7 +161,7 @@ class PyESMDAHistoryMatching(HistoryMatchingBase):
 
 		fig.tight_layout()
 		if outdir is not None:
-			outfile = osp.join(outdir, f"{time_now}-{task}_plot_slice.png")
+			outfile = self.join(outdir, f"{time_now}-{task}_plot_slice.png")
 			fig.savefig(outfile)
 		else:
 			fig.show()
@@ -176,7 +179,9 @@ class PyESMDAHistoryMatching(HistoryMatchingBase):
 		axes[1].set_title(f"Ensemble {output_label}")
 		fig.tight_layout()
 		if outdir is not None:
-			outfile = osp.join(outdir, f"{time_now}-{task}_ensemble_{output_label}.png")
+			outfile = self.join(
+				outdir, f"{time_now}-{task}_ensemble_{output_label}.png"
+			)
 			fig.savefig(outfile)
 		else:
 			fig.show()
@@ -185,12 +190,12 @@ class PyESMDAHistoryMatching(HistoryMatchingBase):
 			return
 
 		X_IES_df = pd.DataFrame(parameter_samples)
-		outfile = osp.join(outdir, f"{time_now}_{task}_posterior.csv")
+		outfile = self.join(outdir, f"{time_now}_{task}_posterior.csv")
 		X_IES_df.to_csv(outfile, index=False)
 
 		for pred_df in pred_dfs:
 			pred_df["x"] = pred_df.index
 		pred_df = pd.concat(pred_dfs)
 		pred_df.columns = [output_label, "x"]
-		outfile = osp.join(outdir, f"{time_now}_{task}_ensemble_{output_label}.csv")
+		outfile = self.join(outdir, f"{time_now}_{task}_ensemble_{output_label}.csv")
 		pred_df.to_csv(outfile, index=False)

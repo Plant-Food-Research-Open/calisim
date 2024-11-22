@@ -6,7 +6,6 @@ the PyABC library.
 
 """
 
-import os.path as osp
 from datetime import timedelta
 
 import numpy as np
@@ -16,7 +15,6 @@ from matplotlib import pyplot as plt
 
 from ..base import CalibrationWorkflowBase
 from ..data_model import ParameterDataType
-from ..utils import get_simulation_uuid
 
 
 class PyABCApproximateBayesianComputation(CalibrationWorkflowBase):
@@ -95,7 +93,7 @@ class PyABCApproximateBayesianComputation(CalibrationWorkflowBase):
 
 		def simulator_func(parameters: dict) -> dict:
 			observed_data = self.specification.observed_data
-			simulation_id = get_simulation_uuid()
+			simulation_id = self.get_simulation_uuid()
 
 			results = self.call_calibration_func(
 				parameters, simulation_id, observed_data, **abc_kwargs
@@ -106,7 +104,7 @@ class PyABCApproximateBayesianComputation(CalibrationWorkflowBase):
 				summary_stats[output_labels[0]] = results  # type: ignore[index]
 			else:
 				for i, output_label in enumerate(output_labels):  # type: ignore[arg-type]
-					summary_stats[output_label] = results[i]
+					summary_stats[output_label] = results[i]  # type: ignore[index]
 
 			return summary_stats
 
@@ -162,7 +160,7 @@ class PyABCApproximateBayesianComputation(CalibrationWorkflowBase):
 		]:
 			abc_plot = plot_func(self.history)
 			if outdir is not None:
-				outfile = osp.join(
+				outfile = self.join(
 					outdir, f"{time_now}_{task}_{plot_func.__name__}.png"
 				)
 				plt.tight_layout()
@@ -182,15 +180,17 @@ class PyABCApproximateBayesianComputation(CalibrationWorkflowBase):
 			distribution_dfs.append(df)
 
 		distribution_dfs = pd.concat(distribution_dfs)
-		outfile = osp.join(outdir, f"{time_now}-{task}_parameters.csv")
+		outfile = self.join(outdir, f"{time_now}-{task}_parameters.csv")
 		distribution_dfs.to_csv(outfile, index=False)
 
 		populations_df = self.history.get_all_populations()
-		outfile = osp.join(outdir, f"{time_now}-{task}_populations.csv")
+		outfile = self.join(outdir, f"{time_now}-{task}_populations.csv")
 		populations_df.to_csv(outfile, index=False)
 
 		population_particles_df = self.history.get_nr_particles_per_population()
-		outfile = osp.join(outdir, f"{time_now}-{task}_nr_particles_per_population.csv")
+		outfile = self.join(
+			outdir, f"{time_now}-{task}_nr_particles_per_population.csv"
+		)
 		population_particles_df.to_csv(outfile, index=False)
 
 		distances_df = []
@@ -200,5 +200,5 @@ class PyABCApproximateBayesianComputation(CalibrationWorkflowBase):
 			distances_df.append(df)
 		distances_df = pd.concat(distances_df)
 
-		outfile = osp.join(outdir, f"{time_now}-{task}_distances.csv")
+		outfile = self.join(outdir, f"{time_now}-{task}_distances.csv")
 		distances_df.to_csv(outfile, index=False)
