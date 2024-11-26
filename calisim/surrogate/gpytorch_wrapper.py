@@ -4,35 +4,14 @@ Implements the supported surrogate modelling methods using the GPyTorch library.
 
 """
 
-import gpytorch
 import numpy as np
 import pandas as pd
 import torch
 from matplotlib import pyplot as plt
 from sklearn.preprocessing import MinMaxScaler
-from torch.utils.data import DataLoader, TensorDataset
 
 from ..base import SurrogateBase
-
-
-class SingleTaskGPRegressionModel(gpytorch.models.ExactGP):
-	def __init__(
-		self,
-		train_x: torch.Tensor,
-		train_y: torch.Tensor,
-		likelihood: gpytorch.likelihoods.Likelihood,
-	):
-		super().__init__(train_x, train_y, likelihood)
-
-		self.mean_module = gpytorch.means.ConstantMean()
-		self.covar_module = gpytorch.kernels.ScaleKernel(gpytorch.kernels.RBFKernel())
-
-	def forward(self, X: torch.Tensor) -> gpytorch.distributions.MultivariateNormal:
-		X = X - X.min(0)[0]
-		X = 2 * (X / X.max(0)[0]) - 1
-		mean_x = self.mean_module(X)
-		covar_x = self.covar_module(X)
-		return gpytorch.distributions.MultivariateNormal(mean_x, covar_x)
+from ..estimators import get_single_task_exact_gp
 
 
 class GPyTorchSurrogateModel(SurrogateBase):
@@ -68,42 +47,21 @@ class GPyTorchSurrogateModel(SurrogateBase):
 		self.X_scaler = X_scaler
 
 		if torch.cuda.is_available():
-			device = torch.device("cuda")
+			device = "cuda"
 		else:
-			device = torch.device("cpu")
+			device = "cpu"
 
-		X = torch.tensor(X_scaler.transform(X), dtype=torch.double, device=device)
-		Y = torch.tensor(Y, dtype=torch.double, device=device)
+		X = torch.tensor(X_scaler.transform(X), dtype=torch.double)
+		Y = torch.tensor(Y, dtype=torch.double)
 
-		dataset = TensorDataset(X, Y)
-		batch_size = self.specification.batch_size
-		loader = DataLoader(dataset, batch_size=batch_size, shuffle=False)
-
-		likelihood = gpytorch.likelihoods.GaussianLikelihood().to(device).double()
-		model = SingleTaskGPRegressionModel(X, Y, likelihood).to(device).double()
-
-		optimizer = torch.optim.Adam(model.parameters(), lr=self.specification.lr)
-		mll = gpytorch.mlls.ExactMarginalLogLikelihood(likelihood, model)
-
-		for epoch in range(self.specification.n_iterations):
-			model.train()
-			for X_batch, Y_batch in loader:
-				optimizer.zero_grad()
-				output = model(X_batch)
-				loss = -mll(output, Y_batch)
-				loss.backward()
-				optimizer.step()
-
-			if self.specification.verbose:
-				print(
-					f"Epoch: {epoch}",
-					f"Training Loss: {loss.item()}",  # type: ignore[possibly-undefined]
-				)
+		model = get_single_task_exact_gp(
+			lr=self.specification.lr,
+			max_epochs=self.specification.n_iterations,
+			device=device,
+		)
+		model.fit(X, Y)
 
 		self.emulator = model
-		self.likelihood = likelihood
-		self.optimizer = optimizer
-		self.loader = loader
 		self.device = device
 		self.X = X
 		self.Y = Y
@@ -113,37 +71,16 @@ class GPyTorchSurrogateModel(SurrogateBase):
 		task, time_now, outdir = self.prepare_analyze()
 
 		model = self.emulator
-		model.eval()
-		likelihood = self.likelihood
-		likelihood.eval()
-
-		loader = self.loader
-		X = []
-		Y = []
-		for X_batch, y_batch in loader:
-			X.extend(X_batch)
-			Y.extend(y_batch)
-		X = torch.stack(X)
-		Y = torch.stack(Y)
-		X = X.detach().cpu().numpy()
-		Y = Y.detach().cpu().numpy()
+		X = self.X
+		Y = self.Y
 
 		n_samples = self.specification.n_samples
 		X_sample = self.parameters.sample(n_samples, rule="sobol").T
 		if self.specification.flatten_Y and len(self.Y_shape) > 1:
 			X_sample = self.extend_X(X_sample, self.Y_shape[1])
-		X_sample = torch.tensor(
-			self.X_scaler.transform(X_sample), dtype=torch.double, device=self.device
-		)
+		X_sample = torch.tensor(self.X_scaler.transform(X_sample), dtype=torch.double)
 
-		with torch.no_grad(), gpytorch.settings.fast_pred_var():
-			sample_predictions = likelihood(model(X_sample))
-			Y_sample = sample_predictions.mean.detach().cpu().numpy()
-			sample_lower, sample_upper = sample_predictions.confidence_region()
-			sample_lower, sample_upper = (
-				sample_lower.detach().cpu().numpy(),
-				sample_upper.detach().cpu().numpy(),
-			)
+		Y_sample = model.predict(X_sample, return_std=False)
 
 		names = self.names.copy()
 		if X.shape[1] > len(names):
@@ -211,31 +148,3 @@ class GPyTorchSurrogateModel(SurrogateBase):
 				self.present_fig(
 					fig, outdir, time_now, task, f"emulated_{output_label}"
 				)
-
-		if outdir is None:
-			return
-
-		metrics = []
-		for metric_func in [
-			gpytorch.metrics.mean_standardized_log_loss,
-			gpytorch.metrics.mean_squared_error,
-			gpytorch.metrics.mean_absolute_error,
-			gpytorch.metrics.quantile_coverage_error,
-			gpytorch.metrics.negative_log_predictive_density,
-		]:
-			metric_name = metric_func.__name__
-			metric_score = (
-				metric_func(
-					sample_predictions,
-					torch.tensor(Y_sample, dtype=torch.double, device=self.device),
-				)
-				.cpu()
-				.detach()
-				.numpy()
-				.item()
-			)
-			metrics.append({"metric_name": metric_name, "metric_score": metric_score})
-
-		metric_df = pd.DataFrame(metrics)
-		outfile = self.join(outdir, f"{time_now}_{task}_metrics.csv")
-		metric_df.to_csv(outfile, index=False)

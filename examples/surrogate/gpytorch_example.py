@@ -56,13 +56,11 @@ specification = SurrogateModelMethodModel(
 	n_samples=100,
 	n_iterations=100,
 	lr=0.01,
-	batch_size=10000,
 	output_labels=["Lynx"],
 	verbose=True,
 	flatten_Y=True,
 	batched=False,
 	calibration_func_kwargs=dict(t=observed_data.year),
-	# method_kwargs=dict(kernel=kernels.RBF()),
 )
 
 calibrator = SurrogateModelMethod(
