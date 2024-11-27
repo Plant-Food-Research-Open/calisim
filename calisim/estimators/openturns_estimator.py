@@ -202,7 +202,7 @@ class KrigingEstimator(MultiOutputMixin, RegressorMixin, BaseEstimator):
 		check_is_fitted(self, "is_fitted_")
 		X = check_array(X, ensure_2d=True, dtype="numeric")
 		y_pred = self.emulator(X)
-		return y_pred
+		return np.array(y_pred)
 
 	def score(
 		self, X: np.ndarray, y: np.ndarray, sample_weight: np.ndarray | None = None

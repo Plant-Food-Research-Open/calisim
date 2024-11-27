@@ -30,7 +30,16 @@ class ParameterDataType(Enum):
 	CONTINUOUS: str = "continuous"
 
 
-class DistributionModel(BaseModel):
+class ParameterModel(BaseModel):
+	parameter_values: list[float] | None = Field(
+		description="The list of parameter values.", default=None
+	)
+	parameter_tags: list[str] | None = Field(
+		description="A list of metadata tags.", default=None
+	)
+
+
+class DistributionModel(ParameterModel):
 	"""The probability distribution data model.
 
 	Args:
@@ -49,9 +58,6 @@ class DistributionModel(BaseModel):
 	)
 	data_type: ParameterDataType = Field(
 		description="The distribution data type", default=ParameterDataType.CONTINUOUS
-	)
-	parameter_values: list[float] | None = Field(
-		description="The list of parameter values.", default=None
 	)
 
 
