@@ -14,7 +14,13 @@ import numpy as np
 import pandas as pd
 from matplotlib.figure import Figure
 
-from ..data_model import CalibrationModel, DistributionModel, ParameterDataType
+from ..data_model import (
+	CalibrationModel,
+	DistributionModel,
+	ParameterDataType,
+	ParameterSpecification,
+)
+from ..statistics import get_full_factorial_design
 from ..utils import (
 	calibration_func_wrapper,
 	extend_X,
@@ -333,6 +339,22 @@ class CalibrationWorkflowBase(ABC):
 			calibration_kwargs,
 			wrap_values,
 		)
+
+	def get_full_factorial_design(
+		self, parameter_spec: ParameterSpecification | None = None
+	) -> np.ndarray:
+		"""Get a full factorial design from a parameter specification.
+
+		Args:
+			parameter_spec (ParameterSpecification | None, optional):
+				The simulation parameter specification. Defaults to None.
+
+		Returns:
+			np.ndarray: The full factorial design.
+		"""
+		if parameter_spec is None:
+			parameter_spec = self.specification.parameter_spec
+		return get_full_factorial_design(parameter_spec)  # type: ignore[arg-type]
 
 	def present_fig(
 		self, fig: Figure, outdir: str | None, time_now: str, task: str, suffix: str
