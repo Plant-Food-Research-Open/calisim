@@ -1,3 +1,4 @@
+from .design import get_full_factorial_design
 from .distance_metrics import (
 	DistanceMetricBase,
 	L1Norm,
@@ -12,6 +13,7 @@ from .distance_metrics import (
 )
 
 __all__ = [
+	get_full_factorial_design,
 	DistanceMetricBase,
 	get_distance_metric_func,
 	get_distance_metrics,

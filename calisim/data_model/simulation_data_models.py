@@ -50,6 +50,9 @@ class DistributionModel(BaseModel):
 	data_type: ParameterDataType = Field(
 		description="The distribution data type", default=ParameterDataType.CONTINUOUS
 	)
+	parameter_values: list[float] | None = Field(
+		description="The list of parameter values.", default=None
+	)
 
 
 class ParameterSpecification(BaseModel):
