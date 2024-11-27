@@ -39,7 +39,6 @@ class UncertaintyAnalysisMethodModel(CalibrationModel):
 	    BaseModel (CalibrationModel): The calibration base model class.
 	"""
 
-	n_out: int = Field(description="Number of simulation outputs", default=1)
 	flatten_Y: bool = Field(description="Flatten the simulation outputs", default=False)
 	order: int = Field(
 		description="The order for polynomial chaos expansion", default=2

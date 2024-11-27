@@ -52,16 +52,20 @@ specification = UncertaintyAnalysisMethodModel(
 	parameter_spec=parameter_spec,
 	observed_data=observed_data.lynx.values,
 	outdir=outdir,
-	solver="kriging",
-	method="linear",
-	algorithm="least_squares",
+	solver="functional_chaos",
 	order=4,
 	n_samples=100,
+	test_size=0.1,
 	n_out=len(observed_data),
 	output_labels=["Lynx"],
 	batch=False,
 	calibration_func_kwargs=dict(t=observed_data.year),
-	method_kwargs=dict(rule="cholesky", normed=False, cross_truncation=1.0),
+	method_kwargs=dict(
+		basis="constant",
+		covariance="SquaredExponential",
+		covariance_scale=1,
+		covariance_amplitude=1,
+	),
 )
 
 calibrator = UncertaintyAnalysisMethod(

@@ -103,6 +103,10 @@ class CalibrationModel(BaseModel):
 	Y: np.ndarray | pd.DataFrame | list | None = Field(
 		description="The simulation output data", default=None
 	)
+	test_size: float | int = Field(
+		description="The size of the testing dataset.", default=0.0
+	)
+	n_out: int = Field(description="Number of simulation outputs", default=1)
 	observed_data: np.ndarray | pd.DataFrame | None = Field(
 		description="The empirical or observed data", default=None
 	)

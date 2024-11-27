@@ -8,122 +8,105 @@ the OpenTurns library.
 
 import numpy as np
 import openturns as ot
+import openturns.viewer as viewer
 
-from ..base import CalibrationWorkflowBase
-from ..data_model import ParameterDataType
+from ..base import OpenTurnsBase
+from ..estimators import FunctionalChaosEstimator, KrigingEstimator
 
 
-class OpenTurnsUncertaintyAnalysis(CalibrationWorkflowBase):
+class OpenTurnsUncertaintyAnalysis(OpenTurnsBase):
 	"""The OpenTurns uncertainty analysis method class."""
-
-	def specify(self) -> None:
-		"""Specify the parameters of the model calibration procedure."""
-		self.names = []
-		self.data_types = []
-		parameters = []
-
-		parameter_spec = self.specification.parameter_spec.parameters
-		for spec in parameter_spec:
-			parameter_name = spec.name
-			self.names.append(parameter_name)
-
-			data_type = spec.data_type
-			self.data_types.append(data_type)
-
-			distribution_name = (
-				spec.distribution_name.replace("_", " ").title().replace(" ", "")
-			)
-			distribution_args = spec.distribution_args
-			if distribution_args is None:
-				distribution_args = []
-
-			distribution_kwargs = spec.distribution_kwargs
-			if distribution_kwargs is None:
-				distribution_kwargs = {}
-
-			dist_instance = getattr(ot, distribution_name)
-			parameter = dist_instance(*distribution_args, **distribution_kwargs)
-			parameters.append(parameter)
-
-		distribution_collection = ot.DistributionCollection(parameters)
-		self.parameters = ot.JointDistribution(distribution_collection)
 
 	def execute(self) -> None:
 		"""Execute the simulation calibration procedure."""
-		observed_data = self.specification.observed_data
-		parameter_names = self.names
-		data_types = self.data_types
 		uncertainty_kwargs = self.get_calibration_func_kwargs()
 
-		def uncertainty_func(X: np.ndarray) -> np.ndarray:
-			parameters = []
-			for theta in X:
-				parameter_set = {}
-				for i, parameter_value in enumerate(theta):
-					parameter_name = parameter_names[i]
-					data_type = data_types[i]
-					if data_type == ParameterDataType.CONTINUOUS:
-						parameter_set[parameter_name] = parameter_value
-					else:
-						parameter_set[parameter_name] = int(parameter_value)
-				parameters.append(parameter_set)
-
-			simulation_ids = [
-				self.get_simulation_uuid() for _ in range(len(parameters))
-			]
-
-			if self.specification.batched:
-				results = self.call_calibration_func(
-					parameters, simulation_ids, observed_data, **uncertainty_kwargs
-				)
-			else:
-				results = []
-				for i, parameter in enumerate(parameters):
-					simulation_id = simulation_ids[i]
-					result = self.call_calibration_func(
-						parameter,
-						simulation_id,
-						observed_data,
-						**uncertainty_kwargs,
-					)
-					results.append(result)  # type: ignore[arg-type]
-
-			results = np.array(results)
-			return results
+		def target_function(X: np.ndarray) -> np.ndarray:
+			return self.calibration_func_wrapper(
+				X,
+				self,
+				self.specification.observed_data,
+				self.names,
+				self.data_types,
+				uncertainty_kwargs,
+			)
 
 		n_samples = self.specification.n_samples
-		experiment = ot.LHSExperiment(self.parameters, n_samples)
-		X = self.specification.X
-		if X is None:
-			X = experiment.generate()
+		X, Y = self.get_X_Y(n_samples, target_function)
 
-		n_dim = self.parameters.getDimension()
-		n_out = self.specification.n_out
-		Y = self.specification.Y
-		if Y is None:
-			uncertainty_func_wrapper = ot.PythonFunction(
-				n_dim, n_out, func_sample=uncertainty_func
+		test_size = self.specification.test_size
+		if test_size > 0:
+			test_indx = int(test_size * len(X))
+			self.X_test = X[:test_indx, :]
+			self.Y_test = Y[:test_indx, :]
+
+			X = X[test_indx:, :]
+			Y = Y[test_indx:, :]
+		else:
+			self.X_test = None
+			self.Y_test = None
+
+		solver_name = self.specification.solver
+		if solver_name == "functional_chaos":
+			estimator = FunctionalChaosEstimator(
+				self.parameters, self.specification.order
 			)
-			Y = uncertainty_func_wrapper(X)
+		elif solver_name == "kriging":
+			method_kwargs = self.specification.method_kwargs
+			if method_kwargs is None:
+				method_kwargs = {}
 
-		emulator_name = self.specification.solver
-		emulators = dict(
-			functional_chaos=ot.FunctionalChaosAlgorithm, kriging=ot.KrigingAlgorithm
-		)
-		emulator_class = emulators.get(emulator_name, None)
-		if emulator_class is None:
+			method_kwargs["covariance_scale"] = method_kwargs.get(
+				"covariance_scale", 1.0
+			)
+			method_kwargs["covariance_amplitude"] = method_kwargs.get(
+				"covariance_amplitude", 1.0
+			)
+			method_kwargs["parameters"] = self.parameters
+			method_kwargs["n_out"] = self.specification.n_out
+			estimator = KrigingEstimator(**method_kwargs)
+		else:
 			raise ValueError(
-				f"Unsupported emulator: {emulator_name}.",
-				f"Supported emulators are {', '.join(emulators)}",
+				"Solver must be 'functional_chaos' or 'kriging' \
+					for OpenTurnsUncertaintyAnalysis execute()"
 			)
 
-		emulator = emulator_class(X, Y)
-		emulator.run()
-
-		self.emulator = emulator
+		estimator.fit(X, Y)
+		self.emulator = estimator
 
 	def analyze(self) -> None:
 		"""Analyze the results of the simulation calibration procedure."""
-		pass
-		# task, time_now, outdir = self.prepare_analyze()
-		# solver_name = self.specification.solver
+		task, time_now, outdir = self.prepare_analyze()
+		solver_name = self.specification.solver
+		input_dim = self.parameters.getDimension()
+
+		solver_name = self.specification.solver
+		if solver_name == "functional_chaos":
+			sensitivityAnalysis = ot.FunctionalChaosSobolIndices(self.emulator.result)
+
+			first_order = [
+				sensitivityAnalysis.getSobolIndex(i) for i in range(input_dim)
+			]
+			total_order = [
+				sensitivityAnalysis.getSobolTotalIndex(i) for i in range(input_dim)
+			]
+			graph = ot.SobolIndicesAlgorithm.DrawSobolIndices(
+				self.names, first_order, total_order
+			)
+
+			view = viewer.View(graph)
+			if outdir is not None:
+				outfile = self.join(outdir, f"{time_now}-{task}_sobol_indices.png")
+				view.save(outfile)
+
+		if self.X_test is not None and self.Y_test is not None:
+			y_pred = self.emulator.predict(self.X_test)
+			val = ot.MetaModelValidation(self.Y_test, y_pred)
+			graph = val.drawValidation()
+			view = viewer.View(graph)
+			r2 = val.computeR2Score()[0]
+			graph.setTitle(f"R2: {r2}")
+
+			if outdir is not None:
+				outfile = self.join(outdir, f"{time_now}-{task}_r2.png")
+				view.save(outfile)
