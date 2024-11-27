@@ -31,6 +31,12 @@ class ParameterDataType(Enum):
 
 
 class ParameterModel(BaseModel):
+	"""The simulation parameter data model.
+
+	Args:
+	    BaseModel (BaseModel): The Pydantic Base model class.
+	"""
+
 	parameter_values: list[float] | None = Field(
 		description="The list of parameter values.", default=None
 	)
@@ -43,7 +49,7 @@ class DistributionModel(ParameterModel):
 	"""The probability distribution data model.
 
 	Args:
-	    BaseModel (BaseModel): The Pydantic Base model class.
+	    ParameterModel (ParameterModel): The simulation parameter data model.
 	"""
 
 	name: str = Field(description="The parameter name")
