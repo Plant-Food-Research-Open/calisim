@@ -37,11 +37,15 @@ class ParameterModel(BaseModel):
 	    BaseModel (BaseModel): The Pydantic Base model class.
 	"""
 
+	name: str = Field(description="The parameter name")
 	parameter_values: list[float] | None = Field(
 		description="The list of parameter values.", default=None
 	)
 	parameter_tags: list[dict[str, str]] | None = Field(
 		description="A collection of metadata tags.", default=None
+	)
+	data_type: ParameterDataType = Field(
+		description="The parameter data type", default=ParameterDataType.CONTINUOUS
 	)
 
 
@@ -52,7 +56,6 @@ class DistributionModel(ParameterModel):
 	    ParameterModel (ParameterModel): The simulation parameter data model.
 	"""
 
-	name: str = Field(description="The parameter name")
 	distribution_name: str = Field(
 		description="The distribution name", default="uniform"
 	)
@@ -61,9 +64,6 @@ class DistributionModel(ParameterModel):
 	)
 	distribution_kwargs: dict[str, Any] | None = Field(
 		description="The distribution named arguments", default=None
-	)
-	data_type: ParameterDataType = Field(
-		description="The distribution data type", default=ParameterDataType.CONTINUOUS
 	)
 
 
