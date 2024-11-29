@@ -22,7 +22,7 @@ class OpenTurnsUncertaintyAnalysis(OpenTurnsBase):
 		uncertainty_kwargs = self.get_calibration_func_kwargs()
 
 		def target_function(X: np.ndarray) -> np.ndarray:
-			return self.calibration_func_wrapper(
+			Y = self.calibration_func_wrapper(
 				X,
 				self,
 				self.specification.observed_data,
@@ -30,6 +30,9 @@ class OpenTurnsUncertaintyAnalysis(OpenTurnsBase):
 				self.data_types,
 				uncertainty_kwargs,
 			)
+			if len(Y.shape) == 1:
+				Y = np.expand_dims(Y, axis=1)
+			return Y
 
 		n_samples = self.specification.n_samples
 		X, Y = self.get_X_Y(n_samples, target_function)

@@ -119,7 +119,7 @@ class CalibrationModel(BaseModel):
 		description="The size of the testing dataset.", default=0.0
 	)
 	n_out: int = Field(description="Number of simulation outputs", default=1)
-	observed_data: np.ndarray | pd.DataFrame | None = Field(
+	observed_data: np.ndarray | pd.DataFrame | float | None = Field(
 		description="The empirical or observed data", default=None
 	)
 	n_samples: int = Field(description="The number of samples to take", default=1)

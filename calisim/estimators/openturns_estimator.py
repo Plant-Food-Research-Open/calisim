@@ -140,7 +140,17 @@ class KrigingEstimator(MultiOutputMixin, RegressorMixin, BaseEstimator):
 			linear=ot.LinearBasisFactory,
 			quadratic=ot.QuadraticBasisFactory,
 		)
-		self.basis = supported_basis.get(basis, ot.ConstantBasisFactory)(input_dim)
+		self.basis = supported_basis.get(basis, ot.ConstantBasisFactory)(
+			input_dim
+		).build()
+
+		if n_out > 1:
+			self.basis = ot.Basis(
+				[
+					ot.AggregatedFunction([self.basis.build(k)] * n_out)
+					for k in range(self.basis.getSize())
+				]
+			)
 
 		self.covariance = getattr(ot, covariance)(
 			[covariance_scale] * input_dim, [covariance_amplitude]
@@ -180,7 +190,7 @@ class KrigingEstimator(MultiOutputMixin, RegressorMixin, BaseEstimator):
 		self.is_fitted_ = True
 		self.n_features_in_ = X.shape[1]
 
-		self.algo = ot.KrigingAlgorithm(X, y, self.covariance)
+		self.algo = ot.KrigingAlgorithm(X, y, self.covariance, self.basis)
 		self.algo.run()
 		self.result = self.algo.getResult()
 		self.emulator = self.result.getMetaModel()

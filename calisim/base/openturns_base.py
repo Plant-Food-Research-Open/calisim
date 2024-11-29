@@ -19,12 +19,19 @@ class OpenTurnsBase(CalibrationWorkflowBase):
 		"""Specify the parameters of the model calibration procedure."""
 		self.names = []
 		self.data_types = []
+		self.bounds: tuple[list[float], list[float]] = ([], [])
 		parameters = []
 
 		parameter_spec = self.specification.parameter_spec.parameters
 		for spec in parameter_spec:
 			parameter_name = spec.name
 			self.names.append(parameter_name)
+
+			bounds = self.get_parameter_bounds(spec)
+			lower_bound, upper_bound = bounds
+			lower_bounds, upper_bounds = self.bounds
+			lower_bounds.append(lower_bound)
+			upper_bounds.append(upper_bound)
 
 			data_type = spec.data_type
 			self.data_types.append(data_type)
@@ -97,7 +104,7 @@ class OpenTurnsBase(CalibrationWorkflowBase):
 
 		Y = self.specification.Y
 		if Y is None:
-			uncertainty_func_wrapper = self.get_ot_func_wrapper(target_function)
-			Y = uncertainty_func_wrapper(X)
+			ot_func_wrapper = self.get_ot_func_wrapper(target_function)
+			Y = ot_func_wrapper(X)
 
 		return X, Y
