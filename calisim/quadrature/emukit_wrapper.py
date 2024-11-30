@@ -16,12 +16,12 @@ from matplotlib import pyplot as plt
 from ..base import EmukitBase
 
 
-class EmukitBayesianQuadrature(EmukitBase):
+class EmukitQuadrature(EmukitBase):
 	"""The Emukit Bayesian quadrature method class."""
 
 	def execute(self) -> None:
 		"""Execute the simulation calibration procedure."""
-		bayesian_quadrature_kwargs = self.get_calibration_func_kwargs()
+		quadrature_kwargs = self.get_calibration_func_kwargs()
 
 		def target_function(X: np.ndarray) -> np.ndarray:
 			return self.calibration_func_wrapper(
@@ -30,7 +30,7 @@ class EmukitBayesianQuadrature(EmukitBase):
 				self.specification.observed_data,
 				self.names,
 				self.data_types,
-				bayesian_quadrature_kwargs,
+				quadrature_kwargs,
 			)
 
 		n_init = self.specification.n_init

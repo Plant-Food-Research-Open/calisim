@@ -1,16 +1,16 @@
 import numpy as np
 import pandas as pd
 
-from calisim.bayesian_quadrature import (
-	BayesianQuadratureMethod,
-	BayesianQuadratureMethodModel,
-)
 from calisim.data_model import (
 	DistributionModel,
 	ParameterDataType,
 	ParameterSpecification,
 )
 from calisim.example_models import LotkaVolterraModel
+from calisim.quadrature import (
+	QuadratureMethod,
+	QuadratureMethodModel,
+)
 from calisim.utils import get_examples_outdir
 
 model = LotkaVolterraModel()
@@ -34,7 +34,7 @@ parameter_spec = ParameterSpecification(
 )
 
 
-def bayesian_quadrature_func(
+def quadrature_func(
 	parameters: dict, simulation_id: str, observed_data: np.ndarray | None, t: pd.Series
 ) -> float | list[float]:
 	simulation_parameters = dict(h0=34.0, l0=5.9, t=t, gamma=0.84, delta=0.026)
@@ -47,8 +47,8 @@ def bayesian_quadrature_func(
 
 
 outdir = get_examples_outdir()
-specification = BayesianQuadratureMethodModel(
-	experiment_name="emukit_bayesian_quadrature",
+specification = QuadratureMethodModel(
+	experiment_name="emukit_quadrature",
 	parameter_spec=parameter_spec,
 	observed_data=observed_data.lynx.values,
 	outdir=outdir,
@@ -63,8 +63,8 @@ specification = BayesianQuadratureMethodModel(
 )
 
 
-calibrator = BayesianQuadratureMethod(
-	calibration_func=bayesian_quadrature_func,
+calibrator = QuadratureMethod(
+	calibration_func=quadrature_func,
 	specification=specification,
 	engine="emukit",
 )

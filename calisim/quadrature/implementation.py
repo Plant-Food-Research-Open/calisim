@@ -1,6 +1,6 @@
-"""Contains the implementations for the Bayesian quadrature methods
+"""Contains the implementations for the quadrature methods
 
-Implements the supported Bayesian quadrature methods.
+Implements the supported quadrature methods.
 
 """
 
@@ -10,26 +10,26 @@ from pydantic import Field
 
 from ..base import CalibrationMethodBase, CalibrationWorkflowBase
 from ..data_model import CalibrationModel
-from .emukit_wrapper import EmukitBayesianQuadrature
+from .emukit_wrapper import EmukitQuadrature
 
-TASK = "bayesian_quadrature"
+TASK = "quadrature"
 IMPLEMENTATIONS: dict[str, type[CalibrationWorkflowBase]] = dict(
-	emukit=EmukitBayesianQuadrature
+	emukit=EmukitQuadrature
 )
 
 
 def get_implementations() -> dict[str, type[CalibrationWorkflowBase]]:
-	"""Get the calibration implementations for Bayesian quadrature.
+	"""Get the calibration implementations for quadrature.
 
 	Returns:
 		Dict[str, type[CalibrationWorkflowBase]]: The dictionary
-			of calibration implementations for Bayesian quadrature.
+			of calibration implementations for quadrature.
 	"""
 	return IMPLEMENTATIONS
 
 
-class BayesianQuadratureMethodModel(CalibrationModel):
-	"""The Bayesian quadrature method data model.
+class QuadratureMethodModel(CalibrationModel):
+	"""The quadrature method data model.
 
 	Args:
 	    BaseModel (CalibrationModel): The calibration base model class.
@@ -44,24 +44,24 @@ class BayesianQuadratureMethodModel(CalibrationModel):
 	)
 
 
-class BayesianQuadratureMethod(CalibrationMethodBase):
-	"""The Bayesian quadrature method class."""
+class QuadratureMethod(CalibrationMethodBase):
+	"""The quadrature method class."""
 
 	def __init__(
 		self,
 		calibration_func: Callable,
-		specification: BayesianQuadratureMethodModel,
+		specification: QuadratureMethodModel,
 		engine: str = "emukit",
 		implementation: CalibrationWorkflowBase | None = None,
 	) -> None:
-		"""BayesianQuadratureMethod constructor.
+		"""QuadratureMethod constructor.
 
 		Args:
 			calibration_func (Callable): The calibration function.
 				For example, a simulation function or objective function.
-		    specification (BayesianQuadratureMethodModel): The calibration
+		    specification (QuadratureMethodModel): The calibration
 				specification.
-		    engine (str, optional): The Bayesian quadrature backend.
+		    engine (str, optional): The Quadrature backend.
 				Defaults to "emukit".
 			implementation (CalibrationWorkflowBase | None): The
 				calibration workflow implementation.
