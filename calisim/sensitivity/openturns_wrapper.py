@@ -33,7 +33,7 @@ class OpenTurnsSensitivityAnalysis(OpenTurnsBase):
 		if method not in self.supported_methods:
 			raise ValueError(
 				f"Unsupported sensitivity analysis algorithm: {method}.",
-				f"Supported algorithms are {', '.join(self.supported_methods)}",
+				f"Supported algorithms are: {', '.join(self.supported_methods)}",
 			)
 
 		sensitivity_kwargs = self.get_calibration_func_kwargs()
@@ -143,5 +143,5 @@ class OpenTurnsSensitivityAnalysis(OpenTurnsBase):
 		else:
 			raise ValueError(
 				f"Unsupported sensitivity analysis algorithm: {method}.",
-				f"Supported algorithms are {', '.join(self.supported_methods)}",
+				f"Supported algorithms are: {', '.join(self.supported_methods)}",
 			)
