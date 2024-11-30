@@ -113,8 +113,6 @@ class OptunaOptimisation(CalibrationWorkflowBase):
 		if outdir is None:
 			return
 
-		trials_df: pd.DataFrame = self.study.trials_dataframe().sort_values(
-			"value", ascending=True
-		)
+		trials_df: pd.DataFrame = self.study.trials_dataframe()
 		outfile = self.join(outdir, f"{time_now}_{task}_trials.csv")
 		trials_df.to_csv(outfile, index=False)

@@ -9,6 +9,7 @@ the OpenTurns library.
 import numpy as np
 import openturns as ot
 import openturns.viewer as viewer
+import pandas as pd
 
 from ..base import OpenTurnsBase
 from ..estimators import KrigingEstimator
@@ -78,6 +79,7 @@ class OpenTurnsOptimisation(OpenTurnsBase):
 	def analyze(self) -> None:
 		"""Analyze the results of the simulation calibration procedure."""
 		task, time_now, outdir = self.prepare_analyze()
+		method = self.specification.method
 
 		result = self.study.getResult()
 		graph = result.drawOptimalValueHistory()
@@ -87,3 +89,32 @@ class OpenTurnsOptimisation(OpenTurnsBase):
 				outdir, f"{time_now}-{task}_plot_optimization_history.png"
 			)
 			view.save(outfile)
+
+		graph = result.drawErrorHistory()
+		view = viewer.View(graph)
+		if outdir is not None:
+			outfile = self.join(outdir, f"{time_now}-{task}_plot_error_history.png")
+			view.save(outfile)
+
+		if outdir is None:
+			return
+
+		parameters = result.getInputSample()
+		objective_results = result.getOutputSample()
+
+		trial_rows = []
+		for i, parameter_set in enumerate(parameters):
+			trial_row = dict(algorithm=method, number=i)
+
+			objective_result = objective_results[i]
+			for j, objective_result in enumerate(objective_result):
+				trial_row[f"value_{j}"] = objective_result
+
+			for j, name in enumerate(self.names):
+				trial_row[f"param_{name}"] = parameter_set[j]
+
+			trial_rows.append(trial_row)
+
+		trials_df: pd.DataFrame = pd.DataFrame(trial_rows)
+		outfile = self.join(outdir, f"{time_now}_{task}_trials.csv")
+		trials_df.to_csv(outfile, index=False)
