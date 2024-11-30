@@ -16,6 +16,12 @@ Emukit
 .. automodule:: calisim.optimisation.emukit_wrapper
    :members:
 
+OpenTurns
+---------
+
+.. automodule:: calisim.optimisation.openturns_wrapper
+   :members:
+
 Optuna
 ------
 

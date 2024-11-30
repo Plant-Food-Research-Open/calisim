@@ -25,6 +25,12 @@ History Matching
 .. automodule:: calisim.base.history_matching_base
    :members:
 
+OpenTurns
+---------
+
+.. automodule:: calisim.base.openturns_base
+   :members:
+
 Simulation-Based Inference
 --------------------------
 

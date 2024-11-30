@@ -14,6 +14,7 @@ API Reference
     history_matching.rst
     optimisation.rst
     quadrature.rst
+    reliability.rst
     sbi.rst
     sensitivity.rst
     surrogate.rst
