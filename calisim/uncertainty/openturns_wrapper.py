@@ -85,13 +85,11 @@ class OpenTurnsUncertaintyAnalysis(OpenTurnsBase):
 
 		solver_name = self.specification.solver
 		if solver_name == "functional_chaos":
-			sensitivityAnalysis = ot.FunctionalChaosSobolIndices(self.emulator.result)
+			sobol_indices = ot.FunctionalChaosSobolIndices(self.emulator.result)
 
-			first_order = [
-				sensitivityAnalysis.getSobolIndex(i) for i in range(input_dim)
-			]
+			first_order = [sobol_indices.getSobolIndex(i) for i in range(input_dim)]
 			total_order = [
-				sensitivityAnalysis.getSobolTotalIndex(i) for i in range(input_dim)
+				sobol_indices.getSobolTotalIndex(i) for i in range(input_dim)
 			]
 			graph = ot.SobolIndicesAlgorithm.DrawSobolIndices(
 				self.names, first_order, total_order
@@ -107,7 +105,7 @@ class OpenTurnsUncertaintyAnalysis(OpenTurnsBase):
 			val = ot.MetaModelValidation(self.Y_test, y_pred)
 			graph = val.drawValidation()
 			view = viewer.View(graph)
-			r2 = val.computeR2Score()[0]
+			r2 = self.emulator.score(self.X_test, self.Y_test)
 			graph.setTitle(f"R2: {r2}")
 
 			if outdir is not None:

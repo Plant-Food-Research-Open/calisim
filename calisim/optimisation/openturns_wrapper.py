@@ -1,7 +1,7 @@
-"""Contains the implementations for uncertainty analysis methods using
+"""Contains the implementations for optimisation methods using
 OpenTurns
 
-Implements the supported uncertainty analysis methods using
+Implements the supported optimisation methods using
 the OpenTurns library.
 
 """
@@ -20,6 +20,17 @@ class OpenTurnsOptimisation(OpenTurnsBase):
 
 	def execute(self) -> None:
 		"""Execute the simulation calibration procedure."""
+		method = self.specification.method
+
+		supported_methods = list(ot.Pagmo.GetAlgorithmNames())
+		supported_methods.append("kriging")
+
+		if method not in supported_methods:
+			raise ValueError(
+				f"Unsupported optimisation algorithm: {method}.",
+				f"Supported optimisation algorithms are {', '.join(supported_methods)}",
+			)
+
 		optimisation_kwargs = self.get_calibration_func_kwargs()
 
 		def target_function(X: np.ndarray) -> np.ndarray:
@@ -43,7 +54,7 @@ class OpenTurnsOptimisation(OpenTurnsBase):
 
 		n_init = self.specification.n_init
 		n_iterations = self.specification.n_iterations
-		method = self.specification.method
+
 		if method == "kriging":
 			X, Y = self.get_X_Y(n_init, target_function)
 

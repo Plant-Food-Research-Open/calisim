@@ -6,13 +6,17 @@ Implements the supported sensitivity analysis methods.
 
 from collections.abc import Callable
 
+from pydantic import Field
+
 from ..base import CalibrationMethodBase, CalibrationWorkflowBase
 from ..data_model import CalibrationModel
+from .openturns_wrapper import OpenTurnsSensitivityAnalysis
 from .salib_wrapper import SALibSensitivityAnalysis
 
 TASK = "sensitivity_analysis"
 IMPLEMENTATIONS: dict[str, type[CalibrationWorkflowBase]] = dict(
-	salib=SALibSensitivityAnalysis
+	salib=SALibSensitivityAnalysis,
+	openturns=OpenTurnsSensitivityAnalysis,
 )
 
 
@@ -33,6 +37,10 @@ class SensitivityAnalysisMethodModel(CalibrationModel):
 	    BaseModel (CalibrationModel): The calibration
 			base model class.
 	"""
+
+	order: int = Field(
+		description="The order for the polynomial chaos expansion", default=2
+	)
 
 
 class SensitivityAnalysisMethod(CalibrationMethodBase):
