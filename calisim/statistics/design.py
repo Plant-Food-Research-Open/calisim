@@ -1,7 +1,7 @@
-"""Contains utilities for configuring .
+"""Contains utilities for the design of experiments.
 
-This module defines utility functions for distance metrics
-that can be used to compare simulated and observational data.
+This module defines utility functions for various
+experimental design methods.
 """
 
 from itertools import product
