@@ -75,6 +75,7 @@ pytest-xdist = "^3.6.1"
 pytest-env = "^1.1.5"
 types-pyyaml = "^6.0.12.20240917"
 ruff = "^0.7.0"
+jupyterlab = "^4.3.1"
 
 [tool.poetry.group.torch.dependencies]
 sbi = "<=0.22.0"
