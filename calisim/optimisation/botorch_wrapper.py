@@ -91,7 +91,7 @@ class BoTorchOptimisation(CalibrationWorkflowBase):
 
 		sobol = Models.SOBOL(search_space=experiment.search_space)
 		n_init = self.specification.n_init
-		n_trials = self.specification.n_samples
+		n_trials = self.specification.n_iterations
 
 		for i in range(n_init):
 			generator_run = sobol.gen(n=1)

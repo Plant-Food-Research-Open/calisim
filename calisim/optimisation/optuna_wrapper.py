@@ -86,7 +86,7 @@ class OptunaOptimisation(CalibrationWorkflowBase):
 				call_calibration_func=self.call_calibration_func,
 				objective_kwargs=objective_kwargs,
 			),
-			n_trials=self.specification.n_samples,
+			n_trials=self.specification.n_iterations,
 			n_jobs=self.specification.n_jobs,
 		)
 
