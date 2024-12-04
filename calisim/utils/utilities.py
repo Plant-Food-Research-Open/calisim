@@ -8,6 +8,7 @@ for the calibration of simulations.
 import os.path as osp
 import uuid
 from datetime import datetime
+from pathlib import Path
 
 import numpy as np
 import pandas as pd
@@ -43,6 +44,21 @@ def get_examples_outdir() -> str:
 	    str: The output directory.
 	"""
 	return osp.join("examples", "outdir")
+
+
+def create_file_path(file_path: str) -> str:
+	"""Create file path if it does not exist.
+
+	Args:
+		file_path (str): The file path to create.
+
+	Returns:
+		str: The created file path.
+	"""
+	path = Path(file_path)
+	if not path.is_dir():
+		path.mkdir(parents=True, exist_ok=True)
+	return file_path
 
 
 def calibration_func_wrapper(

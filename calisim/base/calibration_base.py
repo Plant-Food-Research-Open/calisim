@@ -23,6 +23,7 @@ from ..data_model import (
 from ..statistics import get_full_factorial_design
 from ..utils import (
 	calibration_func_wrapper,
+	create_file_path,
 	extend_X,
 	get_datetime_now,
 	get_simulation_uuid,
@@ -182,6 +183,17 @@ class CalibrationWorkflowBase(ABC):
 			str: The joined file paths.
 		"""
 		return osp.join(*paths)
+
+	def create_file_path(self, file_path: str) -> str:
+		"""Create file path if it does not exist.
+
+		Args:
+			file_path (str): The file path to create.
+
+		Returns:
+			str: The created file path.
+		"""
+		return create_file_path(file_path)
 
 	def get_parameter_bounds(self, spec: DistributionModel) -> tuple[float, float]:
 		"""Get the lower and upper bounds from a parameter specification.
