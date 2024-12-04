@@ -179,6 +179,7 @@ class PyESMDAHistoryMatching(HistoryMatchingBase):
 
 		X_IES_df = pd.DataFrame(parameter_samples)
 		outfile = self.join(outdir, f"{time_now}_{task}_posterior.csv")
+		self.append_artifact(outfile)
 		X_IES_df.to_csv(outfile, index=False)
 
 		for pred_df in pred_dfs:
@@ -186,4 +187,5 @@ class PyESMDAHistoryMatching(HistoryMatchingBase):
 		pred_df = pd.concat(pred_dfs)
 		pred_df.columns = [output_label, "x"]
 		outfile = self.join(outdir, f"{time_now}_{task}_ensemble_{output_label}.csv")
+		self.append_artifact(outfile)
 		pred_df.to_csv(outfile, index=False)

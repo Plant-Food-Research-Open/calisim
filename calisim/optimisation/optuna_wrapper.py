@@ -106,6 +106,7 @@ class OptunaOptimisation(CalibrationWorkflowBase):
 				outfile = self.join(
 					outdir, f"{time_now}_{task}_{plot_func.__name__}.png"
 				)
+				self.append_artifact(outfile)
 				optimisation_plot.write_image(outfile)
 			else:
 				optimisation_plot.show()
@@ -115,4 +116,5 @@ class OptunaOptimisation(CalibrationWorkflowBase):
 
 		trials_df: pd.DataFrame = self.study.trials_dataframe()
 		outfile = self.join(outdir, f"{time_now}_{task}_trials.csv")
+		self.append_artifact(outfile)
 		trials_df.to_csv(outfile, index=False)

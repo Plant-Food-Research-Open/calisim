@@ -99,6 +99,7 @@ class OpenTurnsReliabilityAnalysis(OpenTurnsBase):
 			outfile = self.join(
 				outdir, f"{time_now}-{task}_{method}_plot_importance_factors.png"
 			)
+			self.append_artifact(outfile)
 			view.save(outfile)
 
 		graph = self.sampler.drawProbabilityConvergence()
@@ -108,4 +109,5 @@ class OpenTurnsReliabilityAnalysis(OpenTurnsBase):
 			outfile = self.join(
 				outdir, f"{time_now}-{task}_{method}_plot_probability_convergence.png"
 			)
+			self.append_artifact(outfile)
 			view.save(outfile)

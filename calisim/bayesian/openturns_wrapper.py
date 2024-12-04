@@ -120,6 +120,7 @@ class OpenTurnsBayesianCalibration(OpenTurnsBase):
 		view = viewer.View(grid)
 		if outdir is not None:
 			outfile = self.join(outdir, f"{time_now}-{task}_plot_posterior.png")
+			self.append_artifact(outfile)
 			view.save(outfile)
 
 		if outdir is None:
@@ -127,4 +128,5 @@ class OpenTurnsBayesianCalibration(OpenTurnsBase):
 
 		trace_df = pd.DataFrame(sample, columns=self.names)
 		outfile = self.join(outdir, f"{time_now}_{task}_trace.csv")
+		self.append_artifact(outfile)
 		trace_df.to_csv(outfile, index=False)

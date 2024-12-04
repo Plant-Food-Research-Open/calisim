@@ -99,12 +99,14 @@ class OpenTurnsOptimisation(OpenTurnsBase):
 			outfile = self.join(
 				outdir, f"{time_now}-{task}_plot_optimization_history.png"
 			)
+			self.append_artifact(outfile)
 			view.save(outfile)
 
 		graph = result.drawErrorHistory()
 		view = viewer.View(graph)
 		if outdir is not None:
 			outfile = self.join(outdir, f"{time_now}-{task}_plot_error_history.png")
+			self.append_artifact(outfile)
 			view.save(outfile)
 
 		if outdir is None:
@@ -128,4 +130,5 @@ class OpenTurnsOptimisation(OpenTurnsBase):
 
 		trials_df: pd.DataFrame = pd.DataFrame(trial_rows)
 		outfile = self.join(outdir, f"{time_now}_{task}_trials.csv")
+		self.append_artifact(outfile)
 		trials_df.to_csv(outfile, index=False)

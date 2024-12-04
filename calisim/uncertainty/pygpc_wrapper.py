@@ -227,6 +227,7 @@ class PygpcUncertaintyAnalysis(CalibrationWorkflowBase):
 		plot_func = pygpc.validate_gpc_mc
 		if outdir is not None:
 			outfile = self.join(outdir, f"{time_now}_{task}_{plot_func.__name__}")
+			self.append_artifact(outfile)
 		plot_func(
 			session=self.session,
 			coeffs=self.coeffs,
@@ -240,6 +241,7 @@ class PygpcUncertaintyAnalysis(CalibrationWorkflowBase):
 		plot_func = pygpc.validate_gpc_plot
 		if outdir is not None:
 			outfile = self.join(outdir, f"{time_now}_{task}_{plot_func.__name__}")
+			self.append_artifact(outfile)
 		plot_func(
 			session=self.session,
 			coeffs=self.coeffs,

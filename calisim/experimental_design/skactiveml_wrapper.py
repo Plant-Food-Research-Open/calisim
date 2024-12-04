@@ -129,4 +129,5 @@ class SkActiveMLExperimentalDesign(EmukitBase):
 			return
 
 		outfile = self.join(outdir, f"{time_now}_{task}_emulated_{output_label}.csv")
+		self.append_artifact(outfile)
 		df.to_csv(outfile, index=False)

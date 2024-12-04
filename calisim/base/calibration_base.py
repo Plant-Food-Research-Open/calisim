@@ -76,6 +76,7 @@ class CalibrationWorkflowBase(ABC):
 		self.task = task
 		self.calibration_func = calibration_func
 		self.specification = specification
+		self.artifacts: list[str] = []
 
 	@abstractmethod
 	def specify(self) -> None:
@@ -368,6 +369,22 @@ class CalibrationWorkflowBase(ABC):
 			parameter_spec = self.specification.parameter_spec
 		return get_full_factorial_design(parameter_spec)  # type: ignore[arg-type]
 
+	def get_artifacts(self) -> list[str]:
+		"""Getter method for the artifact list.
+
+		Returns:
+			list[str]: The calibration workflow artifact list.
+		"""
+		return self.artifacts
+
+	def append_artifact(self, artifact: str) -> None:
+		"""Add a new artifact to the artifacts list.
+
+		Args:
+			artifact (str): The artifact to append.
+		"""
+		self.artifacts.append(artifact)
+
 	def present_fig(
 		self, fig: Figure, outdir: str | None, time_now: str, task: str, suffix: str
 	) -> None:
@@ -383,6 +400,7 @@ class CalibrationWorkflowBase(ABC):
 		fig.tight_layout()
 		if outdir is not None:
 			outfile = self.join(outdir, f"{time_now}-{task}_{suffix}.png")
+			self.append_artifact(outfile)
 			fig.savefig(outfile)
 		else:
 			fig.show()
@@ -503,3 +521,11 @@ class CalibrationMethodBase(CalibrationWorkflowBase):
 			return ", ".join(self.supported_engines)
 		else:
 			return self.supported_engines
+
+	def get_artifacts(self) -> list[str]:
+		"""Getter method for the artifact list.
+
+		Returns:
+			list[str]: The calibration workflow artifact list.
+		"""
+		return self.implementation.get_artifacts()

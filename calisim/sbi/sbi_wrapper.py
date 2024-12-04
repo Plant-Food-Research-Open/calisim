@@ -152,4 +152,5 @@ class SBISimulationBasedInference(SimulationBasedInferenceBase):
 
 		check_stats_df = pd.DataFrame(check_stats_list)
 		outfile = self.join(outdir, f"{time_now}-{task}_diagnostics.csv")
+		self.append_artifact(outfile)
 		check_stats_df.to_csv(outfile, index=False)

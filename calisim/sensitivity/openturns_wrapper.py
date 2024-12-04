@@ -90,6 +90,7 @@ class OpenTurnsSensitivityAnalysis(OpenTurnsBase):
 				outfile = self.join(
 					outdir, f"{time_now}-{task}_sobol_{method}_indices.png"
 				)
+				self.append_artifact(outfile)
 				view.save(outfile)
 		elif method == "chaos_sobol":
 			first_order = [self.sp.getSobolIndex(i) for i in range(input_dim)]
@@ -103,6 +104,7 @@ class OpenTurnsSensitivityAnalysis(OpenTurnsBase):
 				outfile = self.join(
 					outdir, f"{time_now}-{task}_chaos_sobol_indices.png"
 				)
+				self.append_artifact(outfile)
 				view.save(outfile)
 		elif method == "chaos_ancova":
 			indices = self.sp.getIndices()
@@ -115,6 +117,7 @@ class OpenTurnsSensitivityAnalysis(OpenTurnsBase):
 			view = viewer.View(graph)
 			if outdir is not None:
 				outfile = self.join(outdir, f"{time_now}-{task}_ancova_indices.png")
+				self.append_artifact(outfile)
 				view.save(outfile)
 
 			graph = ot.SobolIndicesAlgorithm.DrawImportanceFactors(
@@ -127,6 +130,7 @@ class OpenTurnsSensitivityAnalysis(OpenTurnsBase):
 				outfile = self.join(
 					outdir, f"{time_now}-{task}_uncorrelated_ancova_indices.png"
 				)
+				self.append_artifact(outfile)
 				view.save(outfile)
 
 			graph = ot.SobolIndicesAlgorithm.DrawImportanceFactors(
@@ -139,6 +143,7 @@ class OpenTurnsSensitivityAnalysis(OpenTurnsBase):
 				outfile = self.join(
 					outdir, f"{time_now}-{task}_correlated_ancova_indices.png"
 				)
+				self.append_artifact(outfile)
 				view.save(outfile)
 		else:
 			raise ValueError(

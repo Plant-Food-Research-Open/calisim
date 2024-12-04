@@ -97,6 +97,7 @@ class SALibSensitivityAnalysis(CalibrationWorkflowBase):
 		plt.tight_layout()
 		if outdir is not None:
 			outfile = self.join(outdir, f"{time_now}-{task}_indices.png")
+			self.append_artifact(outfile)
 			plt.savefig(outfile)
 		else:
 			plt.show()
@@ -106,6 +107,7 @@ class SALibSensitivityAnalysis(CalibrationWorkflowBase):
 		plt.tight_layout()
 		if outdir is not None:
 			outfile = self.join(outdir, f"{time_now}-{task}_heatmap.png")
+			self.append_artifact(outfile)
 			plt.savefig(outfile)
 		else:
 			plt.show()
@@ -122,6 +124,7 @@ class SALibSensitivityAnalysis(CalibrationWorkflowBase):
 				si_df = dfs.reset_index().rename(columns={"index": "parameter"})
 				si_type = si_df.columns[1]
 				outfile = self.join(outdir, f"{time_now}_{task}_{si_type}.csv")
+				self.append_artifact(outfile)
 				si_df.to_csv(outfile, index=False)
 
 		si_dfs = self.sp.to_df()
@@ -130,4 +133,5 @@ class SALibSensitivityAnalysis(CalibrationWorkflowBase):
 		else:
 			si_df = si_dfs.reset_index().rename(columns={"index": "parameter"})
 			outfile = self.join(outdir, f"{time_now}_{task}_{sampler_name}.csv")
+			self.append_artifact(outfile)
 			si_df.to_csv(outfile, index=False)

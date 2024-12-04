@@ -98,6 +98,7 @@ class OpenTurnsUncertaintyAnalysis(OpenTurnsBase):
 			view = viewer.View(graph)
 			if outdir is not None:
 				outfile = self.join(outdir, f"{time_now}-{task}_sobol_indices.png")
+				self.append_artifact(outfile)
 				view.save(outfile)
 
 		if self.X_test is not None and self.Y_test is not None:
@@ -110,4 +111,5 @@ class OpenTurnsUncertaintyAnalysis(OpenTurnsBase):
 
 			if outdir is not None:
 				outfile = self.join(outdir, f"{time_now}-{task}_r2.png")
+				self.append_artifact(outfile)
 				view.save(outfile)

@@ -163,6 +163,7 @@ class PyABCApproximateBayesianComputation(CalibrationWorkflowBase):
 				outfile = self.join(
 					outdir, f"{time_now}_{task}_{plot_func.__name__}.png"
 				)
+				self.append_artifact(outfile)
 				plt.tight_layout()
 				plt.savefig(outfile)
 				plt.close()
@@ -181,16 +182,19 @@ class PyABCApproximateBayesianComputation(CalibrationWorkflowBase):
 
 		distribution_dfs = pd.concat(distribution_dfs)
 		outfile = self.join(outdir, f"{time_now}-{task}_parameters.csv")
+		self.append_artifact(outfile)
 		distribution_dfs.to_csv(outfile, index=False)
 
 		populations_df = self.history.get_all_populations()
 		outfile = self.join(outdir, f"{time_now}-{task}_populations.csv")
+		self.append_artifact(outfile)
 		populations_df.to_csv(outfile, index=False)
 
 		population_particles_df = self.history.get_nr_particles_per_population()
 		outfile = self.join(
 			outdir, f"{time_now}-{task}_nr_particles_per_population.csv"
 		)
+		self.append_artifact(outfile)
 		population_particles_df.to_csv(outfile, index=False)
 
 		distances_df = []
@@ -201,4 +205,5 @@ class PyABCApproximateBayesianComputation(CalibrationWorkflowBase):
 		distances_df = pd.concat(distances_df)
 
 		outfile = self.join(outdir, f"{time_now}-{task}_distances.csv")
+		self.append_artifact(outfile)
 		distances_df.to_csv(outfile, index=False)

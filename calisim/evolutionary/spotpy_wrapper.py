@@ -202,6 +202,7 @@ class SPOTPYEvolutionary(CalibrationWorkflowBase):
 		]:
 			plot_func_name = plot_func.__name__
 			outfile = self.join(outdir, f"{time_now}_{task}_{plot_func_name}.png")
+			self.append_artifact(outfile)
 			plot_func(results, fig_name=outfile)
 
 		evaluation = self.specification.observed_data
@@ -211,10 +212,12 @@ class SPOTPYEvolutionary(CalibrationWorkflowBase):
 		]:
 			plot_func_name = plot_func.__name__
 			outfile = self.join(outdir, f"{time_now}_{task}_{plot_func_name}.png")
+			self.append_artifact(outfile)
 			plot_func(results, evaluation, fig_name=outfile)
 
 		if self.specification.method == "dream":
 			plot_func = analyser.plot_gelman_rubin
 			plot_func_name = plot_func.__name__
 			outfile = self.join(outdir, f"{time_now}_{task}_{plot_func_name}.png")
+			self.append_artifact(outfile)
 			plot_func(results, self.sample_results, outfile)

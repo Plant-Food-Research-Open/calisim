@@ -139,6 +139,7 @@ class BoTorchOptimisation(CalibrationWorkflowBase):
 
 		if outdir is not None:
 			outfile = self.join(outdir, f"{time_now}_{task}_objective.csv")
+			self.append_artifact(outfile)
 			trials_df.to_csv(outfile, index=False)
 
 		parameter_names = [col for col in trials_df if col.startswith("param_")]
@@ -155,6 +156,7 @@ class BoTorchOptimisation(CalibrationWorkflowBase):
 		fig.update_layout(yaxis_title="Score", showlegend=False)
 		if outdir is not None:
 			outfile = self.join(outdir, f"{time_now}_{task}_slice_plot.png")
+			self.append_artifact(outfile)
 			fig.write_image(outfile)
 		else:
 			fig.show()
@@ -166,5 +168,6 @@ class BoTorchOptimisation(CalibrationWorkflowBase):
 		if outdir is not None:
 			outfile = self.join(outdir, f"{time_now}_{task}_trial_history.png")
 			fig.write_image(outfile)
+			self.append_artifact(outfile)
 		else:
 			fig.show()

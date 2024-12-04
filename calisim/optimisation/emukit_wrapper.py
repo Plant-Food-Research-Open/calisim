@@ -97,4 +97,5 @@ class EmukitOptimisation(EmukitBase):
 			parameter_dict[name] = optimised_parameters[i]
 		parameter_df = pd.DataFrame(parameter_dict, index=[0])
 		outfile = self.join(outdir, f"{time_now}_{task}_parameters.csv")
+		self.append_artifact(outfile)
 		parameter_df.to_csv(outfile, index=False)

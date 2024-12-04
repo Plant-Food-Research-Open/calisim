@@ -111,6 +111,7 @@ class PyMCApproximateBayesianComputation(CalibrationWorkflowBase):
 
 			if outdir is not None:
 				outfile = self.join(outdir, f"{time_now}_{task}_{plot}.png")
+				self.append_artifact(outfile)
 				plt.tight_layout()
 				plt.savefig(outfile)
 				plt.close()
@@ -123,6 +124,7 @@ class PyMCApproximateBayesianComputation(CalibrationWorkflowBase):
 				outfile = self.join(
 					outdir, f"{time_now}_{task}_{plot_func.__name__}.png"
 				)
+				self.append_artifact(outfile)
 				plt.tight_layout()
 				plt.savefig(outfile)
 				plt.close()
@@ -152,8 +154,10 @@ class PyMCApproximateBayesianComputation(CalibrationWorkflowBase):
 
 		trace_df = self.trace.to_dataframe(include_coords=False, groups="posterior")
 		outfile = self.join(outdir, f"{time_now}_{task}_trace.csv")
+		self.append_artifact(outfile)
 		trace_df.to_csv(outfile, index=False)
 
 		trace_summary_df = az.summary(self.trace)
 		outfile = self.join(outdir, f"{time_now}_{task}_trace_summary.csv")
+		self.append_artifact(outfile)
 		trace_summary_df.to_csv(outfile, index=False)

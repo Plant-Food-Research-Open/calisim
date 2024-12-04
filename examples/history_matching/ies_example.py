@@ -69,4 +69,5 @@ calibrator = HistoryMatchingMethod(
 
 calibrator.specify().execute().analyze()
 
-print(f"Results written to: {outdir}")
+result_artifacts = "\n".join(calibrator.get_artifacts())
+print(f"View results: \n{result_artifacts}")

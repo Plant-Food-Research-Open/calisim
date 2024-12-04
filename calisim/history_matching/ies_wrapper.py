@@ -182,6 +182,7 @@ class IESHistoryMatching(HistoryMatchingBase):
 
 		X_IES_df = pd.DataFrame(self.X_IES.T, columns=parameter_names)
 		outfile = self.join(outdir, f"{time_now}_{task}_posterior.csv")
+		self.append_artifact(outfile)
 		X_IES_df.to_csv(outfile, index=False)
 
 		Y_IES_df = pd.DataFrame(
@@ -189,4 +190,5 @@ class IESHistoryMatching(HistoryMatchingBase):
 			columns=[f"{output_label}_{i + 1}" for i in range(self.Y_IES.shape[0])],
 		)
 		outfile = self.join(outdir, f"{time_now}_{task}_ensemble_{output_label}.csv")
+		self.append_artifact(outfile)
 		Y_IES_df.to_csv(outfile, index=False)
