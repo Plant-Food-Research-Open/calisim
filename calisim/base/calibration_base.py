@@ -12,6 +12,7 @@ from functools import wraps
 
 import numpy as np
 import pandas as pd
+from matplotlib import pyplot as plt
 from matplotlib.figure import Figure
 
 from ..data_model import (
@@ -404,6 +405,32 @@ class CalibrationWorkflowBase(ABC):
 			fig.savefig(outfile)
 		else:
 			fig.show()
+
+	def plot_simulated_vs_observed(
+		self,
+		simulated_data: np.ndarray,
+		observed_data: np.ndarray,
+		outdir: str,
+		time_now: str,
+		task: str,
+	) -> None:
+		"""Plot simulated data against observed data.
+
+		Args:
+			simulated_data (np.ndarray): The simulated data.
+			observed_data (np.ndarray): The observed data.
+			outdir (str): The output directory.
+			time_now (str): The current time.
+			task (str): The calibration task.
+		"""
+		df = pd.DataFrame(dict(simulated=simulated_data, observed=observed_data))
+		df["index"] = df.index
+
+		fig, axes = plt.subplots(nrows=3, figsize=self.specification.figsize)
+		df.plot.scatter("index", "simulated", ax=axes[0])
+		df.plot.scatter("index", "observed", ax=axes[1])
+		df.plot.scatter("simulated", "observed", ax=axes[2])
+		self.present_fig(fig, outdir, time_now, task, "simulated_vs_observed")
 
 
 class CalibrationMethodBase(CalibrationWorkflowBase):
