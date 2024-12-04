@@ -413,6 +413,7 @@ class CalibrationWorkflowBase(ABC):
 		outdir: str,
 		time_now: str,
 		task: str,
+		label: str = "",
 	) -> None:
 		"""Plot simulated data against observed data.
 
@@ -422,15 +423,27 @@ class CalibrationWorkflowBase(ABC):
 			outdir (str): The output directory.
 			time_now (str): The current time.
 			task (str): The calibration task.
+			label (str, optional): The plot axes label. Defaults to "".
 		"""
-		df = pd.DataFrame(dict(simulated=simulated_data, observed=observed_data))
+		simulated_label = "simulated"
+		observed_label = "observed"
+
+		if label != "":
+			simulated_label += f" {label}"
+			observed_label += f" {label}"
+
+		df = pd.DataFrame(
+			{simulated_label: simulated_data, observed_label: observed_data}
+		)
 		df["index"] = df.index
 
 		fig, axes = plt.subplots(nrows=3, figsize=self.specification.figsize)
-		df.plot.scatter("index", "simulated", ax=axes[0])
-		df.plot.scatter("index", "observed", ax=axes[1])
-		df.plot.scatter("simulated", "observed", ax=axes[2])
-		self.present_fig(fig, outdir, time_now, task, "simulated_vs_observed")
+		df.plot.scatter("index", simulated_label, ax=axes[0])
+		df.plot.scatter("index", observed_label, ax=axes[1])
+		df.plot.scatter(simulated_label, observed_label, ax=axes[2])
+
+		plot_suffix = f"{simulated_label}_vs_{observed_label}".replace(" ", "_")
+		self.present_fig(fig, outdir, time_now, task, plot_suffix)
 
 
 class CalibrationMethodBase(CalibrationWorkflowBase):
