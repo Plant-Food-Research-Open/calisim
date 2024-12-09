@@ -11,7 +11,6 @@ from pydantic import Field
 from ..base import CalibrationMethodBase, CalibrationWorkflowBase
 from ..data_model import CalibrationModel
 from .botorch_wrapper import BoTorchOptimisation
-from .emukit_wrapper import EmukitOptimisation
 from .openturns_wrapper import OpenTurnsOptimisation
 from .optuna_wrapper import OptunaOptimisation
 
@@ -19,7 +18,6 @@ TASK = "optimisation"
 IMPLEMENTATIONS: dict[str, type[CalibrationWorkflowBase]] = dict(
 	optuna=OptunaOptimisation,
 	botorch=BoTorchOptimisation,
-	emukit=EmukitOptimisation,
 	openturns=OpenTurnsOptimisation,
 )
 

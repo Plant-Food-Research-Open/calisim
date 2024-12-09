@@ -15,7 +15,6 @@ import sklearn.svm as svm
 from matplotlib import pyplot as plt
 
 from ..base import SurrogateBase
-from ..estimators import EmukitEstimator
 
 
 class SklearnSurrogateModel(SurrogateBase):
@@ -44,7 +43,6 @@ class SklearnSurrogateModel(SurrogateBase):
 		emulator_name = self.specification.method
 		emulators = dict(
 			gp=gp.GaussianProcessRegressor,
-			emukit_gp=EmukitEstimator,
 			rf=ensemble.RandomForestRegressor,
 			gb=ensemble.GradientBoostingRegressor,
 			lr=lm.LinearRegression,
