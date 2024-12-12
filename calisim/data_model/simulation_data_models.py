@@ -41,7 +41,7 @@ class ParameterModel(BaseModel):
 	parameter_values: list[float] | None = Field(
 		description="The list of parameter values.", default=None
 	)
-	parameter_tags: list[dict[str, str]] | None = Field(
+	parameter_tags: dict[str, str] | None = Field(
 		description="A collection of metadata tags.", default=None
 	)
 	data_type: ParameterDataType = Field(
