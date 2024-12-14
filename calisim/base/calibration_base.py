@@ -445,6 +445,22 @@ class CalibrationWorkflowBase(ABC):
 		plot_suffix = f"{simulated_label}_vs_{observed_label}".replace(" ", "_")
 		self.present_fig(fig, outdir, time_now, task, plot_suffix)
 
+	def set_output_labels_from_Y(self, Y: np.ndarray) -> None:
+		"""Set the simulation output labels from output data.
+
+		Args:
+		    Y (np.ndarray): The simulation outputs.
+		"""
+		output_labels = self.specification.output_labels
+
+		if output_labels is None:
+			if Y.ndim > 1:
+				output_labels = [f"target_{i}" for i in range(Y.shape[1])]
+			else:
+				output_labels = ["target"]
+
+		self.specification.output_labels = output_labels
+
 
 class CalibrationMethodBase(CalibrationWorkflowBase):
 	"""The calibration method abstract class."""
