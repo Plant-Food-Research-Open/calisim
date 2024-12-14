@@ -93,7 +93,7 @@ class SklearnSurrogateModel(SurrogateBase):
 		X_sample = self.sample_parameters(n_samples)
 		if self.specification.flatten_Y and len(self.Y_shape) > 1:
 			X_sample = self.extend_X(X_sample, self.Y_shape[1])
-		Y_sample = self.emulator.predict(X_sample, return_std=False)
+		Y_sample = self.emulator.predict(X_sample)
 
 		if len(self.Y_shape) == 1:
 			df[f"simulated_{output_label}"] = self.Y
