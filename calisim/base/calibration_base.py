@@ -35,10 +35,10 @@ def pre_post_hooks(f: Callable) -> Callable:
 	"""Execute prehooks and posthooks for calibration methods.
 
 	Args:
-		f (Callable): The wrapped function.
+	    f (Callable): The wrapped function.
 
 	Returns:
-		Callable: The wrapper function.
+	    Callable: The wrapper function.
 	"""
 
 	@wraps(f)
@@ -48,7 +48,7 @@ def pre_post_hooks(f: Callable) -> Callable:
 		"""The wrapper function for prehooks and posthooks.
 
 		Returns:
-			CalibrationWorkflowBase: The calibration workflow.
+		    CalibrationWorkflowBase: The calibration workflow.
 		"""
 		func_name = f.__name__
 		getattr(self, f"prehook_{func_name}")()
@@ -68,8 +68,8 @@ class CalibrationWorkflowBase(ABC):
 		"""CalibrationMethodBase constructor.
 
 		Args:
-			calibration_func (Callable): The calibration function.
-				For example, a simulation function or objective function.
+		    calibration_func (Callable): The calibration function.
+		        For example, a simulation function or objective function.
 		    specification (CalibrationModel): The calibration specification.
 		    task (str): The calibration task.
 		"""
@@ -134,8 +134,8 @@ class CalibrationWorkflowBase(ABC):
 		"""Perform preparations for the analyze step.
 
 		Returns:
-			tuple[str, str, str | None]: A list of
-				metadata needed for the analysis outputs.
+		    tuple[str, str, str | None]: A list of
+		        metadata needed for the analysis outputs.
 		"""
 		task = self.task
 		time_now = get_datetime_now()
@@ -147,7 +147,7 @@ class CalibrationWorkflowBase(ABC):
 		"""Get a new simulation uuid.
 
 		Returns:
-			str: The simulation uuid.
+		    str: The simulation uuid.
 		"""
 		return get_simulation_uuid()
 
@@ -155,11 +155,11 @@ class CalibrationWorkflowBase(ABC):
 		"""Extend the number of rows for X with a dummy index column.
 
 		Args:
-			X (np.ndarray): The input matrix.
-			Y_rows (int) The number of rows for the simulation outputs.
+		    X (np.ndarray): The input matrix.
+		    Y_rows (int) The number of rows for the simulation outputs.
 
 		Returns:
-			np.ndarray: The extended input matrix with a dummy column.
+		    np.ndarray: The extended input matrix with a dummy column.
 		"""
 		return extend_X(X, Y_rows)
 
@@ -167,11 +167,11 @@ class CalibrationWorkflowBase(ABC):
 		"""Get a numpy random number generator.
 
 		Args:
-			random_seed (int | None, optional): The
-				random seed. Defaults to None.
+		    random_seed (int | None, optional): The
+		        random seed. Defaults to None.
 
 		Returns:
-			np.random.Generator: The random number generator.
+		    np.random.Generator: The random number generator.
 		"""
 		return np.random.default_rng(random_seed)
 
@@ -179,10 +179,10 @@ class CalibrationWorkflowBase(ABC):
 		"""Join file paths.
 
 		Args:
-			paths (str): The file paths.
+		    paths (str): The file paths.
 
 		Returns:
-			str: The joined file paths.
+		    str: The joined file paths.
 		"""
 		return osp.join(*paths)
 
@@ -190,10 +190,10 @@ class CalibrationWorkflowBase(ABC):
 		"""Create file path if it does not exist.
 
 		Args:
-			file_path (str): The file path to create.
+		    file_path (str): The file path to create.
 
 		Returns:
-			str: The created file path.
+		    str: The created file path.
 		"""
 		return create_file_path(file_path)
 
@@ -201,14 +201,14 @@ class CalibrationWorkflowBase(ABC):
 		"""Get the lower and upper bounds from a parameter specification.
 
 		Args:
-			spec (DistributionModel): The parameter specification.
+		    spec (DistributionModel): The parameter specification.
 
 		Raises:
-			ValueError: Error raised when the
-				bounds cannot be identified.
+		    ValueError: Error raised when the
+		        bounds cannot be identified.
 
 		Returns:
-			tuple[float, float]: The lower and upper bounds.
+		    tuple[float, float]: The lower and upper bounds.
 		"""
 		distribution_args = spec.distribution_args
 		if isinstance(distribution_args, list):
@@ -229,7 +229,7 @@ class CalibrationWorkflowBase(ABC):
 		"""Get the calibration function named arguments.
 
 		Returns:
-			dict: The calibration function named arguments.
+		    dict: The calibration function named arguments.
 		"""
 		calibration_func_kwargs = self.specification.calibration_func_kwargs
 		if calibration_func_kwargs is None:
@@ -254,12 +254,12 @@ class CalibrationWorkflowBase(ABC):
 		"""Prehook to run before calling the calibration function
 
 		Args:
-			parameters (dict | List[dict]): The simulation parameters.
-			simulation_id (str | List[str]): The simulation IDs.
-			observed_data (np.ndarray | None): The observed data.
+		    parameters (dict | List[dict]): The simulation parameters.
+		    simulation_id (str | List[str]): The simulation IDs.
+		    observed_data (np.ndarray | None): The observed data.
 
 		Returns:
-			tuple: The calibration function parameters.
+		    tuple: The calibration function parameters.
 		"""
 		return parameters, simulation_id, observed_data, method_kwargs
 
@@ -274,14 +274,14 @@ class CalibrationWorkflowBase(ABC):
 		"""Posthook to run after calling the calibration function
 
 		Args:
-			results (np.ndarray | pd.DataFrame | float): The simulation
-				results.
-			parameters (dict | List[dict]): The simulation parameters.
-			simulation_id (str | List[str]): The simulation IDs.
-			observed_data (np.ndarray | None): The observed data.
+		    results (np.ndarray | pd.DataFrame | float): The simulation
+		        results.
+		    parameters (dict | List[dict]): The simulation parameters.
+		    simulation_id (str | List[str]): The simulation IDs.
+		    observed_data (np.ndarray | None): The observed data.
 
 		Returns:
-			tuple: The calibration function results and parameters.
+		    tuple: The calibration function results and parameters.
 		"""
 		return results, parameters, simulation_id, observed_data, method_kwargs
 
@@ -295,15 +295,15 @@ class CalibrationWorkflowBase(ABC):
 		"""Wrapper method for the calibration function.
 
 		Args:
-			results (np.ndarray | pd.DataFrame | float): The simulation
-				results.
-			parameters (dict | List[dict]): The simulation parameters.
-			simulation_id (str | List[str]): The simulation IDs.
-			observed_data (np.ndarray | None): The observed data.
+		    results (np.ndarray | pd.DataFrame | float): The simulation
+		        results.
+		    parameters (dict | List[dict]): The simulation parameters.
+		    simulation_id (str | List[str]): The simulation IDs.
+		    observed_data (np.ndarray | None): The observed data.
 
 		Returns:
-			float | list[float] | np.ndarray | pd.DataFrame: The
-				calibration function results.
+		    float | list[float] | np.ndarray | pd.DataFrame: The
+		        calibration function results.
 		"""
 		prehook_results = self.prehook_calibration_func(
 			parameters, simulation_id, observed_data, **method_kwargs
@@ -332,17 +332,17 @@ class CalibrationWorkflowBase(ABC):
 		"""Wrapper function for the calibration function.
 
 		Args:
-			X (np.ndarray): The parameter set matrix.
-			workflow (CalibrationWorkflowBase): The calibration workflow.
-			observed_data (pd.DataFrame | np.ndarray): The observed data.
-			parameter_names (list[str]): The list of simulation parameter names.
-			data_types (list[ParameterDataType]): The data types for each parameter.
-			calibration_kwargs (dict): Arguments to supply to the calibration function.
-			wrap_values (bool): Whether to wrap scalar values with a list.
-				Defaults to False.
+		    X (np.ndarray): The parameter set matrix.
+		    workflow (CalibrationWorkflowBase): The calibration workflow.
+		    observed_data (pd.DataFrame | np.ndarray): The observed data.
+		    parameter_names (list[str]): The list of simulation parameter names.
+		    data_types (list[ParameterDataType]): The data types for each parameter.
+		    calibration_kwargs (dict): Arguments to supply to the calibration function.
+		    wrap_values (bool): Whether to wrap scalar values with a list.
+		        Defaults to False.
 
 		Returns:
-			np.ndarray: The simulation output data.
+		    np.ndarray: The simulation output data.
 		"""
 		return calibration_func_wrapper(
 			X,
@@ -360,11 +360,11 @@ class CalibrationWorkflowBase(ABC):
 		"""Get a full factorial design from a parameter specification.
 
 		Args:
-			parameter_spec (ParameterSpecification | None, optional):
-				The simulation parameter specification. Defaults to None.
+		    parameter_spec (ParameterSpecification | None, optional):
+		        The simulation parameter specification. Defaults to None.
 
 		Returns:
-			np.ndarray: The full factorial design.
+		    np.ndarray: The full factorial design.
 		"""
 		if parameter_spec is None:
 			parameter_spec = self.specification.parameter_spec
@@ -374,7 +374,7 @@ class CalibrationWorkflowBase(ABC):
 		"""Getter method for the artifact list.
 
 		Returns:
-			list[str]: The calibration workflow artifact list.
+		    list[str]: The calibration workflow artifact list.
 		"""
 		return self.artifacts
 
@@ -382,7 +382,7 @@ class CalibrationWorkflowBase(ABC):
 		"""Add a new artifact to the artifacts list.
 
 		Args:
-			artifact (str): The artifact to append.
+		    artifact (str): The artifact to append.
 		"""
 		self.artifacts.append(artifact)
 
@@ -392,11 +392,11 @@ class CalibrationWorkflowBase(ABC):
 		"""Present the figure by showing or writing to file.
 
 		Args:
-			fig (Figure): The matplotlib figure.
-			outdir (str | None): The image output directory.
-			time_now (str): The current time.
-			task (str): The current calibration task.
-			suffix (str): The file name suffix.
+		    fig (Figure): The matplotlib figure.
+		    outdir (str | None): The image output directory.
+		    time_now (str): The current time.
+		    task (str): The current calibration task.
+		    suffix (str): The file name suffix.
 		"""
 		fig.tight_layout()
 		if outdir is not None:
@@ -418,12 +418,12 @@ class CalibrationWorkflowBase(ABC):
 		"""Plot simulated data against observed data.
 
 		Args:
-			simulated_data (np.ndarray): The simulated data.
-			observed_data (np.ndarray): The observed data.
-			outdir (str): The output directory.
-			time_now (str): The current time.
-			task (str): The calibration task.
-			label (str, optional): The plot axes label. Defaults to "".
+		    simulated_data (np.ndarray): The simulated data.
+		    observed_data (np.ndarray): The observed data.
+		    outdir (str): The output directory.
+		    time_now (str): The current time.
+		    task (str): The calibration task.
+		    label (str, optional): The plot axes label. Defaults to "".
 		"""
 		simulated_label = "simulated"
 		observed_label = "observed"
@@ -445,6 +445,22 @@ class CalibrationWorkflowBase(ABC):
 		plot_suffix = f"{simulated_label}_vs_{observed_label}".replace(" ", "_")
 		self.present_fig(fig, outdir, time_now, task, plot_suffix)
 
+	def set_output_labels_from_Y(self, Y: np.ndarray) -> None:
+		"""Set the simulation output labels from output data.
+
+		Args:
+		    Y (np.ndarray): The simulation outputs.
+		"""
+		output_labels = self.specification.output_labels
+
+		if output_labels is None:
+			if Y.ndim > 1:
+				output_labels = [f"target_{i}" for i in range(Y.shape[1])]
+			else:
+				output_labels = ["target"]
+
+		self.specification.output_labels = output_labels
+
 
 class CalibrationMethodBase(CalibrationWorkflowBase):
 	"""The calibration method abstract class."""
@@ -461,15 +477,15 @@ class CalibrationMethodBase(CalibrationWorkflowBase):
 		"""CalibrationMethodBase constructor.
 
 		Args:
-			calibration_func (Callable): The calibration function.
-				For example, a simulation function or objective function.
+		    calibration_func (Callable): The calibration function.
+		        For example, a simulation function or objective function.
 		    specification (CalibrationModel): The calibration specification.
 		    task (str): The calibration task.
 		    engine (str): The calibration implementation engine.
 		    implementations (dict[str, type[CalibrationWorkflowBase]]): The
-				list of supported engines.
-			implementation (CalibrationWorkflowBase | None): The
-				calibration workflow implementation.
+		        list of supported engines.
+		    implementation (CalibrationWorkflowBase | None): The
+		        calibration workflow implementation.
 		"""
 		super().__init__(calibration_func, specification, task)
 		self.engine = engine
@@ -495,10 +511,10 @@ class CalibrationMethodBase(CalibrationWorkflowBase):
 		"""Check that the implementation is set.
 
 		Args:
-			function_name (str): The name of the function.
+		    function_name (str): The name of the function.
 
 		Raises:
-			ValueError: Error raised when the implementation is not set.
+		    ValueError: Error raised when the implementation is not set.
 		"""
 		if self.implementation is None:
 			raise ValueError(
@@ -510,10 +526,10 @@ class CalibrationMethodBase(CalibrationWorkflowBase):
 		"""Specify the parameters of the model calibration procedure.
 
 		Raises:
-			ValueError: Error raised when the implementation is not set.
+		    ValueError: Error raised when the implementation is not set.
 
 		Returns:
-			CalibrationMethodBase: The calibration method.
+		    CalibrationMethodBase: The calibration method.
 		"""
 		self._implementation_check("specify")
 		self.implementation.specify()
@@ -524,10 +540,10 @@ class CalibrationMethodBase(CalibrationWorkflowBase):
 		"""Execute the simulation calibration procedure.
 
 		Raises:
-			ValueError: Error raised when the implementation is not set.
+		    ValueError: Error raised when the implementation is not set.
 
 		Returns:
-			CalibrationMethodBase: The calibration method.
+		    CalibrationMethodBase: The calibration method.
 		"""
 		self._implementation_check("execute")
 		self.implementation.execute()
@@ -538,10 +554,10 @@ class CalibrationMethodBase(CalibrationWorkflowBase):
 		"""Analyze the results of the simulation calibration procedure.
 
 		Raises:
-			ValueError: Error raised when the implementation is not set.
+		    ValueError: Error raised when the implementation is not set.
 
 		Returns:
-			CalibrationMethodBase: The calibration method.
+		    CalibrationMethodBase: The calibration method.
 		"""
 		self._implementation_check("analyze")
 		self.implementation.analyze()
@@ -552,7 +568,7 @@ class CalibrationMethodBase(CalibrationWorkflowBase):
 
 		Args:
 		    as_string (bool, optional): Whether to return
-				the engine list as a string. Defaults to False.
+		        the engine list as a string. Defaults to False.
 
 		Returns:
 		    list | str: The list of supported engines.
@@ -566,6 +582,6 @@ class CalibrationMethodBase(CalibrationWorkflowBase):
 		"""Getter method for the artifact list.
 
 		Returns:
-			list[str]: The calibration workflow artifact list.
+		    list[str]: The calibration workflow artifact list.
 		"""
 		return self.implementation.get_artifacts()
