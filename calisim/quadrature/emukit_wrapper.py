@@ -61,7 +61,7 @@ class EmukitQuadrature(EmukitBase):
 
 	def analyze(self) -> None:
 		"""Analyze the results of the simulation calibration procedure."""
-		task, time_now, outdir = self.prepare_analyze()
+		task, time_now, experiment_name, outdir = self.prepare_analyze()
 
 		integral_mean, integral_variance = self.quadrature_loop.model.integrate()
 		fig, ax = plt.subplots(figsize=self.specification.figsize)
@@ -75,4 +75,6 @@ class EmukitQuadrature(EmukitBase):
 			alpha=0.5,
 		)
 		ax.legend()
-		self.present_fig(fig, outdir, time_now, task, "integral_density")
+		self.present_fig(
+			fig, outdir, time_now, task, experiment_name, "integral_density"
+		)

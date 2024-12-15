@@ -83,7 +83,7 @@ class LAMPESimulationBasedInference(SimulationBasedInferenceBase):
 
 	def analyze(self) -> None:
 		"""Analyze the results of the simulation calibration procedure."""
-		task, time_now, outdir = self.prepare_analyze()
+		task, time_now, experiment_name, outdir = self.prepare_analyze()
 
 		x_star = torch.from_numpy(self.specification.observed_data).float()
 		n_draws = self.specification.n_samples
@@ -93,7 +93,9 @@ class LAMPESimulationBasedInference(SimulationBasedInferenceBase):
 		for plot_func in [analysis.pairplot, analysis.marginal_plot]:
 			plt.rcParams.update({"font.size": 8})
 			fig, _ = plot_func(posterior_samples, figsize=(24, 24), labels=self.names)
-			self.present_fig(fig, outdir, time_now, task, plot_func.__name__)
+			self.present_fig(
+				fig, outdir, time_now, task, experiment_name, plot_func.__name__
+			)
 
 		n_simulations = self.specification.num_simulations
 		levels, coverages = expected_coverage_mc(
@@ -102,4 +104,6 @@ class LAMPESimulationBasedInference(SimulationBasedInferenceBase):
 		)
 
 		fig = coverage_plot(levels, coverages, legend=task)
-		self.present_fig(fig, outdir, time_now, task, coverage_plot.__name__)
+		self.present_fig(
+			fig, outdir, time_now, task, experiment_name, coverage_plot.__name__
+		)

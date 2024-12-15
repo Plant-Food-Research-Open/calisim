@@ -67,7 +67,7 @@ class EmukitExperimentalDesign(EmukitBase):
 
 	def analyze(self) -> None:
 		"""Analyze the results of the simulation calibration procedure."""
-		task, time_now, outdir = self.prepare_analyze()
+		task, time_now, experiment_name, outdir = self.prepare_analyze()
 
 		design = RandomDesign(self.parameter_space)
 		n_samples = self.specification.n_samples
@@ -98,4 +98,6 @@ class EmukitExperimentalDesign(EmukitBase):
 
 		axes[1].set_title(f"Emulated {output_label}")
 
-		self.present_fig(fig, outdir, time_now, task, f"emulated_{output_label}")
+		self.present_fig(
+			fig, outdir, time_now, task, experiment_name, f"emulated-{output_label}"
+		)

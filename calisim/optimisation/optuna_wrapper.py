@@ -92,7 +92,7 @@ class OptunaOptimisation(CalibrationWorkflowBase):
 
 	def analyze(self) -> None:
 		"""Analyze the results of the simulation calibration procedure."""
-		task, time_now, outdir = self.prepare_analyze()
+		task, time_now, experiment_name, outdir = self.prepare_analyze()
 
 		for plot_func in [
 			optuna.visualization.plot_edf,
@@ -104,7 +104,8 @@ class OptunaOptimisation(CalibrationWorkflowBase):
 			optimisation_plot = plot_func(self.study)
 			if outdir is not None:
 				outfile = self.join(
-					outdir, f"{time_now}_{task}_{plot_func.__name__}.png"
+					outdir,
+					f"{time_now}-{task}-{experiment_name}-{plot_func.__name__}.png",
 				)
 				self.append_artifact(outfile)
 				optimisation_plot.write_image(outfile)
@@ -115,6 +116,6 @@ class OptunaOptimisation(CalibrationWorkflowBase):
 			return
 
 		trials_df: pd.DataFrame = self.study.trials_dataframe()
-		outfile = self.join(outdir, f"{time_now}_{task}_trials.csv")
+		outfile = self.join(outdir, f"{time_now}-{task}-{experiment_name}-trials.csv")
 		self.append_artifact(outfile)
 		trials_df.to_csv(outfile, index=False)

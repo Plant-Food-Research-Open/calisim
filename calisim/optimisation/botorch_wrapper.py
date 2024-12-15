@@ -114,7 +114,7 @@ class BoTorchOptimisation(CalibrationWorkflowBase):
 
 	def analyze(self) -> None:
 		"""Analyze the results of the simulation calibration procedure."""
-		task, time_now, outdir = self.prepare_analyze()
+		task, time_now, experiment_name, outdir = self.prepare_analyze()
 
 		trials = []
 		for trial in self.experiment.trials.values():
@@ -138,7 +138,9 @@ class BoTorchOptimisation(CalibrationWorkflowBase):
 		)
 
 		if outdir is not None:
-			outfile = self.join(outdir, f"{time_now}_{task}_objective.csv")
+			outfile = self.join(
+				outdir, f"{time_now}-{task}-{experiment_name}-objective.csv"
+			)
 			self.append_artifact(outfile)
 			trials_df.to_csv(outfile, index=False)
 
@@ -155,7 +157,9 @@ class BoTorchOptimisation(CalibrationWorkflowBase):
 
 		fig.update_layout(yaxis_title="Score", showlegend=False)
 		if outdir is not None:
-			outfile = self.join(outdir, f"{time_now}_{task}_slice_plot.png")
+			outfile = self.join(
+				outdir, f"{time_now}-{task}-{experiment_name}-slice_plot.png"
+			)
 			self.append_artifact(outfile)
 			fig.write_image(outfile)
 		else:
@@ -166,7 +170,9 @@ class BoTorchOptimisation(CalibrationWorkflowBase):
 		)
 		fig.update_layout(xaxis_title="Trial", yaxis_title="Score", showlegend=False)
 		if outdir is not None:
-			outfile = self.join(outdir, f"{time_now}_{task}_trial_history.png")
+			outfile = self.join(
+				outdir, f"{time_now}-{task}-{experiment_name}-trial_history.png"
+			)
 			fig.write_image(outfile)
 			self.append_artifact(outfile)
 		else:

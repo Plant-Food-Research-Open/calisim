@@ -144,7 +144,7 @@ class PyABCApproximateBayesianComputation(CalibrationWorkflowBase):
 
 	def analyze(self) -> None:
 		"""Analyze the results of the simulation calibration procedure."""
-		task, time_now, outdir = self.prepare_analyze()
+		task, time_now, experiment_name, outdir = self.prepare_analyze()
 
 		for plot_func in [
 			pyabc.visualization.plot_sample_numbers,
@@ -161,7 +161,8 @@ class PyABCApproximateBayesianComputation(CalibrationWorkflowBase):
 			abc_plot = plot_func(self.history)
 			if outdir is not None:
 				outfile = self.join(
-					outdir, f"{time_now}_{task}_{plot_func.__name__}.png"
+					outdir,
+					f"{time_now}-{task}-{experiment_name}-{plot_func.__name__}.png",
 				)
 				self.append_artifact(outfile)
 				plt.tight_layout()
@@ -181,18 +182,23 @@ class PyABCApproximateBayesianComputation(CalibrationWorkflowBase):
 			distribution_dfs.append(df)
 
 		distribution_dfs = pd.concat(distribution_dfs)
-		outfile = self.join(outdir, f"{time_now}-{task}_parameters.csv")
+		outfile = self.join(
+			outdir, f"{time_now}-{task}-{experiment_name}-parameters.csv"
+		)
 		self.append_artifact(outfile)
 		distribution_dfs.to_csv(outfile, index=False)
 
 		populations_df = self.history.get_all_populations()
-		outfile = self.join(outdir, f"{time_now}-{task}_populations.csv")
+		outfile = self.join(
+			outdir, f"{time_now}-{task}-{experiment_name}-populations.csv"
+		)
 		self.append_artifact(outfile)
 		populations_df.to_csv(outfile, index=False)
 
 		population_particles_df = self.history.get_nr_particles_per_population()
 		outfile = self.join(
-			outdir, f"{time_now}-{task}_nr_particles_per_population.csv"
+			outdir,
+			f"{time_now}-{task}-{experiment_name}-nr_particles_per_population.csv",
 		)
 		self.append_artifact(outfile)
 		population_particles_df.to_csv(outfile, index=False)
@@ -204,6 +210,8 @@ class PyABCApproximateBayesianComputation(CalibrationWorkflowBase):
 			distances_df.append(df)
 		distances_df = pd.concat(distances_df)
 
-		outfile = self.join(outdir, f"{time_now}-{task}_distances.csv")
+		outfile = self.join(
+			outdir, f"{time_now}-{task}-{experiment_name}-distances.csv"
+		)
 		self.append_artifact(outfile)
 		distances_df.to_csv(outfile, index=False)

@@ -102,7 +102,7 @@ class SkActiveMLExperimentalDesign(EmukitBase):
 
 	def analyze(self) -> None:
 		"""Analyze the results of the simulation calibration procedure."""
-		task, time_now, outdir = self.prepare_analyze()
+		task, time_now, experiment_name, outdir = self.prepare_analyze()
 
 		design = RandomDesign(self.parameter_space)
 		n_samples = self.specification.n_samples
@@ -116,18 +116,22 @@ class SkActiveMLExperimentalDesign(EmukitBase):
 		if X_sample.shape[1] > len(names):
 			names.append("_dummy_index")
 		df = pd.DataFrame(X_sample, columns=names)
-		df[f"emulated_{output_label}"] = predicated
+		df[f"emulated-{output_label}"] = predicated
 
 		fig, axes = plt.subplots(
 			nrows=len(self.names), figsize=self.specification.figsize
 		)
 		for i, name in enumerate(self.names):
-			df.plot.scatter(name, f"emulated_{output_label}", ax=axes[i])
-		self.present_fig(fig, outdir, time_now, task, f"emulated_{output_label}")
+			df.plot.scatter(name, f"emulated-{output_label}", ax=axes[i])
+		self.present_fig(
+			fig, outdir, time_now, task, experiment_name, f"emulated-{output_label}"
+		)
 
 		if outdir is None:
 			return
 
-		outfile = self.join(outdir, f"{time_now}_{task}_emulated_{output_label}.csv")
+		outfile = self.join(
+			outdir, f"{time_now}-{task}-{experiment_name}-emulated-{output_label}.csv"
+		)
 		self.append_artifact(outfile)
 		df.to_csv(outfile, index=False)

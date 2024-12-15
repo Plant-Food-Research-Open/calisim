@@ -101,7 +101,7 @@ class PyMCApproximateBayesianComputation(CalibrationWorkflowBase):
 
 	def analyze(self) -> None:
 		"""Analyze the results of the simulation calibration procedure."""
-		task, time_now, outdir = self.prepare_analyze()
+		task, time_now, experiment_name, outdir = self.prepare_analyze()
 
 		textsize = 7
 		for plot in ["trace", "rank_vlines", "rank_bars"]:
@@ -110,7 +110,9 @@ class PyMCApproximateBayesianComputation(CalibrationWorkflowBase):
 			)
 
 			if outdir is not None:
-				outfile = self.join(outdir, f"{time_now}_{task}_{plot}.png")
+				outfile = self.join(
+					outdir, f"{time_now}-{task}-{experiment_name}-{plot}.png"
+				)
 				self.append_artifact(outfile)
 				plt.tight_layout()
 				plt.savefig(outfile)
@@ -122,7 +124,8 @@ class PyMCApproximateBayesianComputation(CalibrationWorkflowBase):
 			plot_func(self.trace, **plot_kwargs)
 			if outdir is not None:
 				outfile = self.join(
-					outdir, f"{time_now}_{task}_{plot_func.__name__}.png"
+					outdir,
+					f"{time_now}-{task}-{experiment_name}-{plot_func.__name__}.png",
 				)
 				self.append_artifact(outfile)
 				plt.tight_layout()
@@ -153,11 +156,13 @@ class PyMCApproximateBayesianComputation(CalibrationWorkflowBase):
 			return
 
 		trace_df = self.trace.to_dataframe(include_coords=False, groups="posterior")
-		outfile = self.join(outdir, f"{time_now}_{task}_trace.csv")
+		outfile = self.join(outdir, f"{time_now}-{task}-{experiment_name}-trace.csv")
 		self.append_artifact(outfile)
 		trace_df.to_csv(outfile, index=False)
 
 		trace_summary_df = az.summary(self.trace)
-		outfile = self.join(outdir, f"{time_now}_{task}_trace_summary.csv")
+		outfile = self.join(
+			outdir, f"{time_now}-{task}-{experiment_name}-trace_summary.csv"
+		)
 		self.append_artifact(outfile)
 		trace_summary_df.to_csv(outfile, index=False)

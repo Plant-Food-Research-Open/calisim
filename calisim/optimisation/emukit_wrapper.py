@@ -76,7 +76,7 @@ class EmukitOptimisation(EmukitBase):
 
 	def analyze(self) -> None:
 		"""Analyze the results of the simulation calibration procedure."""
-		task, time_now, outdir = self.prepare_analyze()
+		task, time_now, experiment_name, outdir = self.prepare_analyze()
 
 		results = self.optimisation_loop.get_results()
 		self.results = results
@@ -86,7 +86,9 @@ class EmukitOptimisation(EmukitBase):
 		t = np.arange(0, len(trial_history), 1)
 		ax.plot(t, trial_history)
 		ax.set_title("Optimisation history")
-		self.present_fig(fig, outdir, time_now, task, "plot_optimization_history")
+		self.present_fig(
+			fig, outdir, time_now, task, experiment_name, "plot_optimization_history"
+		)
 
 		if outdir is None:
 			return
@@ -96,6 +98,8 @@ class EmukitOptimisation(EmukitBase):
 		for i, name in enumerate(self.names):
 			parameter_dict[name] = optimised_parameters[i]
 		parameter_df = pd.DataFrame(parameter_dict, index=[0])
-		outfile = self.join(outdir, f"{time_now}_{task}_parameters.csv")
+		outfile = self.join(
+			outdir, f"{time_now}-{task}-{experiment_name}-parameters.csv"
+		)
 		self.append_artifact(outfile)
 		parameter_df.to_csv(outfile, index=False)

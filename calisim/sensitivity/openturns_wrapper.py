@@ -78,7 +78,7 @@ class OpenTurnsSensitivityAnalysis(OpenTurnsBase):
 
 	def analyze(self) -> None:
 		"""Analyze the results of the simulation calibration procedure."""
-		task, time_now, outdir = self.prepare_analyze()
+		task, time_now, experiment_name, outdir = self.prepare_analyze()
 		method = self.specification.method
 		input_dim = self.parameters.getDimension()
 
@@ -88,7 +88,8 @@ class OpenTurnsSensitivityAnalysis(OpenTurnsBase):
 			view = viewer.View(graph)
 			if outdir is not None:
 				outfile = self.join(
-					outdir, f"{time_now}-{task}_sobol_{method}_indices.png"
+					outdir,
+					f"{time_now}-{task}-{experiment_name}-sobol_{method}_indices.png",
 				)
 				self.append_artifact(outfile)
 				view.save(outfile)
@@ -102,7 +103,8 @@ class OpenTurnsSensitivityAnalysis(OpenTurnsBase):
 			view = viewer.View(graph)
 			if outdir is not None:
 				outfile = self.join(
-					outdir, f"{time_now}-{task}_chaos_sobol_indices.png"
+					outdir,
+					f"{time_now}-{task}-{experiment_name}-chaos_sobol_indices.png",
 				)
 				self.append_artifact(outfile)
 				view.save(outfile)
@@ -116,7 +118,9 @@ class OpenTurnsSensitivityAnalysis(OpenTurnsBase):
 			)
 			view = viewer.View(graph)
 			if outdir is not None:
-				outfile = self.join(outdir, f"{time_now}-{task}_ancova_indices.png")
+				outfile = self.join(
+					outdir, f"{time_now}-{task}-{experiment_name}-ancova_indices.png"
+				)
 				self.append_artifact(outfile)
 				view.save(outfile)
 
@@ -128,7 +132,8 @@ class OpenTurnsSensitivityAnalysis(OpenTurnsBase):
 			view = viewer.View(graph)
 			if outdir is not None:
 				outfile = self.join(
-					outdir, f"{time_now}-{task}_uncorrelated_ancova_indices.png"
+					outdir,
+					f"{time_now}-{task}-{experiment_name}-uncorrelated_ancova_indices.png",
 				)
 				self.append_artifact(outfile)
 				view.save(outfile)
@@ -141,7 +146,8 @@ class OpenTurnsSensitivityAnalysis(OpenTurnsBase):
 			view = viewer.View(graph)
 			if outdir is not None:
 				outfile = self.join(
-					outdir, f"{time_now}-{task}_correlated_ancova_indices.png"
+					outdir,
+					f"{time_now}-{task}-{experiment_name}-correlated_ancova_indices.png",
 				)
 				self.append_artifact(outfile)
 				view.save(outfile)

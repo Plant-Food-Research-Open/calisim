@@ -90,13 +90,15 @@ class SALibSensitivityAnalysis(CalibrationWorkflowBase):
 
 	def analyze(self) -> None:
 		"""Analyze the results of the simulation calibration procedure."""
-		task, time_now, outdir = self.prepare_analyze()
+		task, time_now, experiment_name, outdir = self.prepare_analyze()
 		sampler_name = self.specification.method
 
 		self.sp.plot()
 		plt.tight_layout()
 		if outdir is not None:
-			outfile = self.join(outdir, f"{time_now}-{task}_indices.png")
+			outfile = self.join(
+				outdir, f"{time_now}-{task}-{experiment_name}-indices.png"
+			)
 			self.append_artifact(outfile)
 			plt.savefig(outfile)
 		else:
@@ -106,7 +108,9 @@ class SALibSensitivityAnalysis(CalibrationWorkflowBase):
 		self.sp.heatmap()
 		plt.tight_layout()
 		if outdir is not None:
-			outfile = self.join(outdir, f"{time_now}-{task}_heatmap.png")
+			outfile = self.join(
+				outdir, f"{time_now}-{task}-{experiment_name}-heatmap.png"
+			)
 			self.append_artifact(outfile)
 			plt.savefig(outfile)
 		else:
@@ -123,7 +127,9 @@ class SALibSensitivityAnalysis(CalibrationWorkflowBase):
 			else:
 				si_df = dfs.reset_index().rename(columns={"index": "parameter"})
 				si_type = si_df.columns[1]
-				outfile = self.join(outdir, f"{time_now}_{task}_{si_type}.csv")
+				outfile = self.join(
+					outdir, f"{time_now}-{task}-{experiment_name}-{si_type}.csv"
+				)
 				self.append_artifact(outfile)
 				si_df.to_csv(outfile, index=False)
 
@@ -132,6 +138,8 @@ class SALibSensitivityAnalysis(CalibrationWorkflowBase):
 			recursive_write_csv(si_dfs)
 		else:
 			si_df = si_dfs.reset_index().rename(columns={"index": "parameter"})
-			outfile = self.join(outdir, f"{time_now}_{task}_{sampler_name}.csv")
+			outfile = self.join(
+				outdir, f"{time_now}-{task}-{experiment_name}-{sampler_name}.csv"
+			)
 			self.append_artifact(outfile)
 			si_df.to_csv(outfile, index=False)
