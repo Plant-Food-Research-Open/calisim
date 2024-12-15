@@ -100,7 +100,7 @@ class OpenTurnsBayesianCalibration(OpenTurnsBase):
 
 	def analyze(self) -> None:
 		"""Analyze the results of the simulation calibration procedure."""
-		task, time_now, outdir = self.prepare_analyze()
+		task, time_now, experiment_name, outdir = self.prepare_analyze()
 		sample = np.array(self.sample)
 		n_dim = self.parameters.getDimension()
 
@@ -119,7 +119,9 @@ class OpenTurnsBayesianCalibration(OpenTurnsBase):
 			grid.setGraph(parameter_index, 0, graph)
 		view = viewer.View(grid)
 		if outdir is not None:
-			outfile = self.join(outdir, f"{time_now}-{task}_plot_posterior.png")
+			outfile = self.join(
+				outdir, f"{time_now}-{task}-{experiment_name}_plot_posterior.png"
+			)
 			self.append_artifact(outfile)
 			view.save(outfile)
 
@@ -127,6 +129,6 @@ class OpenTurnsBayesianCalibration(OpenTurnsBase):
 			return
 
 		trace_df = pd.DataFrame(sample, columns=self.names)
-		outfile = self.join(outdir, f"{time_now}_{task}_trace.csv")
+		outfile = self.join(outdir, f"{time_now}-{task}-{experiment_name}_trace.csv")
 		self.append_artifact(outfile)
 		trace_df.to_csv(outfile, index=False)

@@ -80,7 +80,7 @@ class SBISimulationBasedInference(SimulationBasedInferenceBase):
 
 	def analyze(self) -> None:
 		"""Analyze the results of the simulation calibration procedure."""
-		task, time_now, outdir = self.prepare_analyze()
+		task, time_now, experiment_name, outdir = self.prepare_analyze()
 
 		n_draws = self.specification.n_samples
 		posterior_samples = self.posterior.sample(
@@ -90,7 +90,9 @@ class SBISimulationBasedInference(SimulationBasedInferenceBase):
 		for plot_func in [analysis.pairplot, analysis.marginal_plot]:
 			plt.rcParams.update({"font.size": 8})
 			fig, _ = plot_func(posterior_samples, figsize=(24, 24), labels=self.names)
-			self.present_fig(fig, outdir, time_now, task, plot_func.__name__)
+			self.present_fig(
+				fig, outdir, time_now, task, experiment_name, plot_func.__name__
+			)
 
 		limits = []
 		lower_limits, _ = posterior_samples.min(axis=0)
@@ -110,7 +112,9 @@ class SBISimulationBasedInference(SimulationBasedInferenceBase):
 				labels=self.names,
 				limits=limits,
 			)
-			self.present_fig(fig, outdir, time_now, task, plot_func.__name__)
+			self.present_fig(
+				fig, outdir, time_now, task, experiment_name, plot_func.__name__
+			)
 
 		thetas = self.prior.sample((n_draws,))
 		xs = self.simulator(thetas)
@@ -132,7 +136,7 @@ class SBISimulationBasedInference(SimulationBasedInferenceBase):
 				parameter_labels=self.names,
 			)
 			fig_suffix = f"{analysis.sbc_rank_plot.__name__}_{plot_type}"
-			self.present_fig(fig, outdir, time_now, task, fig_suffix)
+			self.present_fig(fig, outdir, time_now, task, experiment_name, fig_suffix)
 
 		if outdir is None:
 			return
@@ -151,6 +155,8 @@ class SBISimulationBasedInference(SimulationBasedInferenceBase):
 				metric_dict[col_name] = score
 
 		check_stats_df = pd.DataFrame(check_stats_list)
-		outfile = self.join(outdir, f"{time_now}-{task}_diagnostics.csv")
+		outfile = self.join(
+			outdir, f"{time_now}-{task}-{experiment_name}_diagnostics.csv"
+		)
 		self.append_artifact(outfile)
 		check_stats_df.to_csv(outfile, index=False)

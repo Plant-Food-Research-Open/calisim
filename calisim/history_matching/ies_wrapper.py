@@ -144,7 +144,7 @@ class IESHistoryMatching(HistoryMatchingBase):
 
 	def analyze(self) -> None:
 		"""Analyze the results of the simulation calibration procedure."""
-		task, time_now, outdir = self.prepare_analyze()
+		task, time_now, experiment_name, outdir = self.prepare_analyze()
 		smoother_name = self.specification.method
 		n_iterations = self.specification.n_iterations
 
@@ -161,7 +161,7 @@ class IESHistoryMatching(HistoryMatchingBase):
 				alpha=0.5,
 			)
 			axes[i].legend()
-		self.present_fig(fig, outdir, time_now, task, "plot_slice")
+		self.present_fig(fig, outdir, time_now, task, experiment_name, "plot_slice")
 
 		ensemble_size = self.specification.n_samples
 		output_label = self.specification.output_labels[0]  # type: ignore[index]
@@ -175,13 +175,17 @@ class IESHistoryMatching(HistoryMatchingBase):
 		for i in range(ensemble_size):
 			axes[1].plot(X, self.Y_IES.T[i])
 		axes[1].set_title(f"Ensemble {output_label}")
-		self.present_fig(fig, outdir, time_now, task, f"ensemble_{output_label}")
+		self.present_fig(
+			fig, outdir, time_now, task, experiment_name, f"ensemble_{output_label}"
+		)
 
 		if outdir is None:
 			return
 
 		X_IES_df = pd.DataFrame(self.X_IES.T, columns=parameter_names)
-		outfile = self.join(outdir, f"{time_now}_{task}_posterior.csv")
+		outfile = self.join(
+			outdir, f"{time_now}-{task}-{experiment_name}_posterior.csv"
+		)
 		self.append_artifact(outfile)
 		X_IES_df.to_csv(outfile, index=False)
 
@@ -189,6 +193,8 @@ class IESHistoryMatching(HistoryMatchingBase):
 			self.Y_IES.T,
 			columns=[f"{output_label}_{i + 1}" for i in range(self.Y_IES.shape[0])],
 		)
-		outfile = self.join(outdir, f"{time_now}_{task}_ensemble_{output_label}.csv")
+		outfile = self.join(
+			outdir, f"{time_now}-{task}-{experiment_name}_ensemble_{output_label}.csv"
+		)
 		self.append_artifact(outfile)
 		Y_IES_df.to_csv(outfile, index=False)

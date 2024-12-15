@@ -158,11 +158,11 @@ class PygpcUncertaintyAnalysis(CalibrationWorkflowBase):
 
 	def execute(self) -> None:
 		"""Execute the simulation calibration procedure."""
-		_, time_now, outdir = self.prepare_analyze()
+		_, time_now, experiment_name, outdir = self.prepare_analyze()
 		if outdir is None:
 			fn_results = None
 		else:
-			experiment_name = self.specification.experiment_name
+			experiment_name = self.specification.experiment_name  # type: ignore[assignment]
 			fn_results = self.join(outdir, f"{time_now}_{experiment_name}")
 
 		options = self.specification.method_kwargs
@@ -208,7 +208,7 @@ class PygpcUncertaintyAnalysis(CalibrationWorkflowBase):
 
 	def analyze(self) -> None:
 		"""Analyze the results of the simulation calibration procedure."""
-		task, time_now, outdir = self.prepare_analyze()
+		task, time_now, experiment_name, outdir = self.prepare_analyze()
 		n_samples = self.specification.n_samples
 		outfile = None
 
@@ -222,11 +222,15 @@ class PygpcUncertaintyAnalysis(CalibrationWorkflowBase):
 		for i in range(self.results.shape[0]):
 			axes[1].plot(X, self.results[i])
 		axes[1].set_title(f"Emulated {output_label}")
-		self.present_fig(fig, outdir, time_now, task, f"emulated_{output_label}")
+		self.present_fig(
+			fig, outdir, time_now, task, experiment_name, f"emulated_{output_label}"
+		)
 
 		plot_func = pygpc.validate_gpc_mc
 		if outdir is not None:
-			outfile = self.join(outdir, f"{time_now}_{task}_{plot_func.__name__}")
+			outfile = self.join(
+				outdir, f"{time_now}-{task}-{experiment_name}_{plot_func.__name__}"
+			)
 			self.append_artifact(outfile)
 		plot_func(
 			session=self.session,
@@ -240,7 +244,9 @@ class PygpcUncertaintyAnalysis(CalibrationWorkflowBase):
 
 		plot_func = pygpc.validate_gpc_plot
 		if outdir is not None:
-			outfile = self.join(outdir, f"{time_now}_{task}_{plot_func.__name__}")
+			outfile = self.join(
+				outdir, f"{time_now}-{task}-{experiment_name}_{plot_func.__name__}"
+			)
 			self.append_artifact(outfile)
 		plot_func(
 			session=self.session,

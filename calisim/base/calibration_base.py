@@ -130,18 +130,19 @@ class CalibrationWorkflowBase(ABC):
 		"""Posthook to run after analyze()."""
 		pass
 
-	def prepare_analyze(self) -> tuple[str, str, str | None]:
+	def prepare_analyze(self) -> tuple[str, str, str, str | None]:
 		"""Perform preparations for the analyze step.
 
 		Returns:
-		    tuple[str, str, str | None]: A list of
+		    tuple[str, str, str,  str | None]: A list of
 		        metadata needed for the analysis outputs.
 		"""
 		task = self.task
 		time_now = get_datetime_now()
+		experiment_name = self.specification.experiment_name
 		self.time_now = time_now
 		outdir = self.specification.outdir
-		return task, time_now, outdir
+		return task, time_now, experiment_name, outdir  # type: ignore[return-value]
 
 	def get_simulation_uuid(self) -> str:
 		"""Get a new simulation uuid.
@@ -387,7 +388,13 @@ class CalibrationWorkflowBase(ABC):
 		self.artifacts.append(artifact)
 
 	def present_fig(
-		self, fig: Figure, outdir: str | None, time_now: str, task: str, suffix: str
+		self,
+		fig: Figure,
+		outdir: str | None,
+		time_now: str,
+		task: str,
+		experiment_name: str,
+		suffix: str,
 	) -> None:
 		"""Present the figure by showing or writing to file.
 
@@ -400,7 +407,9 @@ class CalibrationWorkflowBase(ABC):
 		"""
 		fig.tight_layout()
 		if outdir is not None:
-			outfile = self.join(outdir, f"{time_now}-{task}_{suffix}.png")
+			outfile = self.join(
+				outdir, f"{time_now}-{task}-{experiment_name}_{suffix}.png"
+			)
 			self.append_artifact(outfile)
 			fig.savefig(outfile)
 		else:
@@ -413,6 +422,7 @@ class CalibrationWorkflowBase(ABC):
 		outdir: str,
 		time_now: str,
 		task: str,
+		experiment_name: str,
 		label: str = "",
 	) -> None:
 		"""Plot simulated data against observed data.
@@ -423,6 +433,7 @@ class CalibrationWorkflowBase(ABC):
 		    outdir (str): The output directory.
 		    time_now (str): The current time.
 		    task (str): The calibration task.
+			experiment_name (str): The experiment name.
 		    label (str, optional): The plot axes label. Defaults to "".
 		"""
 		simulated_label = "simulated"
@@ -443,7 +454,7 @@ class CalibrationWorkflowBase(ABC):
 		df.plot.scatter(simulated_label, observed_label, ax=axes[2])
 
 		plot_suffix = f"{simulated_label}_vs_{observed_label}".replace(" ", "_")
-		self.present_fig(fig, outdir, time_now, task, plot_suffix)
+		self.present_fig(fig, outdir, time_now, task, experiment_name, plot_suffix)
 
 	def set_output_labels_from_Y(self, Y: np.ndarray) -> None:
 		"""Set the simulation output labels from output data.

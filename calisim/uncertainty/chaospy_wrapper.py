@@ -138,7 +138,7 @@ class ChaospyUncertaintyAnalysis(CalibrationWorkflowBase):
 
 	def analyze(self) -> None:
 		"""Analyze the results of the simulation calibration procedure."""
-		task, time_now, outdir = self.prepare_analyze()
+		task, time_now, experiment_name, outdir = self.prepare_analyze()
 		solver_name = self.specification.solver
 
 		expected = chaospy.E(self.emulator, self.parameters)
@@ -154,7 +154,7 @@ class ChaospyUncertaintyAnalysis(CalibrationWorkflowBase):
 		axes[1].plot(X, expected)
 		axes[1].set_title(f"Emulated {output_label} for {solver_name} solver")
 		axes[1].fill_between(X, expected - std, expected + std, alpha=0.5)
-		self.present_fig(fig, outdir, time_now, task, "emulated")
+		self.present_fig(fig, outdir, time_now, task, experiment_name, "emulated")
 
 		if solver_name == "gp":
 			mu, sigma = self.krige.field, np.sqrt(self.krige.krige_var)
@@ -171,4 +171,6 @@ class ChaospyUncertaintyAnalysis(CalibrationWorkflowBase):
 			axes[1].plot(X, mu)
 			axes[1].set_title(f"Emulated {output_label} for Polynomial Kriging")
 			axes[1].fill_between(X, mu - sigma, mu + sigma, alpha=0.5)
-			self.present_fig(fig, outdir, time_now, task, "polynomial_kriging")
+			self.present_fig(
+				fig, outdir, time_now, task, experiment_name, "polynomial_kriging"
+			)

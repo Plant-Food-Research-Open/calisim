@@ -89,7 +89,7 @@ class OpenTurnsReliabilityAnalysis(OpenTurnsBase):
 
 	def analyze(self) -> None:
 		"""Analyze the results of the simulation calibration procedure."""
-		task, time_now, outdir = self.prepare_analyze()
+		task, time_now, experiment_name, outdir = self.prepare_analyze()
 		method = self.specification.method
 
 		result = self.sampler.getResult()
@@ -97,7 +97,8 @@ class OpenTurnsReliabilityAnalysis(OpenTurnsBase):
 		view = viewer.View(graph)
 		if outdir is not None:
 			outfile = self.join(
-				outdir, f"{time_now}-{task}_{method}_plot_importance_factors.png"
+				outdir,
+				f"{time_now}-{task}-{experiment_name}_{method}_plot_importance_factors.png",
 			)
 			self.append_artifact(outfile)
 			view.save(outfile)
@@ -107,7 +108,8 @@ class OpenTurnsReliabilityAnalysis(OpenTurnsBase):
 		view = viewer.View(graph)
 		if outdir is not None:
 			outfile = self.join(
-				outdir, f"{time_now}-{task}_{method}_plot_probability_convergence.png"
+				outdir,
+				f"{time_now}-{task}-{experiment_name}_{method}_plot_probability_convergence.png",
 			)
 			self.append_artifact(outfile)
 			view.save(outfile)

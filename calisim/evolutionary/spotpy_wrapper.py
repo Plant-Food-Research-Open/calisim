@@ -165,7 +165,7 @@ class SPOTPYEvolutionary(CalibrationWorkflowBase):
 				f"Supported algorithms are {', '.join(evolutionary_algorithms.keys())}",
 			)
 
-		_, time_now, outdir = self.prepare_analyze()
+		_, time_now, experiment_name, outdir = self.prepare_analyze()
 		dbname = self.specification.experiment_name
 		if outdir is None:
 			dbformat = "ram"
@@ -189,7 +189,7 @@ class SPOTPYEvolutionary(CalibrationWorkflowBase):
 
 	def analyze(self) -> None:
 		"""Analyze the results of the simulation calibration procedure."""
-		task, time_now, outdir = self.prepare_analyze()
+		task, time_now, experiment_name, outdir = self.prepare_analyze()
 		results = self.sampler.getdata()
 
 		if outdir is None:
@@ -201,7 +201,9 @@ class SPOTPYEvolutionary(CalibrationWorkflowBase):
 			analyser.plot_parameterInteraction,
 		]:
 			plot_func_name = plot_func.__name__
-			outfile = self.join(outdir, f"{time_now}_{task}_{plot_func_name}.png")
+			outfile = self.join(
+				outdir, f"{time_now}-{task}-{experiment_name}_{plot_func_name}.png"
+			)
 			self.append_artifact(outfile)
 			plot_func(results, fig_name=outfile)
 
@@ -211,13 +213,17 @@ class SPOTPYEvolutionary(CalibrationWorkflowBase):
 			analyser.plot_regression,
 		]:
 			plot_func_name = plot_func.__name__
-			outfile = self.join(outdir, f"{time_now}_{task}_{plot_func_name}.png")
+			outfile = self.join(
+				outdir, f"{time_now}-{task}-{experiment_name}_{plot_func_name}.png"
+			)
 			self.append_artifact(outfile)
 			plot_func(results, evaluation, fig_name=outfile)
 
 		if self.specification.method == "dream":
 			plot_func = analyser.plot_gelman_rubin
 			plot_func_name = plot_func.__name__
-			outfile = self.join(outdir, f"{time_now}_{task}_{plot_func_name}.png")
+			outfile = self.join(
+				outdir, f"{time_now}-{task}-{experiment_name}_{plot_func_name}.png"
+			)
 			self.append_artifact(outfile)
 			plot_func(results, self.sample_results, outfile)

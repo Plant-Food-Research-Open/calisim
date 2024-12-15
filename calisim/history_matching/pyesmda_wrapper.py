@@ -130,7 +130,7 @@ class PyESMDAHistoryMatching(HistoryMatchingBase):
 
 	def analyze(self) -> None:
 		"""Analyze the results of the simulation calibration procedure."""
-		task, time_now, outdir = self.prepare_analyze()
+		task, time_now, experiment_name, outdir = self.prepare_analyze()
 		smoother_name = self.specification.method
 		n_iterations = self.specification.n_iterations
 		n_samples = self.specification.n_samples
@@ -158,7 +158,7 @@ class PyESMDAHistoryMatching(HistoryMatchingBase):
 				alpha=0.5,
 			)
 			axes[i].legend()
-		self.present_fig(fig, outdir, time_now, task, "plot_slice")
+		self.present_fig(fig, outdir, time_now, task, experiment_name, "plot_slice")
 
 		pred_dfs = [pd.DataFrame(preds) for preds in self.solver.d_pred]
 		output_label = self.specification.output_labels[0]  # type: ignore[index]
@@ -172,13 +172,17 @@ class PyESMDAHistoryMatching(HistoryMatchingBase):
 			pred_df[0].plot(ax=axes[1])
 		axes[1].set_title(f"Ensemble {output_label}")
 		fig.tight_layout()
-		self.present_fig(fig, outdir, time_now, task, f"ensemble_{output_label}")
+		self.present_fig(
+			fig, outdir, time_now, task, experiment_name, f"ensemble_{output_label}"
+		)
 
 		if outdir is None:
 			return
 
 		X_IES_df = pd.DataFrame(parameter_samples)
-		outfile = self.join(outdir, f"{time_now}_{task}_posterior.csv")
+		outfile = self.join(
+			outdir, f"{time_now}-{task}-{experiment_name}_posterior.csv"
+		)
 		self.append_artifact(outfile)
 		X_IES_df.to_csv(outfile, index=False)
 
@@ -186,6 +190,8 @@ class PyESMDAHistoryMatching(HistoryMatchingBase):
 			pred_df["x"] = pred_df.index
 		pred_df = pd.concat(pred_dfs)
 		pred_df.columns = [output_label, "x"]
-		outfile = self.join(outdir, f"{time_now}_{task}_ensemble_{output_label}.csv")
+		outfile = self.join(
+			outdir, f"{time_now}-{task}-{experiment_name}_ensemble_{output_label}.csv"
+		)
 		self.append_artifact(outfile)
 		pred_df.to_csv(outfile, index=False)

@@ -79,7 +79,7 @@ class OpenTurnsUncertaintyAnalysis(OpenTurnsBase):
 
 	def analyze(self) -> None:
 		"""Analyze the results of the simulation calibration procedure."""
-		task, time_now, outdir = self.prepare_analyze()
+		task, time_now, experiment_name, outdir = self.prepare_analyze()
 		solver_name = self.specification.solver
 		input_dim = self.parameters.getDimension()
 
@@ -97,7 +97,9 @@ class OpenTurnsUncertaintyAnalysis(OpenTurnsBase):
 
 			view = viewer.View(graph)
 			if outdir is not None:
-				outfile = self.join(outdir, f"{time_now}-{task}_sobol_indices.png")
+				outfile = self.join(
+					outdir, f"{time_now}-{task}-{experiment_name}_sobol_indices.png"
+				)
 				self.append_artifact(outfile)
 				view.save(outfile)
 
@@ -110,6 +112,8 @@ class OpenTurnsUncertaintyAnalysis(OpenTurnsBase):
 			graph.setTitle(f"R2: {r2}")
 
 			if outdir is not None:
-				outfile = self.join(outdir, f"{time_now}-{task}_r2.png")
+				outfile = self.join(
+					outdir, f"{time_now}-{task}-{experiment_name}_r2.png"
+				)
 				self.append_artifact(outfile)
 				view.save(outfile)
