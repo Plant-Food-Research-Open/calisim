@@ -7,12 +7,12 @@ Implements Bayesian optimisation methods using the BoTorch library.
 import numpy as np
 import pandas as pd
 import plotly.graph_objects as go
-from ax import Experiment, ParameterType, RangeParameter, SearchSpace
-from ax.core.objective import Objective
-from ax.core.optimization_config import OptimizationConfig
-from ax.metrics.noisy_function import NoisyFunctionMetric
-from ax.modelbridge.registry import Models
-from ax.runners.synthetic import SyntheticRunner
+from ax.plot.base import AxPlotConfig
+from ax.plot.render import plot_config_to_html
+from ax.service.ax_client import AxClient
+from ax.service.utils.instantiation import ObjectiveProperties
+from ax.utils.notebook.plotting import render
+from ax.utils.report.render import render_report_elements
 from plotly.subplots import make_subplots
 
 from ..base import CalibrationWorkflowBase
@@ -24,100 +24,120 @@ class BoTorchOptimisation(CalibrationWorkflowBase):
 
 	def specify(self) -> None:
 		"""Specify the parameters of the model calibration procedure."""
-		parameters = []
-		parameter_names = []
-		data_types = []
+		self.names = []
+		self.data_types = []
 
 		parameter_spec = self.specification.parameter_spec.parameters
-		for spec in parameter_spec:
-			name = spec.name
-			parameter_names.append(name)
+		parameters = []
+		objectives = {}
 
-			lower, upper = self.get_parameter_bounds(spec)
+		for spec in parameter_spec:
+			parameter_name = spec.name
+			self.names.append(parameter_name)
 
 			data_type = spec.data_type
-			data_types.append(data_type)
-			if data_type == ParameterDataType.CONTINUOUS:
-				parameter_type = ParameterType.FLOAT
+			self.data_types.append(data_type)
+			if data_type == ParameterDataType.DISCRETE:
+				value_type = "int"
 			else:
-				parameter_type = ParameterType.INT
+				value_type = "float"
 
-			parameters.append(
-				RangeParameter(
-					name=name, parameter_type=parameter_type, lower=lower, upper=upper
-				)
+			bounds = self.get_parameter_bounds(spec)
+
+			parameter = dict(
+				name=parameter_name,
+				type="range",
+				bounds=list(bounds),
+				value_type=value_type,
 			)
-		search_space = SearchSpace(parameters=parameters)
-		objective_kwargs = self.get_calibration_func_kwargs()
+			parameters.append(parameter)
 
-		workflow = self
+		n_out = self.specification.n_out
+		self.output_labels = self.specification.output_labels
+		directions = self.specification.directions
+		if self.output_labels is None:
+			self.output_labels = [f"objective_{i}" for i in range(n_out)]
 
-		class ObjectiveMetric(NoisyFunctionMetric):
-			def f(
-				self, x: np.ndarray
-			) -> float | list[float] | np.ndarray | pd.DataFrame:
-				X = [x]
-				results = workflow.calibration_func_wrapper(
-					X,
-					workflow,
-					workflow.specification.observed_data,
-					parameter_names,
-					data_types,
-					objective_kwargs,
-				)
-				return results[0]
+		for i, output_label in enumerate(self.output_labels):
+			direction = directions[i]
+			if direction == "minimize":
+				minimize = True
+			else:
+				minimize = False
+			objectives[output_label] = ObjectiveProperties(minimize=minimize)
 
-		optimization_config = OptimizationConfig(
-			objective=Objective(
-				metric=ObjectiveMetric(
-					name=f"{self.specification.experiment_name}_metric",
-					param_names=parameter_names,
-					noise_sd=None,
-				),
-				minimize=self.specification.directions[0] == "minimize",
-			)
-		)
-
-		self.experiment = Experiment(
+		self.ax_client = AxClient(verbose_logging=False)
+		self.ax_client.create_experiment(
 			name=self.specification.experiment_name,
-			search_space=search_space,
-			optimization_config=optimization_config,
-			runner=SyntheticRunner(),
+			parameters=parameters,
+			objectives=objectives,
+			overwrite_existing_experiment=True,
 		)
 
 	def execute(self) -> None:
 		"""Execute the simulation calibration procedure."""
-		experiment = self.experiment
 
-		sobol = Models.SOBOL(search_space=experiment.search_space)
-		n_init = self.specification.n_init
-		n_trials = self.specification.n_iterations
+		objective_kwargs = self.get_calibration_func_kwargs()
 
-		for i in range(n_init):
-			generator_run = sobol.gen(n=1)
-			trial = experiment.new_trial(generator_run=generator_run)
-			trial.run()
-			trial.mark_completed()
+		def target_function(X: dict[str, float]) -> np.ndarray:
+			X = list(X.values())
+			X = [X]
 
-		for i in range(n_trials):
-			if self.specification.verbose:
-				print(f"Running BO trial {i + n_init + 1}/{n_init + n_trials}")
-			gpei = Models.BOTORCH_MODULAR(
-				experiment=experiment, data=experiment.fetch_data()
+			Y = self.calibration_func_wrapper(
+				X,
+				self,
+				self.specification.observed_data,
+				self.names,
+				self.data_types,
+				objective_kwargs,
+				True,
 			)
-			generator_run = gpei.gen(n=1)
-			trial = experiment.new_trial(generator_run=generator_run)
-			trial.run()
-			trial.mark_completed()
+			Y = Y[0]
 
-		self.trial = trial  # type: ignore[possibly-undefined]
+			results = {}
+			for i, output in enumerate(self.output_labels):  # type: ignore[arg-type]
+				results[output] = (Y[i], 0.0)
+
+			return results
+
+		n_iterations = self.specification.n_iterations
+		for _ in range(n_iterations):
+			parameterization, trial_index = self.ax_client.get_next_trial()
+			self.ax_client.complete_trial(
+				trial_index=trial_index, raw_data=target_function(parameterization)
+			)
 
 	def analyze(self) -> None:
 		"""Analyze the results of the simulation calibration procedure."""
 		task, time_now, experiment_name, outdir = self.prepare_analyze()
 
+		def plot_config(config: AxPlotConfig, title: str) -> None:
+			fig = plot_config_to_html(config)
+			outfile = self.join(
+				outdir,  # type: ignore[arg-type]
+				f"{time_now}-{task}-{experiment_name}-{title}.html",
+			)
+
+			if outdir is not None:
+				with open(outfile, "w") as f:
+					f.write(
+						render_report_elements(
+							title,
+							html_elements=[fig],
+							header=False,
+						)
+					)
+				self.append_artifact(outfile)
+			else:
+				render(config)
+
+		config = self.ax_client.get_optimization_trace()
+		plot_config(config, "optimization-trace")
+		config = self.ax_client.get_feature_importances()
+		plot_config(config, "feature-importances")
+
 		trials = []
-		for trial in self.experiment.trials.values():
+		for trial in self.ax_client.experiment.trials.values():
 			if isinstance(trial.arm, list):
 				for arm in trial.arm:
 					parameters = arm.parameters
@@ -130,7 +150,7 @@ class BoTorchOptimisation(CalibrationWorkflowBase):
 				trials.append(parameters)
 
 		trials_df = pd.DataFrame(trials).set_index("arm_name")
-		objective_df = self.experiment.fetch_data().df.set_index("arm_name")
+		objective_df = self.ax_client.experiment.fetch_data().df.set_index("arm_name")
 		trials_df = (
 			trials_df.join(objective_df)
 			.reset_index()
@@ -139,7 +159,7 @@ class BoTorchOptimisation(CalibrationWorkflowBase):
 
 		if outdir is not None:
 			outfile = self.join(
-				outdir, f"{time_now}-{task}-{experiment_name}_objective.csv"
+				outdir, f"{time_now}-{task}-{experiment_name}-objective.csv"
 			)
 			self.append_artifact(outfile)
 			trials_df.to_csv(outfile, index=False)
@@ -150,7 +170,9 @@ class BoTorchOptimisation(CalibrationWorkflowBase):
 		)
 		for i, parameter_name in enumerate(parameter_names):
 			fig.add_trace(
-				go.Scatter(x=trials_df[parameter_name], y=trials_df["mean"]),
+				go.Scatter(
+					x=trials_df[parameter_name], y=trials_df["mean"], mode="markers"
+				),
 				row=1,
 				col=i + 1,
 			)
@@ -158,7 +180,7 @@ class BoTorchOptimisation(CalibrationWorkflowBase):
 		fig.update_layout(yaxis_title="Score", showlegend=False)
 		if outdir is not None:
 			outfile = self.join(
-				outdir, f"{time_now}-{task}-{experiment_name}_slice_plot.png"
+				outdir, f"{time_now}-{task}-{experiment_name}-slice_plot.png"
 			)
 			self.append_artifact(outfile)
 			fig.write_image(outfile)
@@ -166,12 +188,14 @@ class BoTorchOptimisation(CalibrationWorkflowBase):
 			fig.show()
 
 		fig = go.Figure(
-			data=go.Scatter(x=trials_df["trial_index"], y=trials_df["mean"])
+			data=go.Scatter(
+				x=trials_df["trial_index"], y=trials_df["mean"], mode="markers"
+			)
 		)
 		fig.update_layout(xaxis_title="Trial", yaxis_title="Score", showlegend=False)
 		if outdir is not None:
 			outfile = self.join(
-				outdir, f"{time_now}-{task}-{experiment_name}_trial_history.png"
+				outdir, f"{time_now}-{task}-{experiment_name}-trial_history.png"
 			)
 			fig.write_image(outfile)
 			self.append_artifact(outfile)
