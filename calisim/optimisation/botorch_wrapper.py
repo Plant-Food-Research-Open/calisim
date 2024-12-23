@@ -180,7 +180,7 @@ class BoTorchOptimisation(CalibrationWorkflowBase):
 		fig.update_layout(yaxis_title="Score", showlegend=False)
 		if outdir is not None:
 			outfile = self.join(
-				outdir, f"{time_now}-{task}-{experiment_name}-slice_plot.png"
+				outdir, f"{time_now}-{task}-{experiment_name}-plot_slice.png"
 			)
 			self.append_artifact(outfile)
 			fig.write_image(outfile)
