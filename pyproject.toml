@@ -43,6 +43,7 @@ gstools = "^1.6.0"
 seaborn = "^0.13.2"
 openturns = "^1.23"
 numpoly = "<= 1.2.14"
+corner = "^2.2.3"
 
 [tool.poetry.group.docs.dependencies]
 sphinx-rtd-theme = "^3.0.1"

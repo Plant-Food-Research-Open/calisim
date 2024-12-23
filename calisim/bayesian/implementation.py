@@ -10,11 +10,12 @@ from pydantic import Field
 
 from ..base import CalibrationMethodBase, CalibrationWorkflowBase
 from ..data_model import CalibrationModel
+from .emcee_wrapper import EmceeBayesianCalibration
 from .openturns_wrapper import OpenTurnsBayesianCalibration
 
 TASK = "bayesian_calibration"
 IMPLEMENTATIONS: dict[str, type[CalibrationWorkflowBase]] = dict(
-	openturns=OpenTurnsBayesianCalibration
+	openturns=OpenTurnsBayesianCalibration, emcee=EmceeBayesianCalibration
 )
 
 
@@ -40,6 +41,10 @@ class BayesianCalibrationMethodModel(CalibrationModel):
 	)
 	initial_state: list | bool = Field(
 		description="Initial state of the chain.", default=None
+	)
+	moves: dict[str, float] = Field(
+		description="List of methods for updating coordinates of ensemble walkers.",
+		default=None,
 	)
 
 
