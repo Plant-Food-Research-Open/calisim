@@ -21,13 +21,13 @@ parameter_spec = ParameterSpecification(
 		DistributionModel(
 			name="alpha",
 			distribution_name="normal",
-			distribution_args=[0.4, 0.03],
+			distribution_args=[0.5, 0.02],
 			data_type=ParameterDataType.CONTINUOUS,
 		),
 		DistributionModel(
 			name="beta",
 			distribution_name="normal",
-			distribution_args=[0.025, 0.003],
+			distribution_args=[0.024, 0.001],
 			data_type=ParameterDataType.CONTINUOUS,
 		),
 	]
@@ -52,9 +52,9 @@ specification = HistoryMatchingMethodModel(
 	parameter_spec=parameter_spec,
 	observed_data=observed_data.lynx.values,
 	outdir=outdir,
-	method="esmda",
+	method="esmda_rs",
 	n_samples=50,
-	n_iterations=10,
+	n_iterations=20,
 	output_labels=["Lynx"],
 	verbose=True,
 	batched=False,

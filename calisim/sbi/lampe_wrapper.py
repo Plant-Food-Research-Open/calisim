@@ -7,6 +7,7 @@ the LAMPE library.
 """
 
 from itertools import islice
+from typing import Any
 
 import numpy as np
 import torch
@@ -20,11 +21,99 @@ from matplotlib import pyplot as plt
 from sbi import analysis as analysis
 
 from ..base import SimulationBasedInferenceBase
+from ..data_model import DistributionModel, ParameterDataType
 from ..utils import PriorCollection
 
 
 class LAMPESimulationBasedInference(SimulationBasedInferenceBase):
 	"""The LAMPE simulation-based inference method class."""
+
+	def preprocess(
+		self, theta: torch.Tensor, parameter_spec: list[DistributionModel] | Any | None
+	) -> torch.Tensor:
+		"""Normalise the parameters of the simulation.
+
+		Args:
+		    theta (torch.Tensor): The simulation parameters.
+		    parameter_spec (list[DistributionModel] | Any | None):
+				The parameter specification.
+
+		Raises:
+		    ValueError: Error raised when an unsupported distribution is provided.
+
+		Returns:
+		    torch.Tensor: The normalised parameters.
+		"""
+		param_values = []
+
+		for i, spec in enumerate(parameter_spec):  # type: ignore[arg-type]
+			x = theta[i]
+			distribution_name = spec.distribution_name
+
+			if (
+				distribution_name == "uniform"
+				or spec.data_type == ParameterDataType.DISCRETE
+			):
+				lower_bound, upper_bound = self.get_parameter_bounds(spec)
+				param_value = 2 * (x - lower_bound) / (upper_bound - lower_bound) - 1
+
+			elif distribution_name == "normal":
+				mu, sd = self.get_parameter_bounds(spec)
+				param_value = (x - mu) / sd
+			else:
+				raise ValueError(
+					f"Unsupported distribution for LAMPE: {distribution_name}"
+				)
+			param_values.append(param_value)
+
+		return torch.Tensor(param_values)
+
+	def postprocess(
+		self,
+		samples: torch.Tensor,
+		parameter_spec: list[DistributionModel] | Any | None,
+	) -> torch.Tensor:
+		"""Reverse normalise the parameters of the simulation.
+
+		Args:
+		    samples (torch.Tensor): The normalised parameters.
+		    parameter_spec (list[DistributionModel] | Any | None):
+				The parameter specification.
+
+		Raises:
+		    ValueError: Error raised when an unsupported distribution is provided.
+
+		Returns:
+		    torch.Tensor: The denormalised parameters.
+		"""
+		param_values = []
+
+		for sample in samples:
+			norm_param_values = []
+			for i, spec in enumerate(parameter_spec):  # type: ignore[arg-type]
+				x = sample[i]
+				distribution_name = spec.distribution_name
+
+				if (
+					distribution_name == "uniform"
+					or spec.data_type == ParameterDataType.DISCRETE
+				):
+					lower_bound, upper_bound = self.get_parameter_bounds(spec)
+					param_value = (x + 1) / 2 * (
+						upper_bound - lower_bound
+					) + lower_bound
+
+				elif distribution_name == "normal":
+					mu, sd = self.get_parameter_bounds(spec)
+					param_value = x * sd + mu
+				else:
+					raise ValueError(
+						f"Unsupported distribution for LAMPE: {distribution_name}"
+					)
+				norm_param_values.append(param_value)
+			param_values.append(norm_param_values)
+
+		return torch.Tensor(param_values)
 
 	def specify(self) -> None:
 		"""Specify the parameters of the model calibration procedure."""
@@ -65,12 +154,13 @@ class LAMPESimulationBasedInference(SimulationBasedInferenceBase):
 		)
 		loss = NPELoss(estimator)
 		optimizer = optim.Adam(estimator.parameters(), lr=self.specification.lr)
-		step = GDStep(optimizer, clip=0.0)
+		step = GDStep(optimizer, clip=1.0)
 		estimator.train()
 
+		parameter_spec = self.specification.parameter_spec.parameters
 		for epoch in range(self.specification.n_iterations):
 			for theta, x in islice(loader, self.specification.num_simulations):
-				neg_log_p = loss(theta, x)
+				neg_log_p = loss(self.preprocess(theta, parameter_spec), x)
 				step(neg_log_p)
 			if self.specification.verbose:
 				print(f"Epoch {epoch + 1} : Negative log-likelihood {neg_log_p}")  # type: ignore[possibly-undefined]
@@ -85,10 +175,12 @@ class LAMPESimulationBasedInference(SimulationBasedInferenceBase):
 		"""Analyze the results of the simulation calibration procedure."""
 		task, time_now, experiment_name, outdir = self.prepare_analyze()
 
+		parameter_spec = self.specification.parameter_spec.parameters
 		x_star = torch.from_numpy(self.specification.observed_data).float()
 		n_draws = self.specification.n_samples
 		with torch.no_grad():
 			posterior_samples = self.estimator.flow(x_star).sample((n_draws,))
+			posterior_samples = self.postprocess(posterior_samples, parameter_spec)
 
 		for plot_func in [analysis.pairplot, analysis.marginal_plot]:
 			plt.rcParams.update({"font.size": 8})

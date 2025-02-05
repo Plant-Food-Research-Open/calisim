@@ -21,7 +21,7 @@ parameter_spec = ParameterSpecification(
 		DistributionModel(
 			name="alpha",
 			distribution_name="normal",
-			distribution_args=[0.4, 0.03],
+			distribution_args=[0.5, 0.04],
 			data_type=ParameterDataType.CONTINUOUS,
 		),
 		DistributionModel(
@@ -52,7 +52,7 @@ specification = EvolutionaryMethodModel(
 	parameter_spec=parameter_spec,
 	observed_data=observed_data.lynx.values,
 	outdir=outdir,
-	n_samples=100,
+	n_samples=250,
 	method="dream",
 	objective="gaussianLikelihoodMeasErrorOut",
 	verbose=True,

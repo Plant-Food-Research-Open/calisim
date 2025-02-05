@@ -21,13 +21,13 @@ parameter_spec = ParameterSpecification(
 		DistributionModel(
 			name="alpha",
 			distribution_name="normal",
-			distribution_args=[0.4, 0.03],
+			distribution_args=[0.5, 0.01],
 			data_type=ParameterDataType.CONTINUOUS,
 		),
 		DistributionModel(
 			name="beta",
 			distribution_name="normal",
-			distribution_args=[0.025, 0.003],
+			distribution_args=[0.025, 0.001],
 			data_type=ParameterDataType.CONTINUOUS,
 		),
 	]
@@ -53,8 +53,8 @@ specification = SimulationBasedInferenceMethodModel(
 	observed_data=observed_data.lynx.values,
 	outdir=outdir,
 	n_samples=300,
-	n_iterations=10,
-	num_simulations=200,
+	n_iterations=250,
+	num_simulations=400,
 	method="nsf",
 	output_labels=["Lynx"],
 	verbose=True,
