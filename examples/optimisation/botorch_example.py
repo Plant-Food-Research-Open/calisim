@@ -54,7 +54,7 @@ specification = OptimisationMethodModel(
 	outdir=outdir,
 	directions=["minimize"],
 	output_labels=["Lynx"],
-	n_iterations=20,
+	n_iterations=25,
 	n_out=1,
 	verbose=True,
 	calibration_func_kwargs=dict(t=observed_data.year),

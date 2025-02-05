@@ -105,6 +105,9 @@ class PyESMDAHistoryMatching(HistoryMatchingBase):
 			m_init = [self.parameters[k] for k in self.parameters]
 			m_init = np.array(m_init).T
 
+		if smoother_name == "esmda":
+			method_kwargs["n_assimilations"] = self.specification.n_iterations
+
 		history_matching_kwargs = self.get_calibration_func_kwargs()
 		self.solver = smoother_class(
 			obs=observed_data,
@@ -118,7 +121,6 @@ class PyESMDAHistoryMatching(HistoryMatchingBase):
 				observed_data=observed_data,
 				batched=self.specification.batched,
 			),
-			n_assimilations=self.specification.n_iterations,
 			cov_obs=cov_obs,
 			random_state=self.specification.random_seed,
 			batch_size=n_jobs,
