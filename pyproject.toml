@@ -91,6 +91,23 @@ ax-platform = "^0.4.3"
 skorch = "^1.0.0"
 torchcp = "^0.1.3"
 
+[tool.poetry.extras]
+torch = [
+    "sbi",
+    "torch",
+    "pyro-ppl",
+    "pyro-api",
+    "nflows",
+    "tensorboard",
+    "gpytorch",
+    "botorch",
+    "lampe",
+    "zuko",
+    "ax-platform",
+    "skorch",
+    "torchcp"
+]
+
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
