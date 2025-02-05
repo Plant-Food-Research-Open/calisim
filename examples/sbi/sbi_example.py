@@ -21,13 +21,13 @@ parameter_spec = ParameterSpecification(
 		DistributionModel(
 			name="alpha",
 			distribution_name="normal",
-			distribution_args=[0.5, 0.01],
+			distribution_args=[0.51, 0.005],
 			data_type=ParameterDataType.CONTINUOUS,
 		),
 		DistributionModel(
 			name="beta",
 			distribution_name="normal",
-			distribution_args=[0.025, 0.001],
+			distribution_args=[0.024, 0.0005],
 			data_type=ParameterDataType.CONTINUOUS,
 		),
 	]
