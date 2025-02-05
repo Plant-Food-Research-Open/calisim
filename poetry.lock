@@ -6236,17 +6236,6 @@ opt-einsum = ["opt-einsum (>=3.3)"]
 optree = ["optree (>=0.12.0)"]
 
 [[package]]
-name = "torchcp"
-version = "0.1.3"
-description = "A Python toolbox for conformal prediction on deep learning models."
-optional = true
-python-versions = "*"
-files = [
-    {file = "torchcp-0.1.3-py3-none-any.whl", hash = "sha256:c88e565d9146d11fd5070c2175d95ab162f3411056f32fb9983463869f08fd25"},
-    {file = "torchcp-0.1.3.tar.gz", hash = "sha256:7afca4c00e89f8ea5fd633253719f2ed5569b474d20f84a7f573ed7afcdf61ed"},
-]
-
-[[package]]
 name = "tornado"
 version = "6.4.1"
 description = "Tornado is a Python web framework and asynchronous networking library, originally developed at FriendFeed."
@@ -6641,4 +6630,4 @@ torch = ["ax-platform", "botorch", "gpytorch", "lampe", "nflows", "pyro-api", "p
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.10,<3.11"
-content-hash = "f93997e4360923274e06f37113a901231b3fa5298a721ca61ac83b4acbff64ea"
+content-hash = "354a4a12bfa710e5ac09d86b63f50ca5b468d112b71ab956e85df4fe26443eb8"
