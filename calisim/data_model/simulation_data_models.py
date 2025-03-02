@@ -23,6 +23,7 @@ class BaseModel(PydanticBaseModel):
 
 	class Config:
 		arbitrary_types_allowed = True
+		protected_namespaces = ()
 
 
 class ParameterDataType(Enum):

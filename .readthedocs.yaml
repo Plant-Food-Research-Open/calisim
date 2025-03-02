@@ -1,0 +1,31 @@
+version: 2
+
+build:
+  os: ubuntu-20.04
+  tools:
+    python: "3.10"
+  jobs:
+    pre_install:
+      - git update-index --assume-unchanged docs/source/conf.py
+    post_install:
+      - pip install poetry
+      - VIRTUAL_ENV=$READTHEDOCS_VIRTUALENV_PATH poetry install --no-interaction -E torch
+
+    # https://github.com/Robpol86/sphinx-multi-theme/blob/main/.readthedocs.yaml
+    # pre_create_environment:
+    #   - asdf plugin add poetry
+    #   - asdf install poetry latest
+    #   - asdf global poetry latest
+    # post_install:
+    #   - ln -s $READTHEDOCS_VIRTUALENV_PATH .venv
+    #   - poetry install --no-interaction -E torch
+    # pre_build:
+    #   - sphinx-build -W --keep-going -q -b linkcheck -d _build/doctrees docs/sourcce _build/linkcheck
+
+sphinx:
+  configuration: docs/source/conf.py
+  fail_on_warning: false
+
+formats:
+  - pdf
+  - epub
