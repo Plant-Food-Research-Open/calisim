@@ -166,8 +166,7 @@ class SPOTPYEvolutionary(CalibrationWorkflowBase):
 				f"Supported algorithms are {', '.join(evolutionary_algorithms.keys())}",
 			)
 
-		_, time_now, experiment_name, outdir = self.prepare_analyze()
-		dbname = self.specification.experiment_name
+		_, time_now, dbname, outdir = self.prepare_analyze()
 		if outdir is None:
 			dbformat = "ram"
 		else:
