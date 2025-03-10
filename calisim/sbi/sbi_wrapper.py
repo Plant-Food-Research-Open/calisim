@@ -19,6 +19,7 @@ from sbi.inference import (
 )
 
 from ..base import SimulationBasedInferenceBase
+from ..data_model import ParameterEstimateModel
 
 
 class SBISimulationBasedInference(SimulationBasedInferenceBase):
@@ -87,18 +88,20 @@ class SBISimulationBasedInference(SimulationBasedInferenceBase):
 			(n_draws,), x=self.specification.observed_data
 		)
 
-		for plot_func in [analysis.pairplot, analysis.marginal_plot]:
-			plt.rcParams.update({"font.size": 8})
-			fig, _ = plot_func(posterior_samples, figsize=(24, 24), labels=self.names)
-			self.present_fig(
-				fig, outdir, time_now, task, experiment_name, plot_func.__name__
-			)
-
 		limits = []
 		lower_limits, _ = posterior_samples.min(axis=0)
 		upper_limits, _ = posterior_samples.max(axis=0)
 		for i in range(len(self.names)):
 			limits.append((lower_limits[i], upper_limits[i]))
+
+		for plot_func in [analysis.pairplot, analysis.marginal_plot]:
+			plt.rcParams.update({"font.size": 8})
+			fig, _ = plot_func(
+				posterior_samples, figsize=(24, 24), labels=self.names, limits=limits
+			)
+			self.present_fig(
+				fig, outdir, time_now, task, experiment_name, plot_func.__name__
+			)
 
 		for plot_func in [
 			analysis.conditional_pairplot,
@@ -156,7 +159,23 @@ class SBISimulationBasedInference(SimulationBasedInferenceBase):
 
 		check_stats_df = pd.DataFrame(check_stats_list)
 		outfile = self.join(
-			outdir, f"{time_now}-{task}-{experiment_name}-diagnostics.csv"
+			outdir, f"{time_now}-{task}-{experiment_name}_diagnostics.csv"
 		)
 		self.append_artifact(outfile)
 		check_stats_df.to_csv(outfile, index=False)
+
+		trace_df = pd.DataFrame(
+			posterior_samples.cpu().detach().numpy(), columns=self.names
+		)
+		outfile = self.join(outdir, f"{time_now}-{task}-{experiment_name}_trace.csv")
+		self.append_artifact(outfile)
+		trace_df.to_csv(outfile, index=False)
+
+		for name in trace_df:
+			estimate = trace_df[name].mean()
+			uncertainty = trace_df[name].std()
+
+			parameter_estimate = ParameterEstimateModel(
+				name=name, estimate=estimate, uncertainty=uncertainty
+			)
+			self.add_parameter_estimate(parameter_estimate)

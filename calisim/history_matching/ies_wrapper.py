@@ -13,6 +13,7 @@ from iterative_ensemble_smoother.utils import steplength_exponential
 from matplotlib import pyplot as plt
 
 from ..base import HistoryMatchingBase
+from ..data_model import ParameterEstimateModel
 
 
 class IESHistoryMatching(HistoryMatchingBase):
@@ -176,7 +177,7 @@ class IESHistoryMatching(HistoryMatchingBase):
 			axes[1].plot(X, self.Y_IES.T[i])
 		axes[1].set_title(f"Ensemble {output_label}")
 		self.present_fig(
-			fig, outdir, time_now, task, experiment_name, f"ensemble-{output_label}"
+			fig, outdir, time_now, task, experiment_name, f"ensemble_{output_label}"
 		)
 
 		if outdir is None:
@@ -184,7 +185,7 @@ class IESHistoryMatching(HistoryMatchingBase):
 
 		X_IES_df = pd.DataFrame(self.X_IES.T, columns=parameter_names)
 		outfile = self.join(
-			outdir, f"{time_now}-{task}-{experiment_name}-posterior.csv"
+			outdir, f"{time_now}-{task}-{experiment_name}_posterior.csv"
 		)
 		self.append_artifact(outfile)
 		X_IES_df.to_csv(outfile, index=False)
@@ -194,7 +195,16 @@ class IESHistoryMatching(HistoryMatchingBase):
 			columns=[f"{output_label}_{i + 1}" for i in range(self.Y_IES.shape[0])],
 		)
 		outfile = self.join(
-			outdir, f"{time_now}-{task}-{experiment_name}-ensemble-{output_label}.csv"
+			outdir, f"{time_now}-{task}-{experiment_name}_ensemble_{output_label}.csv"
 		)
 		self.append_artifact(outfile)
 		Y_IES_df.to_csv(outfile, index=False)
+
+		for name in X_IES_df:
+			estimate = X_IES_df[name].mean()
+			uncertainty = X_IES_df[name].std()
+
+			parameter_estimate = ParameterEstimateModel(
+				name=name, estimate=estimate, uncertainty=uncertainty
+			)
+			self.add_parameter_estimate(parameter_estimate)

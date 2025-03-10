@@ -103,8 +103,7 @@ torch = [
     "lampe",
     "zuko",
     "ax-platform",
-    "skorch",
-    "torchcp"
+    "skorch"
 ]
 
 [build-system]

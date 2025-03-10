@@ -14,7 +14,7 @@ import pyabc
 from matplotlib import pyplot as plt
 
 from ..base import CalibrationWorkflowBase
-from ..data_model import ParameterDataType
+from ..data_model import ParameterDataType, ParameterEstimateModel
 
 
 class PyABCApproximateBayesianComputation(CalibrationWorkflowBase):
@@ -183,14 +183,14 @@ class PyABCApproximateBayesianComputation(CalibrationWorkflowBase):
 
 		distribution_dfs = pd.concat(distribution_dfs)
 		outfile = self.join(
-			outdir, f"{time_now}-{task}-{experiment_name}-parameters.csv"
+			outdir, f"{time_now}-{task}-{experiment_name}_parameters.csv"
 		)
 		self.append_artifact(outfile)
 		distribution_dfs.to_csv(outfile, index=False)
 
 		populations_df = self.history.get_all_populations()
 		outfile = self.join(
-			outdir, f"{time_now}-{task}-{experiment_name}-populations.csv"
+			outdir, f"{time_now}-{task}-{experiment_name}_populations.csv"
 		)
 		self.append_artifact(outfile)
 		populations_df.to_csv(outfile, index=False)
@@ -198,7 +198,7 @@ class PyABCApproximateBayesianComputation(CalibrationWorkflowBase):
 		population_particles_df = self.history.get_nr_particles_per_population()
 		outfile = self.join(
 			outdir,
-			f"{time_now}-{task}-{experiment_name}-nr_particles_per_population.csv",
+			f"{time_now}-{task}-{experiment_name}_nr_particles_per_population.csv",
 		)
 		self.append_artifact(outfile)
 		population_particles_df.to_csv(outfile, index=False)
@@ -211,7 +211,20 @@ class PyABCApproximateBayesianComputation(CalibrationWorkflowBase):
 		distances_df = pd.concat(distances_df)
 
 		outfile = self.join(
-			outdir, f"{time_now}-{task}-{experiment_name}-distances.csv"
+			outdir, f"{time_now}-{task}-{experiment_name}_distances.csv"
 		)
 		self.append_artifact(outfile)
 		distances_df.to_csv(outfile, index=False)
+
+		max_t = distribution_dfs["t"].max()
+		trace_df = distribution_dfs.query(f"t == {max_t}")
+		trace_df = trace_df.drop(columns=["t", "w"])
+
+		for name in trace_df:
+			estimate = trace_df[name].mean()
+			uncertainty = trace_df[name].std()
+
+			parameter_estimate = ParameterEstimateModel(
+				name=name, estimate=estimate, uncertainty=uncertainty
+			)
+			self.add_parameter_estimate(parameter_estimate)

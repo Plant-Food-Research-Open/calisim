@@ -12,6 +12,7 @@ import openturns.viewer as viewer
 import pandas as pd
 
 from ..base import OpenTurnsBase
+from ..data_model import ParameterEstimateModel
 from ..estimators import KrigingEstimator
 
 
@@ -98,7 +99,7 @@ class OpenTurnsOptimisation(OpenTurnsBase):
 		if outdir is not None:
 			outfile = self.join(
 				outdir,
-				f"{time_now}-{task}-{experiment_name}-plot_optimization_history.png",
+				f"{time_now}-{task}-{experiment_name}_plot_optimization_history.png",
 			)
 			self.append_artifact(outfile)
 			view.save(outfile)
@@ -107,7 +108,7 @@ class OpenTurnsOptimisation(OpenTurnsBase):
 		view = viewer.View(graph)
 		if outdir is not None:
 			outfile = self.join(
-				outdir, f"{time_now}-{task}-{experiment_name}-plot_error_history.png"
+				outdir, f"{time_now}-{task}-{experiment_name}_plot_error_history.png"
 			)
 			self.append_artifact(outfile)
 			view.save(outfile)
@@ -132,6 +133,17 @@ class OpenTurnsOptimisation(OpenTurnsBase):
 			trial_rows.append(trial_row)
 
 		trials_df: pd.DataFrame = pd.DataFrame(trial_rows)
-		outfile = self.join(outdir, f"{time_now}-{task}-{experiment_name}-trials.csv")
+		outfile = self.join(outdir, f"{time_now}-{task}-{experiment_name}_trials.csv")
 		self.append_artifact(outfile)
 		trials_df.to_csv(outfile, index=False)
+
+		values = [value for value in trials_df.columns if value.startswith("value")]
+
+		trials_df_best = trials_df.sort_values(values).head(1)
+		for col in trials_df_best.columns:
+			if not col.startswith("param_"):
+				continue
+			name = col.replace("param_", "")
+			estimate = trials_df_best[col].item()
+			parameter_estimate = ParameterEstimateModel(name=name, estimate=estimate)
+			self.add_parameter_estimate(parameter_estimate)

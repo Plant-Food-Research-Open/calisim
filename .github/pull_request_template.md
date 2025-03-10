@@ -23,7 +23,7 @@ Example how to mark a checkbox :-
 
 # How Has This Been Tested?
 
-Please describe the tests that you ran to verify your changes. Provide instructions so we can reproduce. 
+Please describe the tests that you ran to verify your changes. Provide instructions so we can reproduce.
 
 # Describe if there is any unusual behaviour of your code(Write `NA` if there isn't)
 

@@ -16,7 +16,7 @@ from ax.utils.report.render import render_report_elements
 from plotly.subplots import make_subplots
 
 from ..base import CalibrationWorkflowBase
-from ..data_model import ParameterDataType
+from ..data_model import ParameterDataType, ParameterEstimateModel
 
 
 class BoTorchOptimisation(CalibrationWorkflowBase):
@@ -201,3 +201,14 @@ class BoTorchOptimisation(CalibrationWorkflowBase):
 			self.append_artifact(outfile)
 		else:
 			fig.show()
+
+		values = [value for value in trials_df.columns if value.startswith("mean")]
+
+		trials_df_best = trials_df.sort_values(values).head(1)
+		for col in trials_df_best.columns:
+			if not col.startswith("param_"):
+				continue
+			name = col.replace("param_", "")
+			estimate = trials_df_best[col].item()
+			parameter_estimate = ParameterEstimateModel(name=name, estimate=estimate)
+			self.add_parameter_estimate(parameter_estimate)

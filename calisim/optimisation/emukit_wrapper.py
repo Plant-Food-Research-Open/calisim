@@ -19,6 +19,7 @@ from emukit.bayesian_optimization.loops import BayesianOptimizationLoop
 from matplotlib import pyplot as plt
 
 from ..base import EmukitBase
+from ..data_model import ParameterEstimateModel
 from ..estimators import EmukitEstimator
 
 
@@ -103,3 +104,8 @@ class EmukitOptimisation(EmukitBase):
 		)
 		self.append_artifact(outfile)
 		parameter_df.to_csv(outfile, index=False)
+
+		for name in parameter_df.columns:
+			estimate = parameter_df[name].item()
+			parameter_estimate = ParameterEstimateModel(name=name, estimate=estimate)
+			self.add_parameter_estimate(parameter_estimate)

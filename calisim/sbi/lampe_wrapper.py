@@ -10,6 +10,7 @@ from itertools import islice
 from typing import Any
 
 import numpy as np
+import pandas as pd
 import torch
 import torch.optim as optim
 from lampe.data import JointLoader
@@ -21,7 +22,7 @@ from matplotlib import pyplot as plt
 from sbi import analysis as analysis
 
 from ..base import SimulationBasedInferenceBase
-from ..data_model import DistributionModel, ParameterDataType
+from ..data_model import DistributionModel, ParameterDataType, ParameterEstimateModel
 from ..utils import PriorCollection
 
 
@@ -32,31 +33,25 @@ class LAMPESimulationBasedInference(SimulationBasedInferenceBase):
 		self, theta: torch.Tensor, parameter_spec: list[DistributionModel] | Any | None
 	) -> torch.Tensor:
 		"""Normalise the parameters of the simulation.
-
 		Args:
 		    theta (torch.Tensor): The simulation parameters.
 		    parameter_spec (list[DistributionModel] | Any | None):
 				The parameter specification.
-
 		Raises:
 		    ValueError: Error raised when an unsupported distribution is provided.
-
 		Returns:
 		    torch.Tensor: The normalised parameters.
 		"""
 		param_values = []
-
 		for i, spec in enumerate(parameter_spec):  # type: ignore[arg-type]
 			x = theta[i]
 			distribution_name = spec.distribution_name
-
 			if (
 				distribution_name == "uniform"
 				or spec.data_type == ParameterDataType.DISCRETE
 			):
 				lower_bound, upper_bound = self.get_parameter_bounds(spec)
 				param_value = 2 * (x - lower_bound) / (upper_bound - lower_bound) - 1
-
 			elif distribution_name == "normal":
 				mu, sd = self.get_parameter_bounds(spec)
 				param_value = (x - mu) / sd
@@ -65,7 +60,6 @@ class LAMPESimulationBasedInference(SimulationBasedInferenceBase):
 					f"Unsupported distribution for LAMPE: {distribution_name}"
 				)
 			param_values.append(param_value)
-
 		return torch.Tensor(param_values)
 
 	def postprocess(
@@ -74,26 +68,21 @@ class LAMPESimulationBasedInference(SimulationBasedInferenceBase):
 		parameter_spec: list[DistributionModel] | Any | None,
 	) -> torch.Tensor:
 		"""Reverse normalise the parameters of the simulation.
-
 		Args:
 		    samples (torch.Tensor): The normalised parameters.
 		    parameter_spec (list[DistributionModel] | Any | None):
 				The parameter specification.
-
 		Raises:
 		    ValueError: Error raised when an unsupported distribution is provided.
-
 		Returns:
 		    torch.Tensor: The denormalised parameters.
 		"""
 		param_values = []
-
 		for sample in samples:
 			norm_param_values = []
 			for i, spec in enumerate(parameter_spec):  # type: ignore[arg-type]
 				x = sample[i]
 				distribution_name = spec.distribution_name
-
 				if (
 					distribution_name == "uniform"
 					or spec.data_type == ParameterDataType.DISCRETE
@@ -102,7 +91,6 @@ class LAMPESimulationBasedInference(SimulationBasedInferenceBase):
 					param_value = (x + 1) / 2 * (
 						upper_bound - lower_bound
 					) + lower_bound
-
 				elif distribution_name == "normal":
 					mu, sd = self.get_parameter_bounds(spec)
 					param_value = x * sd + mu
@@ -112,7 +100,6 @@ class LAMPESimulationBasedInference(SimulationBasedInferenceBase):
 					)
 				norm_param_values.append(param_value)
 			param_values.append(norm_param_values)
-
 		return torch.Tensor(param_values)
 
 	def specify(self) -> None:
@@ -199,3 +186,19 @@ class LAMPESimulationBasedInference(SimulationBasedInferenceBase):
 		self.present_fig(
 			fig, outdir, time_now, task, experiment_name, coverage_plot.__name__
 		)
+
+		trace_df = pd.DataFrame(
+			posterior_samples.cpu().detach().numpy(), columns=self.names
+		)
+		outfile = self.join(outdir, f"{time_now}-{task}-{experiment_name}_trace.csv")  # type: ignore[arg-type]
+		self.append_artifact(outfile)
+		trace_df.to_csv(outfile, index=False)
+
+		for name in trace_df:
+			estimate = trace_df[name].mean()
+			uncertainty = trace_df[name].std()
+
+			parameter_estimate = ParameterEstimateModel(
+				name=name, estimate=estimate, uncertainty=uncertainty
+			)
+			self.add_parameter_estimate(parameter_estimate)

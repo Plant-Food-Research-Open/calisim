@@ -12,7 +12,7 @@ import optuna.samplers as opt_samplers
 import pandas as pd
 
 from ..base import CalibrationWorkflowBase
-from ..data_model import DistributionModel, ParameterDataType
+from ..data_model import DistributionModel, ParameterDataType, ParameterEstimateModel
 
 
 class OptunaOptimisation(CalibrationWorkflowBase):
@@ -105,7 +105,7 @@ class OptunaOptimisation(CalibrationWorkflowBase):
 			if outdir is not None:
 				outfile = self.join(
 					outdir,
-					f"{time_now}-{task}-{experiment_name}-{plot_func.__name__}.png",
+					f"{time_now}-{task}-{experiment_name}_{plot_func.__name__}.png",
 				)
 				self.append_artifact(outfile)
 				optimisation_plot.write_image(outfile)
@@ -116,6 +116,17 @@ class OptunaOptimisation(CalibrationWorkflowBase):
 			return
 
 		trials_df: pd.DataFrame = self.study.trials_dataframe()
-		outfile = self.join(outdir, f"{time_now}-{task}-{experiment_name}-trials.csv")
+		outfile = self.join(outdir, f"{time_now}-{task}-{experiment_name}_trials.csv")
 		self.append_artifact(outfile)
 		trials_df.to_csv(outfile, index=False)
+
+		values = [value for value in trials_df.columns if value.startswith("value")]
+
+		trials_df_best = trials_df.sort_values(values).head(1)
+		for col in trials_df_best.columns:
+			if not col.startswith("params_"):
+				continue
+			name = col.replace("params_", "")
+			estimate = trials_df_best[col].item()
+			parameter_estimate = ParameterEstimateModel(name=name, estimate=estimate)
+			self.add_parameter_estimate(parameter_estimate)

@@ -16,6 +16,7 @@ from spotpy.algorithms import NSGAII, abc, demcz, dream, fscabc, sceua
 from spotpy.parameter import Base, generate
 
 from ..base import CalibrationWorkflowBase
+from ..data_model import ParameterEstimateModel
 
 
 class SPOTSetup:
@@ -201,7 +202,7 @@ class SPOTPYEvolutionary(CalibrationWorkflowBase):
 		]:
 			plot_func_name = plot_func.__name__
 			outfile = self.join(
-				outdir, f"{time_now}-{task}-{experiment_name}-{plot_func_name}.png"
+				outdir, f"{time_now}-{task}-{experiment_name}_{plot_func_name}.png"
 			)
 			self.append_artifact(outfile)
 			plot_func(results, fig_name=outfile)
@@ -213,7 +214,7 @@ class SPOTPYEvolutionary(CalibrationWorkflowBase):
 		]:
 			plot_func_name = plot_func.__name__
 			outfile = self.join(
-				outdir, f"{time_now}-{task}-{experiment_name}-{plot_func_name}.png"
+				outdir, f"{time_now}-{task}-{experiment_name}_{plot_func_name}.png"
 			)
 			self.append_artifact(outfile)
 			plot_func(results, evaluation, fig_name=outfile)
@@ -222,7 +223,20 @@ class SPOTPYEvolutionary(CalibrationWorkflowBase):
 			plot_func = analyser.plot_gelman_rubin
 			plot_func_name = plot_func.__name__
 			outfile = self.join(
-				outdir, f"{time_now}-{task}-{experiment_name}-{plot_func_name}.png"
+				outdir, f"{time_now}-{task}-{experiment_name}_{plot_func_name}.png"
 			)
 			self.append_artifact(outfile)
 			plot_func(results, self.sample_results, outfile)
+
+		for col in results.dtype.names:
+			if not col.startswith("par"):
+				continue
+			values = np.array(results[col])
+			name = col.replace("par", "")
+			estimate = values.mean()
+			uncertainty = values.std()
+
+			parameter_estimate = ParameterEstimateModel(
+				name=name, estimate=estimate, uncertainty=uncertainty
+			)
+			self.add_parameter_estimate(parameter_estimate)
