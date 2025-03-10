@@ -161,7 +161,8 @@ class PyABCApproximateBayesianComputation(CalibrationWorkflowBase):
 			abc_plot = plot_func(self.history)
 			if outdir is not None:
 				outfile = self.join(
-					outdir, f"{time_now}_{task}_{plot_func.__name__}.png"
+					outdir,
+					f"{time_now}-{task}-{experiment_name}-{plot_func.__name__}.png",
 				)
 				self.append_artifact(outfile)
 				plt.tight_layout()
