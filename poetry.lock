@@ -6456,4 +6456,4 @@ torch = ["ax-platform", "botorch", "gpytorch", "lampe", "nflows", "pyro-api", "p
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.10,<3.11"
-content-hash = "0b8c35e08b6afd93837594315821ada7e90f6f18e0afb98db60dfe1dba208ee5"
+content-hash = "7334c52f14b6d46e57e5cc20c71edcc33b00566748e00ba5f8fb4355e37f2b73"

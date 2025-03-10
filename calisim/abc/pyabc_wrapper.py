@@ -14,7 +14,7 @@ import pyabc
 from matplotlib import pyplot as plt
 
 from ..base import CalibrationWorkflowBase
-from ..data_model import ParameterDataType
+from ..data_model import ParameterDataType, ParameterEstimateModel
 
 
 class PyABCApproximateBayesianComputation(CalibrationWorkflowBase):
@@ -214,3 +214,16 @@ class PyABCApproximateBayesianComputation(CalibrationWorkflowBase):
 		)
 		self.append_artifact(outfile)
 		distances_df.to_csv(outfile, index=False)
+
+		max_t = distribution_dfs["t"].max()
+		trace_df = distribution_dfs.query(f"t == {max_t}")
+		trace_df = trace_df.drop(columns=["t", "w"])
+
+		for name in trace_df:
+			estimate = trace_df[name].mean()
+			uncertainty = trace_df[name].std()
+
+			parameter_estimate = ParameterEstimateModel(
+				name=name, estimate=estimate, uncertainty=uncertainty
+			)
+			self.add_parameter_estimate(parameter_estimate)

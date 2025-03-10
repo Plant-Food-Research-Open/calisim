@@ -14,6 +14,7 @@ from matplotlib import pyplot as plt
 from pyesmda import ESMDA, ESMDA_RS
 
 from ..base import HistoryMatchingBase
+from ..data_model import ParameterEstimateModel
 
 
 def forward_model(
@@ -197,3 +198,12 @@ class PyESMDAHistoryMatching(HistoryMatchingBase):
 		)
 		self.append_artifact(outfile)
 		pred_df.to_csv(outfile, index=False)
+
+		for name in X_IES_df:
+			estimate = X_IES_df[name].mean()
+			uncertainty = X_IES_df[name].std()
+
+			parameter_estimate = ParameterEstimateModel(
+				name=name, estimate=estimate, uncertainty=uncertainty
+			)
+			self.add_parameter_estimate(parameter_estimate)

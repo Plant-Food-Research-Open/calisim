@@ -19,6 +19,8 @@ from ..data_model import (
 	CalibrationModel,
 	DistributionModel,
 	ParameterDataType,
+	ParameterEstimateModel,
+	ParameterEstimatesModel,
 	ParameterSpecification,
 )
 from ..statistics import get_full_factorial_design
@@ -78,6 +80,7 @@ class CalibrationWorkflowBase(ABC):
 		self.calibration_func = calibration_func
 		self.specification = specification
 		self.artifacts: list[str] = []
+		self.parameter_estimates = ParameterEstimatesModel(estimates=[])
 
 	@abstractmethod
 	def specify(self) -> None:
@@ -472,6 +475,22 @@ class CalibrationWorkflowBase(ABC):
 
 		self.specification.output_labels = output_labels
 
+	def get_parameter_estimates(self) -> ParameterEstimatesModel:
+		"""Get the estimated parameter values, and potentially their uncertainties.
+
+		Returns:
+			ParameterEstimatesModel: The estimated parameter values.
+		"""
+		return self.parameter_estimates
+
+	def add_parameter_estimate(self, estimate: ParameterEstimateModel) -> None:
+		"""Add a parameter estimate to the set of estimates.
+
+		Args:
+			estimate (ParameterEstimateModel): The parameter estimate.
+		"""
+		self.parameter_estimates.estimates.append(estimate)
+
 
 class CalibrationMethodBase(CalibrationWorkflowBase):
 	"""The calibration method abstract class."""
@@ -596,3 +615,12 @@ class CalibrationMethodBase(CalibrationWorkflowBase):
 		    list[str]: The calibration workflow artifact list.
 		"""
 		return self.implementation.get_artifacts()
+
+	def get_parameter_estimates(self) -> ParameterEstimatesModel:
+		"""Get the estimated parameter values, and potentially their uncertainties.
+
+		Returns:
+			ParameterEstimatesModel: The estimated parameter values.
+		"""
+		self._implementation_check("get_parameter_estimates")
+		return self.implementation.get_parameter_estimates()

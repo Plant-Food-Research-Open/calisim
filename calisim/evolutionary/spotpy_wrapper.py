@@ -16,6 +16,7 @@ from spotpy.algorithms import NSGAII, abc, demcz, dream, fscabc, sceua
 from spotpy.parameter import Base, generate
 
 from ..base import CalibrationWorkflowBase
+from ..data_model import ParameterEstimateModel
 
 
 class SPOTSetup:
@@ -227,3 +228,16 @@ class SPOTPYEvolutionary(CalibrationWorkflowBase):
 			)
 			self.append_artifact(outfile)
 			plot_func(results, self.sample_results, outfile)
+
+		for col in results.dtype.names:
+			if not col.startswith("par"):
+				continue
+			values = np.array(results[col])
+			name = col.replace("par", "")
+			estimate = values.mean()
+			uncertainty = values.std()
+
+			parameter_estimate = ParameterEstimateModel(
+				name=name, estimate=estimate, uncertainty=uncertainty
+			)
+			self.add_parameter_estimate(parameter_estimate)

@@ -153,3 +153,31 @@ class CalibrationModel(BaseModel):
 	figsize: tuple[int, int] = Field(
 		description="The figure size for visualisations", default=(12, 12)
 	)
+
+
+class ParameterEstimateModel(BaseModel):
+	"""The simulation parameter estimate data model.
+
+	Args:
+	    BaseModel (BaseModel): The Pydantic Base model class.
+	"""
+
+	name: str = Field(description="The parameter name.")
+	estimate: float = Field(
+		description="The estimated parameter value; a point estimate"
+	)
+	uncertainty: float | None = Field(
+		description="The uncertainty of the parameter estimate", default=None
+	)
+
+
+class ParameterEstimatesModel(BaseModel):
+	"""The simulation parameter estimates data model.
+
+	Args:
+	    BaseModel (BaseModel): The Pydantic Base model class.
+	"""
+
+	estimates: list[ParameterEstimateModel] | None = Field(
+		description="The set of parameter estimates", default=None
+	)

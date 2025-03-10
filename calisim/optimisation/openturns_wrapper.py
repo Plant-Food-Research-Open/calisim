@@ -12,6 +12,7 @@ import openturns.viewer as viewer
 import pandas as pd
 
 from ..base import OpenTurnsBase
+from ..data_model import ParameterEstimateModel
 from ..estimators import KrigingEstimator
 
 
@@ -135,3 +136,14 @@ class OpenTurnsOptimisation(OpenTurnsBase):
 		outfile = self.join(outdir, f"{time_now}-{task}-{experiment_name}_trials.csv")
 		self.append_artifact(outfile)
 		trials_df.to_csv(outfile, index=False)
+
+		values = [value for value in trials_df.columns if value.startswith("value")]
+
+		trials_df_best = trials_df.sort_values(values).head(1)
+		for col in trials_df_best.columns:
+			if not col.startswith("param_"):
+				continue
+			name = col.replace("param_", "")
+			estimate = trials_df_best[col].item()
+			parameter_estimate = ParameterEstimateModel(name=name, estimate=estimate)
+			self.add_parameter_estimate(parameter_estimate)

@@ -22,7 +22,7 @@ parameter_spec = ParameterSpecification(
 		DistributionModel(
 			name="alpha",
 			distribution_name="normal",
-			distribution_args=[0.4, 0.03],
+			distribution_args=[0.5, 0.03],
 			data_type=ParameterDataType.CONTINUOUS,
 		),
 		DistributionModel(
@@ -55,17 +55,17 @@ specification = ApproximateBayesianComputationMethodModel(
 	parameter_spec=parameter_spec,
 	observed_data=observed_data.lynx.values,
 	outdir=outdir,
-	n_init=20,
+	n_init=25,
 	walltime=3,  # minutes
 	epsilon=0.1,
 	output_labels=["Lynx"],
-	n_bootstrap=5,
-	min_population_size=1,
+	n_bootstrap=15,
+	min_population_size=5,
 	verbose=True,
 	batched=False,
 	calibration_func_kwargs=dict(t=observed_data.year),
 	method_kwargs=dict(
-		max_total_nr_simulations=200, max_nr_populations=5, min_acceptance_rate=0.0
+		max_total_nr_simulations=500, max_nr_populations=20, min_acceptance_rate=0.0
 	),
 )
 

@@ -13,6 +13,7 @@ from iterative_ensemble_smoother.utils import steplength_exponential
 from matplotlib import pyplot as plt
 
 from ..base import HistoryMatchingBase
+from ..data_model import ParameterEstimateModel
 
 
 class IESHistoryMatching(HistoryMatchingBase):
@@ -198,3 +199,12 @@ class IESHistoryMatching(HistoryMatchingBase):
 		)
 		self.append_artifact(outfile)
 		Y_IES_df.to_csv(outfile, index=False)
+
+		for name in X_IES_df:
+			estimate = X_IES_df[name].mean()
+			uncertainty = X_IES_df[name].std()
+
+			parameter_estimate = ParameterEstimateModel(
+				name=name, estimate=estimate, uncertainty=uncertainty
+			)
+			self.add_parameter_estimate(parameter_estimate)

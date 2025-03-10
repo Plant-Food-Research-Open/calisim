@@ -14,6 +14,7 @@ import pymc as pm
 from matplotlib import pyplot as plt
 
 from ..base import CalibrationWorkflowBase
+from ..data_model import ParameterEstimateModel
 
 
 class PyMCApproximateBayesianComputation(CalibrationWorkflowBase):
@@ -160,9 +161,19 @@ class PyMCApproximateBayesianComputation(CalibrationWorkflowBase):
 		self.append_artifact(outfile)
 		trace_df.to_csv(outfile, index=False)
 
-		trace_summary_df = az.summary(self.trace)
+		trace_summary_df = az.summary(self.trace).reset_index()
+		trace_summary_df = trace_summary_df.rename(columns={"index": "name"})
 		outfile = self.join(
 			outdir, f"{time_now}-{task}-{experiment_name}_trace_summary.csv"
 		)
 		self.append_artifact(outfile)
 		trace_summary_df.to_csv(outfile, index=False)
+
+		for row in trace_summary_df.to_dict("records"):
+			name = row["name"]
+			estimate = row["mean"]
+			uncertainty = row["sd"]
+			parameter_estimate = ParameterEstimateModel(
+				name=name, estimate=estimate, uncertainty=uncertainty
+			)
+			self.add_parameter_estimate(parameter_estimate)

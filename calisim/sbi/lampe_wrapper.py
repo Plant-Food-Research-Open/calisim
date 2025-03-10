@@ -10,6 +10,7 @@ from itertools import islice
 from typing import Any
 
 import numpy as np
+import pandas as pd
 import torch
 import torch.optim as optim
 from lampe.data import JointLoader
@@ -21,7 +22,7 @@ from matplotlib import pyplot as plt
 from sbi import analysis as analysis
 
 from ..base import SimulationBasedInferenceBase
-from ..data_model import DistributionModel, ParameterDataType
+from ..data_model import DistributionModel, ParameterDataType, ParameterEstimateModel
 from ..utils import PriorCollection
 
 
@@ -185,3 +186,19 @@ class LAMPESimulationBasedInference(SimulationBasedInferenceBase):
 		self.present_fig(
 			fig, outdir, time_now, task, experiment_name, coverage_plot.__name__
 		)
+
+		trace_df = pd.DataFrame(
+			posterior_samples.cpu().detach().numpy(), columns=self.names
+		)
+		outfile = self.join(outdir, f"{time_now}-{task}-{experiment_name}_trace.csv")  # type: ignore[arg-type]
+		self.append_artifact(outfile)
+		trace_df.to_csv(outfile, index=False)
+
+		for name in trace_df:
+			estimate = trace_df[name].mean()
+			uncertainty = trace_df[name].std()
+
+			parameter_estimate = ParameterEstimateModel(
+				name=name, estimate=estimate, uncertainty=uncertainty
+			)
+			self.add_parameter_estimate(parameter_estimate)

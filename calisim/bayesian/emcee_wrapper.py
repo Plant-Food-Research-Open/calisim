@@ -13,6 +13,7 @@ import numpy as np
 import pandas as pd
 
 from ..base import CalibrationWorkflowBase
+from ..data_model import ParameterEstimateModel
 
 
 class EmceeBayesianCalibration(CalibrationWorkflowBase):
@@ -165,3 +166,12 @@ class EmceeBayesianCalibration(CalibrationWorkflowBase):
 		outfile = self.join(outdir, f"{time_now}-{task}-{experiment_name}_trace.csv")
 		self.append_artifact(outfile)
 		trace_df.to_csv(outfile, index=False)
+
+		for name in trace_df:
+			estimate = trace_df[name].mean()
+			uncertainty = trace_df[name].std()
+
+			parameter_estimate = ParameterEstimateModel(
+				name=name, estimate=estimate, uncertainty=uncertainty
+			)
+			self.add_parameter_estimate(parameter_estimate)
