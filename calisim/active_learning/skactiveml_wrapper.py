@@ -1,6 +1,6 @@
-"""Contains the implementations for experimental design methods using scikit-activeml
+"""Contains the implementations for active learning methods using scikit-activeml
 
-Implements the supported experimental design methods using the scikit-activeml library.
+Implements the supported active learning methods using the scikit-activeml library.
 
 """
 
@@ -22,12 +22,12 @@ from sklearn.gaussian_process import GaussianProcessRegressor
 from ..base import EmukitBase
 
 
-class SkActiveMLExperimentalDesign(EmukitBase):
-	"""The scikit-activeml experimental design method class."""
+class SkActiveMLActiveLearning(EmukitBase):
+	"""The scikit-activeml active learning method class."""
 
 	def execute(self) -> None:
 		"""Execute the simulation calibration procedure."""
-		experimental_design_kwargs = self.get_calibration_func_kwargs()
+		active_learning_kwargs = self.get_calibration_func_kwargs()
 
 		def target_function(X: np.ndarray) -> np.ndarray:
 			return self.calibration_func_wrapper(
@@ -36,7 +36,7 @@ class SkActiveMLExperimentalDesign(EmukitBase):
 				self.specification.observed_data,
 				self.names,
 				self.data_types,
-				experimental_design_kwargs,
+				active_learning_kwargs,
 			)
 
 		n_init = self.specification.n_init

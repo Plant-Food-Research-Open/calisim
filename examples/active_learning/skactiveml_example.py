@@ -1,16 +1,16 @@
 import numpy as np
 import pandas as pd
 
+from calisim.active_learning import (
+	ActiveLearningMethod,
+	ActiveLearningMethodModel,
+)
 from calisim.data_model import (
 	DistributionModel,
 	ParameterDataType,
 	ParameterSpecification,
 )
 from calisim.example_models import LotkaVolterraModel
-from calisim.experimental_design import (
-	ExperimentalDesignMethod,
-	ExperimentalDesignMethodModel,
-)
 from calisim.utils import get_examples_outdir
 
 model = LotkaVolterraModel()
@@ -34,7 +34,7 @@ parameter_spec = ParameterSpecification(
 )
 
 
-def experimental_design_func(
+def active_learning_func(
 	parameters: dict, simulation_id: str, observed_data: np.ndarray | None, t: pd.Series
 ) -> float | list[float]:
 	simulation_parameters = dict(h0=34.0, l0=5.9, t=t, gamma=0.84, delta=0.026)
@@ -47,8 +47,8 @@ def experimental_design_func(
 
 
 outdir = get_examples_outdir()
-specification = ExperimentalDesignMethodModel(
-	experiment_name="emukit_experimental_design",
+specification = ActiveLearningMethodModel(
+	experiment_name="skactiveml_active_learning",
 	parameter_spec=parameter_spec,
 	observed_data=observed_data.lynx.values,
 	outdir=outdir,
@@ -64,8 +64,8 @@ specification = ExperimentalDesignMethodModel(
 )
 
 
-calibrator = ExperimentalDesignMethod(
-	calibration_func=experimental_design_func,
+calibrator = ActiveLearningMethod(
+	calibration_func=active_learning_func,
 	specification=specification,
 	engine="skactiveml",
 )
