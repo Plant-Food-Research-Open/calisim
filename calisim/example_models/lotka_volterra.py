@@ -1,7 +1,6 @@
-"""Contains base classes for various example models
+"""Contains an implementation of the Lotka Volterra model.
 
-Abstract base classes are defined for the
-example simulation models.
+An implementation of a Lotka Volterra example model.
 
 """
 
