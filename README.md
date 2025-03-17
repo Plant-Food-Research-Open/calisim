@@ -18,7 +18,28 @@
 - [calisim](#calisim)
 - [Table of contents](#table-of-contents)
 - [Introduction](#introduction)
+- [Communication](#communication)
+- [Contributions and Support](#contributions-and-support)
+- [License](#license)
 
 # Introduction
 
 This repository contains various methods for calibrating simulation models.
+
+# Communication
+
+- [GitHub Discussions] for questions.
+- [GitHub Issues] for bug reports and feature requests.
+
+[GitHub Discussions]: https://github.com/Plant-Food-Research-Open/calisim/discussions
+[GitHub issues]: https://github.com/Plant-Food-Research-Open/calisim/issues
+
+# Contributions and Support
+
+Contributions are more than welcome. For general guidelines on how to contribute to this project, take a look at [CONTRIBUTING.md](./CONTRIBUTING.md).
+
+# License
+
+Apache License (see [LICENSE](./LICENSE)).
+
+View third party licenses (see [third_party](./third_party))
