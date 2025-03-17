@@ -1,6 +1,4 @@
-.. image:: https://raw.githubusercontent.com/Plant-Food-Research-Open/calisim/main/docs/assets/calisim_logo.png
-    :width: 350px
-    :align: center
+<div align="center"><img src="https://raw.githubusercontent.com/Plant-Food-Research-Open/calisim/main/docs/assets/calisim_logo.png" width="600" height="400"/></div>
 
 # calisim
 
