@@ -11,7 +11,7 @@
 *A library of methods to calibrate simulation models.*
 
 [**PyPI**](https://pypi.python.org/pypi/calisim)
-| [**Documentation**](https://calisim.readthedocs.io/en/latest/)
+| [**Documentation**](https://calisim.readthedocs.io)
 | [**Examples**](https://github.com/Plant-Food-Research-Open/calisim/tree/main/examples)
 
 # Table of contents
