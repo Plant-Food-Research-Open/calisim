@@ -7,7 +7,7 @@
 [![CI/CD](https://github.com/Plant-Food-Research-Open/calisim/actions/workflows/cicd.yaml/badge.svg?branch=main)](https://github.com/Plant-Food-Research-Open/calisim/actions/workflows/cicd.yaml)
 [![Publish](https://github.com/Plant-Food-Research-Open/calisim/actions/workflows/publish.yaml/badge.svg?branch=main)](https://github.com/Plant-Food-Research-Open/calisim/actions/workflows/publish.yaml)
 
-*calisim: A toolbox for the calibration and evaluation of simulation models.*
+*A toolbox for the calibration and evaluation of simulation models.*
 
 [**PyPI**](https://pypi.python.org/pypi/calisim)
 | [**Documentation**](https://calisim.readthedocs.io)
