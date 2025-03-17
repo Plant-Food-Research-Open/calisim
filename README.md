@@ -13,6 +13,7 @@
 | [**Documentation**](https://calisim.readthedocs.io)
 | [**Changelog**](https://calisim.readthedocs.io/en/latest/changelogs/changelog.html)
 | [**Examples**](https://github.com/Plant-Food-Research-Open/calisim/tree/main/examples)
+| [**Releases**](https://github.com/Plant-Food-Research-Open/calisim/releases)
 
 # Table of contents
 
