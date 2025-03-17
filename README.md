@@ -40,6 +40,6 @@ Contributions are more than welcome. For general guidelines on how to contribute
 
 # License
 
-Apache License (see [LICENSE](./LICENSE)).
+calisim is published under the Apache License (see [LICENSE](./LICENSE)).
 
-View third party licenses (see [third_party](./third_party))
+View all third party licenses (see [third_party](./third_party))
