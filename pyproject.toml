@@ -2,10 +2,13 @@
 name = "calisim"
 version = "0.1.0"
 description = "A library of methods to calibrate simulation models."
-authors = ["James Bristow <james.bristow@plantandfood.co.nz>"]
+authors = [
+    "James Bristow <James.Bristow@plantandfood.co.nz>",
+    "Hana Liang <Yongqi.Liang@plantandfood.co.n>"
+]
 license = "Apache-2.0"
 readme = "README.md"
-repository = "https://github.com/PlantandFoodResearch/calisim"
+repository = "https://github.com/Plant-Food-Research-Open/calisim"
 
 [tool.poetry.dependencies]
 python = ">=3.10,<3.11"
