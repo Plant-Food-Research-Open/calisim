@@ -6473,21 +6473,6 @@ markdown = ["CommonMark (>=0.5.6)"]
 test = ["coverage (>=6.5)", "lxml (>=4.9)", "pytest (>=8.0)", "setuptools (>=70.0)", "typing_extensions (>=4.9)"]
 
 [[package]]
-name = "sphinx-multiversion"
-version = "0.2.4"
-description = "Add support for multiple versions to sphinx"
-optional = false
-python-versions = "*"
-files = [
-    {file = "sphinx-multiversion-0.2.4.tar.gz", hash = "sha256:5cd1ca9ecb5eed63cb8d6ce5e9c438ca13af4fa98e7eb6f376be541dd4990bcb"},
-    {file = "sphinx_multiversion-0.2.4-py2.py3-none-any.whl", hash = "sha256:5c38d5ce785a335d8c8d768b46509bd66bfb9c6252b93b700ca8c05317f207d6"},
-    {file = "sphinx_multiversion-0.2.4-py3-none-any.whl", hash = "sha256:dec29f2a5890ad68157a790112edc0eb63140e70f9df0a363743c6258fbeb478"},
-]
-
-[package.dependencies]
-sphinx = ">=2.1"
-
-[[package]]
 name = "sphinx-rtd-theme"
 version = "3.0.2"
 description = "Read the Docs theme for Sphinx"
@@ -7625,4 +7610,4 @@ tutorials = ["mesa", "mesa-geo", "pcse"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.10,<3.11"
-content-hash = "33f1ea5a6fcfb0d5cf2a3caae349aa95b00b404bb218600f769d123a069f33d8"
+content-hash = "3e50c7a7e80a426e4e5d83da3519982ed40eb14c4650f70852a03db421d24d05"

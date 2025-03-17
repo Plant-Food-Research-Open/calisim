@@ -5,13 +5,13 @@
 [![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
 [![pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit)](https://github.com/pre-commit/pre-commit)
 [![CI/CD](https://github.com/Plant-Food-Research-Open/calisim/actions/workflows/cicd.yaml/badge.svg?branch=main)](https://github.com/Plant-Food-Research-Open/calisim/actions/workflows/cicd.yaml)
-[![Documentation](https://github.com/Plant-Food-Research-Open/calisim/actions/workflows/docs.yaml/badge.svg?branch=main)](https://github.com/Plant-Food-Research-Open/calisim/actions/workflows/docs.yaml)
 [![Publish](https://github.com/Plant-Food-Research-Open/calisim/actions/workflows/publish.yaml/badge.svg?branch=main)](https://github.com/Plant-Food-Research-Open/calisim/actions/workflows/publish.yaml)
 
 *A library of methods to calibrate simulation models.*
 
 [**PyPI**](https://pypi.python.org/pypi/calisim)
 | [**Documentation**](https://calisim.readthedocs.io)
+| [**Changelog**](https://calisim.readthedocs.io/en/latest/changelogs/changelog.html)
 | [**Examples**](https://github.com/Plant-Food-Research-Open/calisim/tree/main/examples)
 
 # Table of contents

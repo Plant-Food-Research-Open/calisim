@@ -1,7 +1,16 @@
 Changelog
 =========
 
-0.1.0 - 2024/10/19
-------------------
+[0.1.0] - 2025/03/17
+--------------------
 
-* Stub
+Added
+^^^^^
+
+* Open sourcing calisim Python package.
+* PyPI deployment.
+* ReadTheDocs deployment.
+
+Changed
+^^^^^^^
+* Configuring CI/CD builds for testing, linting, and publishing.

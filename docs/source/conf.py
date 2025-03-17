@@ -20,7 +20,6 @@ extensions = [
 	"sphinxarg.ext",
 	"sphinxcontrib.autodoc_pydantic",
 	"myst_nb",
-	"sphinx_multiversion",
 ]
 
 numpydoc_show_class_members = False

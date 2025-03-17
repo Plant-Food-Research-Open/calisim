@@ -9,6 +9,7 @@ API Reference
     example_models.rst
     estimators.rst
     abc.rst
+    active_learning.rst
     bayesian.rst
     evolutionary.rst
     experimental_design.rst
