@@ -1,6 +1,4 @@
-<div align="center"><img src="https://raw.githubusercontent.com/Plant-Food-Research-Open/calisim/main/docs/assets/calisim_logo.png" width="600" height="400"/></div>
-
-# calisim
+<div align="left"><img src="https://raw.githubusercontent.com/Plant-Food-Research-Open/calisim/main/docs/assets/calisim_logo.png" width="600" height="200"/></div>
 
 [![pypi](https://img.shields.io/pypi/v/optuna.svg)](https://pypi.python.org/pypi/calisim)
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
@@ -19,7 +17,6 @@
 
 # Table of contents
 
-- [calisim](#calisim)
 - [Table of contents](#table-of-contents)
 - [Introduction](#introduction)
 - [Installation](#installation)
