@@ -20,6 +20,7 @@
 - [calisim](#calisim)
 - [Table of contents](#table-of-contents)
 - [Introduction](#introduction)
+- [Installation](#installation)
 - [Communication](#communication)
 - [Contributions and Support](#contributions-and-support)
 - [License](#license)
@@ -27,6 +28,14 @@
 # Introduction
 
 This repository contains various methods for calibrating simulation models.
+
+# Installation
+
+The easiest way to install calisim is using pip:
+
+```
+pip install -U calisim
+```
 
 # Communication
 
