@@ -1,3 +1,7 @@
+.. image:: https://raw.githubusercontent.com/Plant-Food-Research-Open/calisim/main/docs/assets/calisim_logo.png
+    :width: 350px
+    :align: center
+
 # calisim
 
 [![pypi](https://img.shields.io/pypi/v/optuna.svg)](https://pypi.python.org/pypi/calisim)
