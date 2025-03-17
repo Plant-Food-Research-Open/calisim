@@ -4,7 +4,8 @@ version = "0.1.0"
 description = "A library of methods to calibrate simulation models."
 authors = [
     "James Bristow <James.Bristow@plantandfood.co.nz>",
-    "Hana Liang <Yongqi.Liang@plantandfood.co.n>"
+    "Hana Liang <Yongqi.Liang@plantandfood.co.n>",
+    "Chris Van Houtte <Chris.Vanhoutte@plantandfood.co.nz>"
 ]
 license = "Apache-2.0"
 readme = "README.md"
