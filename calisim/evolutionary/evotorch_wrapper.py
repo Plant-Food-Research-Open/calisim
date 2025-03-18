@@ -26,20 +26,11 @@ class EvoTorchEvolutionary(CalibrationWorkflowBase):
 
 	def specify(self) -> None:
 		"""Specify the parameters of the model calibration procedure."""
-
-		directions = []
-		for direction in self.specification.directions:
-			if direction == "minimize":
-				direction = "min"
-			elif direction == "maximize":
-				direction = "max"
-			directions.append(direction)
-
 		self.names = []
 		self.data_types = []
 		self.bounds = []
-		lower_bounds = []
-		upper_bounds = []
+		self.lower_bounds = []
+		self.upper_bounds = []
 
 		parameter_spec = self.specification.parameter_spec.parameters
 		for spec in parameter_spec:
@@ -56,11 +47,20 @@ class EvoTorchEvolutionary(CalibrationWorkflowBase):
 			if data_type == ParameterDataType.DISCRETE:
 				lower_bound = np.floor(lower_bound).astype("int")
 				upper_bound = np.floor(upper_bound).astype("int")
-			lower_bounds.append(lower_bound)
-			upper_bounds.append(upper_bound)
+			self.lower_bounds.append(lower_bound)
+			self.upper_bounds.append(upper_bound)
+
+	def execute(self) -> None:
+		"""Execute the simulation calibration procedure."""
+		directions = []
+		for direction in self.specification.directions:
+			if direction == "minimize":
+				direction = "min"
+			elif direction == "maximize":
+				direction = "max"
+			directions.append(direction)
 
 		self.trials: list[dict[str, Any]] = []
-
 		evolutionary_kwargs = self.get_calibration_func_kwargs()
 
 		def target_function(X: torch.Tensor) -> torch.Tensor:
@@ -89,12 +89,11 @@ class EvoTorchEvolutionary(CalibrationWorkflowBase):
 
 		vectorized = self.specification.batched
 		seed = self.specification.random_seed
-
 		self.problem = Problem(
 			directions,
 			target_function,
 			solution_length=len(self.names),
-			bounds=(lower_bounds, upper_bounds),
+			bounds=(self.lower_bounds, self.upper_bounds),
 			vectorized=vectorized,
 			seed=seed,
 		)
@@ -127,12 +126,9 @@ class EvoTorchEvolutionary(CalibrationWorkflowBase):
 			method_kwargs["operators"] = operator_list
 
 		self.searcher = algorithm_class(self.problem, **method_kwargs)
-
 		interval = self.specification.n_samples
 		self.logger = PandasLogger(self.searcher, interval=interval)
 
-	def execute(self) -> None:
-		"""Execute the simulation calibration procedure."""
 		num_generations = self.specification.n_iterations
 		self.searcher.run(num_generations=num_generations)
 
