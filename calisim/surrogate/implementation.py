@@ -4,19 +4,24 @@ Implements the supported surrogate modelling methods.
 
 """
 
+import importlib
 from collections.abc import Callable
 
 from pydantic import Field
 
 from ..base import CalibrationMethodBase, CalibrationWorkflowBase
 from ..data_model import CalibrationModel
-from .gpytorch_wrapper import GPyTorchSurrogateModel
 from .sklearn_wrapper import SklearnSurrogateModel
 
 TASK = "surrogate_modelling"
 IMPLEMENTATIONS: dict[str, type[CalibrationWorkflowBase]] = dict(
-	gpytorch=GPyTorchSurrogateModel, sklearn=SklearnSurrogateModel
+	sklearn=SklearnSurrogateModel
 )
+
+if importlib.util.find_spec("gpytorch") is not None:
+	from .gpytorch_wrapper import GPyTorchSurrogateModel
+
+	IMPLEMENTATIONS["gpytorch"] = GPyTorchSurrogateModel
 
 
 def get_implementations() -> dict[str, type[CalibrationWorkflowBase]]:

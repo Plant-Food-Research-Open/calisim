@@ -4,7 +4,9 @@ Implements the supported evolutionary algorithm methods.
 
 """
 
+import importlib
 from collections.abc import Callable
+from typing import Any
 
 from pydantic import Field
 
@@ -16,6 +18,11 @@ TASK = "evolutionary"
 IMPLEMENTATIONS: dict[str, type[CalibrationWorkflowBase]] = dict(
 	spotpy=SPOTPYEvolutionary
 )
+
+if importlib.util.find_spec("evotorch") is not None:
+	from .evotorch_wrapper import EvoTorchEvolutionary
+
+	IMPLEMENTATIONS["evotorch"] = EvoTorchEvolutionary
 
 
 def get_implementations() -> dict[str, type[CalibrationWorkflowBase]]:
@@ -36,6 +43,12 @@ class EvolutionaryMethodModel(CalibrationModel):
 	"""
 
 	objective: str | None = Field(description="The objective function", default="rmse")
+	directions: list[str] | None = Field(
+		description="The list of objective directions", default=["minimize"]
+	)
+	operators: dict[str, Any] | None = Field(
+		description="The dictionary of evolutionary operators", default=None
+	)
 
 
 class EvolutionaryMethod(CalibrationMethodBase):
