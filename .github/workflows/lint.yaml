@@ -1,4 +1,4 @@
-name: CI/CD
+name: Lint
 
 on:
   pull_request:
@@ -44,10 +44,3 @@ jobs:
       run: |
         source .venv/bin/activate
         ruff check --output-format=github .
-
-    - name: Test code
-      run: |
-        export CICD_TESTING_ENV=true
-
-        source .venv/bin/activate
-        pytest --cov=calisim --junit-xml=test_results.xml
