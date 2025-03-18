@@ -18,6 +18,8 @@ COPY calisim calisim
 
 COPY examples examples
 
+COPY tests tests
+
 RUN apt-get update \
     && apt-get install -y --no-install-recommends build-essential libpq-dev graphviz \
     && apt-get clean \
