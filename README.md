@@ -12,6 +12,7 @@ ______________________________________________________________________
 
 [**PyPI**](https://pypi.python.org/pypi/calisim)
 | [**Documentation**](https://calisim.readthedocs.io)
+| [**API**](https://calisim.readthedocs.io/en/latest/api_reference/index.html)
 | [**Changelog**](https://calisim.readthedocs.io/en/latest/changelogs/changelog.html)
 | [**Examples**](https://github.com/Plant-Food-Research-Open/calisim/tree/main/examples)
 | [**Releases**](https://github.com/Plant-Food-Research-Open/calisim/releases)
