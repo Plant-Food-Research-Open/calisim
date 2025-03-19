@@ -46,7 +46,7 @@ calisim is primarily a wrapper around popular libraries and frameworks including
 * A low-code library, allowing modellers to rapidly construct multiple workflows for many calibration procedures.
 * An object-oriented programming architecture, allowing users to easily extend and modify calibration workflows for their own complex modelling use-cases.
 * An unopinionated approach to working with simulation models, allowing users to calibrate both Python-based and non-Python-based models.
-* Optional integration with PyTorch for access to more sophisticated Gaussian process and deep learning surrogate models, state-of-the-art evolutionary algorithms, and deep generative modelling for simulation-based inference.
+* Optional integration with PyTorch for access to more sophisticated Gaussian Process and deep learning surrogate models, state-of-the-art evolutionary algorithms, and deep generative modelling for simulation-based inference.
 
 # Quickstart
 
