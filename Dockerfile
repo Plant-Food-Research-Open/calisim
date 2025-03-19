@@ -2,13 +2,13 @@ FROM python:3.10.13-bullseye AS base
 
 ARG BUILD_DATE
 
-ARG APP_VERSION
+ARG CALISIM_VERSION
 
 LABEL maintainer=james.bristow@plantandfood.co.nz
 
 LABEL org.label-schema.build-date=$BUILD_DATE
 
-LABEL version=$APP_VERSION
+LABEL version=$CALISIM_VERSION
 
 WORKDIR /workspace
 

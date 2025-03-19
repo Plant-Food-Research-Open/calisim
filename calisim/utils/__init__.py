@@ -1,6 +1,5 @@
 from .utilities import (
 	EarlyStopper,
-	PriorCollection,
 	calibration_func_wrapper,
 	create_file_path,
 	extend_X,
@@ -17,5 +16,4 @@ __all__ = [
 	get_simulation_uuid,
 	get_examples_outdir,
 	EarlyStopper,
-	PriorCollection,
 ]

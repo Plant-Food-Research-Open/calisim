@@ -12,6 +12,7 @@ from typing import Any
 import numpy as np
 import pandas as pd
 import torch
+import torch.distributions as dist
 import torch.optim as optim
 from lampe.data import JointLoader
 from lampe.diagnostics import expected_coverage_mc
@@ -23,7 +24,33 @@ from sbi import analysis as analysis
 
 from ..base import SimulationBasedInferenceBase
 from ..data_model import DistributionModel, ParameterDataType, ParameterEstimateModel
-from ..utils import PriorCollection
+
+
+class PriorCollection:
+	"""A wrapper around a collection of priors."""
+
+	def __init__(self, priors: list[dist.Distribution]) -> None:
+		"""PriorCollection constructor.
+
+		Args:
+		    priors (list[dist.Distribution]): The list of prior distributions.
+		"""
+		self.parameters = priors
+
+	def sample(self, batch_shape: tuple = ()) -> torch.Tensor:
+		"""Sample from the priors.
+
+		Args:
+		    batch_shape (tuple, optional): The batch shape of
+				the sampled priors. Defaults to ().
+
+		Returns:
+		    torch.Tensor: The sampled priors.
+		"""
+		prior_sample = []
+		for prior in self.parameters:
+			prior_sample.append(prior.sample(batch_shape).squeeze())
+		return torch.stack(prior_sample).T
 
 
 class LAMPESimulationBasedInference(SimulationBasedInferenceBase):

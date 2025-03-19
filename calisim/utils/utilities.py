@@ -12,8 +12,6 @@ from pathlib import Path
 
 import numpy as np
 import pandas as pd
-import torch
-import torch.distributions as dist
 
 from ..data_model import ParameterDataType
 
@@ -156,33 +154,6 @@ class EarlyStopper:
 			if self.counter >= self.patience:
 				return True
 		return False
-
-
-class PriorCollection:
-	"""A wrapper around a collection of priors."""
-
-	def __init__(self, priors: list[dist.Distribution]) -> None:
-		"""PriorCollection constructor.
-
-		Args:
-		    priors (list[dist.Distribution]): The list of prior distributions.
-		"""
-		self.parameters = priors
-
-	def sample(self, batch_shape: tuple = ()) -> torch.Tensor:
-		"""Sample from the priors.
-
-		Args:
-		    batch_shape (tuple, optional): The batch shape of
-				the sampled priors. Defaults to ().
-
-		Returns:
-		    torch.Tensor: The sampled priors.
-		"""
-		prior_sample = []
-		for prior in self.parameters:
-			prior_sample.append(prior.sample(batch_shape).squeeze())
-		return torch.stack(prior_sample).T
 
 
 def extend_X(X: np.ndarray, Y_rows: int) -> np.ndarray:

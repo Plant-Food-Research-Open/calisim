@@ -32,6 +32,6 @@ jobs:
           password: ${{ secrets.GHCR_TOKEN }}
     - name: Docker push
       run: |
-        export APP_VERSION=$(grep -m 1 version pyproject.toml | tr -s ' ' | tr -d '"' | tr -d "'" | cut -d' ' -f3)
+        export CALISIM_VERSION=$(grep -m 1 version pyproject.toml | tr -s ' ' | tr -d '"' | tr -d "'" | cut -d' ' -f3)
         docker compose build calisim
         docker compose push calisim
