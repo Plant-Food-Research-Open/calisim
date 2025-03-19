@@ -1,4 +1,4 @@
-<div align="left"><img src="https://raw.githubusercontent.com/Plant-Food-Research-Open/calisim/main/docs/assets/calisim_logo.png" width="400" height="150"/></div>
+<div align="left"><img src="https://raw.githubusercontent.com/Plant-Food-Research-Open/calisim/main/docs/assets/calisim_logo.png" width="400" height="130"/></div>
 
 ______________________________________________________________________
 
@@ -18,6 +18,7 @@ ______________________________________________________________________
 | [**Changelog**](https://calisim.readthedocs.io/en/latest/changelogs/changelog.html)
 | [**Examples**](https://github.com/Plant-Food-Research-Open/calisim/tree/main/examples)
 | [**Releases**](https://github.com/Plant-Food-Research-Open/calisim/releases)
+| [**Docker**](https://github.com/Plant-Food-Research-Open/calisim/pkgs/container/calisim)
 
 *A toolbox for the calibration and evaluation of simulation models.*
 
