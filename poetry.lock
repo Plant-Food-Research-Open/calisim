@@ -8136,9 +8136,10 @@ dev = ["pre-commit", "pytest", "ruff"]
 [extras]
 hydra = ["hydra-core"]
 torch = ["ax-platform", "botorch", "evotorch", "gpytorch", "lampe", "nflows", "pyro-api", "pyro-ppl", "sbi", "skorch", "tensorboard", "torch", "zuko"]
+torchx = ["torchx"]
 tutorials = ["mesa", "mesa-geo", "pcse"]
 
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.10,<3.11"
-content-hash = "15c66cf4bd539cc7336159a911575bf865e9200313b6a2840ccadc5792746442"
+content-hash = "772bbd9005e9bb01f85b27633391840a07556026ddaaf262198c6998300cb047"
