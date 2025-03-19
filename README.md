@@ -27,6 +27,7 @@ ______________________________________________________________________
 - [Table of contents](#table-of-contents)
 - [Introduction](#introduction)
 - [Features and Functionality](#features-and-functionality)
+- [Quickstart](#quickstart)
 - [Installation](#installation)
 - [Usage with Docker](#usage-with-docker)
 - [Communication](#communication)
@@ -46,6 +47,73 @@ calisim is primarily a wrapper around popular libraries and frameworks including
 * An object-oriented programming architecture, allowing users to easily extend and modify calibration workflows for their own complex modelling use-cases.
 * An unopinionated approach to working with simulation models, allowing users to calibrate both Python-based and non-Python-based models.
 * Optional integration with PyTorch for access to more sophisticated Gaussian process and deep learning surrogate models, state-of-the-art evolutionary algorithms, and deep generative modelling for simulation-based inference.
+
+# Quickstart
+
+```
+import numpy as np
+import pandas as pd
+
+from calisim.data_model import (
+	DistributionModel,
+	ParameterDataType,
+	ParameterSpecification,
+)
+from calisim.example_models import LotkaVolterraModel
+from calisim.optimisation import OptimisationMethod, OptimisationMethodModel
+from calisim.statistics import MeanSquaredError
+from calisim.utils import get_examples_outdir
+
+model = LotkaVolterraModel()
+observed_data = model.get_observed_data()
+
+parameter_spec = ParameterSpecification(
+	parameters=[
+		DistributionModel(
+			name="alpha",
+			distribution_name="uniform",
+			distribution_args=[0.45, 0.55],
+			data_type=ParameterDataType.CONTINUOUS,
+		)
+	]
+)
+
+def objective(
+	parameters: dict, simulation_id: str, observed_data: np.ndarray | None, t: pd.Series
+) -> float | list[float]:
+	simulation_parameters = dict(
+		alpha=parameters["alpha"],
+		beta=0.024, h0=34.0, l0=5.9,
+		t=t, gamma=0.84, delta=0.026,
+	)
+
+	simulated_data = model.simulate(simulation_parameters).lynx.values
+	metric = MeanSquaredError()
+	discrepancy = metric.calculate(observed_data, simulated_data)
+	return discrepancy
+
+specification = OptimisationMethodModel(
+	experiment_name="optuna_optimisation",
+	parameter_spec=parameter_spec,
+	observed_data=observed_data.lynx.values,
+	outdir=get_examples_outdir(),
+	method="tpes",
+	directions=["minimize"],
+	n_iterations=100,
+	method_kwargs=dict(n_startup_trials=50),
+	calibration_func_kwargs=dict(t=observed_data.year),
+)
+
+calibrator = OptimisationMethod(
+	calibration_func=objective, specification=specification, engine="optuna"
+)
+
+calibrator.specify().execute().analyze()
+
+result_artifacts = "\n".join(calibrator.get_artifacts())
+print(f"View results: \n{result_artifacts}")
+print(f"Parameter estimates: {calibrator.get_parameter_estimates()}")
+```
 
 # Installation
 
