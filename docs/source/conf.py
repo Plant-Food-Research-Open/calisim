@@ -6,9 +6,9 @@ import calisim  # noqa: F401
 sys.path.insert(0, os.path.abspath("../.."))
 
 project = "calisim"
-copyright = "2024, James Bristow"
+copyright = "2025, James Bristow"
 author = "James Bristow"
-release = "0.1.0"
+release = "0.2.0"
 
 extensions = [
 	"sphinx.ext.napoleon",

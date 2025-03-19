@@ -144,7 +144,7 @@ pip install calisim[torch,hydra,torchx]
 You may also want to execute calisim inside of a Docker container. You can do so by running the following:
 
 ```
-export CALISIM_VERSION=0.1.0 # Change the version as needed
+export CALISIM_VERSION=0.2.0 # Change the version as needed
 docker compose pull calisim
 docker compose run --rm calisim python examples/optimisation/optuna_example.py
 ```

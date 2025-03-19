@@ -1,6 +1,28 @@
 Changelog
 =========
 
+[0.2.0] - 2025/03/20
+--------------------
+
+Added
+^^^^^
+
+* Implemented EvoTorch wrapper.
+* Included calisim logo.
+* Bundled in TorchX as optional dependency.
+* Incorporated Docker image build.
+
+Changed
+^^^^^^^
+
+* Fleshed out documentation in README.
+
+Fixed
+^^^^^
+
+* Added checks for the optional importing of PyTorch.
+* Included missing API documentation for models.
+
 [0.1.0] - 2025/03/17
 --------------------
 
@@ -13,4 +35,5 @@ Added
 
 Changed
 ^^^^^^^
+
 * Configuring CI/CD builds for testing, linting, and publishing.
