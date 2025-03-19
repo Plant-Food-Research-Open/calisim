@@ -145,6 +145,7 @@ You may also want to execute calisim inside of a Docker container. You can do so
 
 ```
 export CALISIM_VERSION=0.2.0 # Change the version as needed
+wget https://raw.githubusercontent.com/Plant-Food-Research-Open/calisim/refs/heads/main/docker-compose.yaml
 docker compose pull calisim
 docker compose run --rm calisim python examples/optimisation/optuna_example.py
 ```
