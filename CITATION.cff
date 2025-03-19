@@ -1,5 +1,5 @@
 cff-version: 1.2.0
-message: "If you use this library, please cite it as below."
+message: If you use this software, please cite it using these metadata.
 authors:
   - family-names: "Bristow"
     given-names: "James"
@@ -16,4 +16,5 @@ authors:
 title: "calisim: A toolbox for the calibration and evaluation of simulation models "
 version: 0.1.0
 date-released: 2025-03-17
+license: Apache-2.0
 url: "https://github.com/Plant-Food-Research-Open/calisim"

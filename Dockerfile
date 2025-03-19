@@ -28,6 +28,8 @@ RUN apt-get update \
 
 FROM base AS builder
 
+ARG CALISIM_EXTRAS
+
 ENV POETRY_NO_INTERACTION=1 \
     POETRY_VIRTUALENVS_IN_PROJECT=1 \
     POETRY_VIRTUALENVS_CREATE=1 \
@@ -37,7 +39,7 @@ ENV POETRY_NO_INTERACTION=1 \
 COPY pyproject.toml poetry.lock ./
 
 RUN curl -sSL https://install.python-poetry.org | python3 -\
-    && poetry install --with dev -E hydra \
+    && poetry install --with dev $CALISIM_EXTRAS \
     && rm -rf $POETRY_CACHE_DIR \
     && curl -sSL https://install.python-poetry.org | python3 - --uninstall
 

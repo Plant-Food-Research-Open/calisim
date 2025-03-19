@@ -3,12 +3,27 @@ version: "3.9"
 services:
 
   calisim:
-    image: ghcr.io/plant-food-research-open/calisim:${CALISIM_VERSION:-latest}
+    image: ghcr.io/plant-food-research-open/calisim:${CALISIM_VERSION}
     build:
       context: .
       dockerfile: Dockerfile
       args:
         BUILD_DATE: date -u +'%Y-%m-%dT%H:%M:%SZ'
-        CALISIM_VERSION: ${CALISIM_VERSION:-latest}
+        CALISIM_VERSION: ${CALISIM_VERSION}
+        CALISIM_EXTRAS: -E hydra -E torchx
     volumes:
-      - ./examples/outdir:/outdir
+      - ./examples/outdir:/workspace/examples/outdir
+      - ./tests:/workspace/tests
+
+  calisim_torch:
+    image: ghcr.io/plant-food-research-open/calisim-torch:${CALISIM_VERSION}
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        BUILD_DATE: date -u +'%Y-%m-%dT%H:%M:%SZ'
+        CALISIM_VERSION: ${CALISIM_VERSION}
+        CALISIM_EXTRAS: -E hydra -E torchx -E torch
+    volumes:
+      - ./examples/outdir:/workspace/examples/outdir
+      - ./tests:/workspace/tests

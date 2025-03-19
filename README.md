@@ -26,21 +26,59 @@ ______________________________________________________________________
 
 - [Table of contents](#table-of-contents)
 - [Introduction](#introduction)
+- [Features and Functionality](#features-and-functionality)
 - [Installation](#installation)
+- [Usage with Docker](#usage-with-docker)
 - [Communication](#communication)
 - [Contributions and Support](#contributions-and-support)
 - [License](#license)
 
 # Introduction
 
-This repository contains various methods for calibrating simulation models.
+calisim is an open-source, low-code model calibration library that streamlines and standardises your workflows, while aiming to be as flexible and extensible as needed to support more complex use-cases. Using calisim will speed up your experiment cycle substantially and make you more productive.
+
+calisim is primarily a wrapper around popular libraries and frameworks including Optuna, PyMC, scikit-learn, and emcee among many others. The design and simplicity of calisim was inspired by the scikit-learn and PyCaret libraries.
+
+# Features and Functionality
+
+* A standardised and streamlined interface to multiple calibration procedures and libraries.
+* A low-code library, allowing modellers to rapidly construct multiple workflows for many calibration procedures.
+* An object-oriented programming architecture, allowing users to easily extend and modify calibration workflows for their own complex modelling use-cases.
+* An unopinionated approach to working with simulation models, allowing users to calibrate both Python-based and non-Python-based models.
+* Optional integration with PyTorch for access to more sophisticated Gaussian process and deep learning surrogate models, state-of-the-art evolutionary algorithms, and deep generative modelling for simulation-based inference.
 
 # Installation
 
 The easiest way to install calisim is by using pip:
 
 ```
-pip install -U calisim
+pip install calisim
+```
+
+calisim's default installation will not include all optional dependencies. You may be interested in one or more extras:
+
+```
+# Install PyTorch extras
+pip install calisim[torch]
+
+# Install Hydra extras
+pip install calisim[hydra]
+
+# Install TorchX extras
+pip install calisim[torchx]
+
+# Install multiple extras
+pip install calisim[torch,hydra,torchx]
+```
+
+# Usage with Docker
+
+You may also want to execute calisim inside of a Docker container. You can do so by running the following:
+
+```
+export CALISIM_VERSION=0.1.0 # Change the version as needed
+docker compose pull calisim
+docker compose run --rm calisim python examples/optimisation/optuna_example.py
 ```
 
 # Communication
