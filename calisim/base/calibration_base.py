@@ -12,8 +12,11 @@ from functools import wraps
 
 import numpy as np
 import pandas as pd
+import shap
 from matplotlib import pyplot as plt
 from matplotlib.figure import Figure
+from shap import KernelExplainer
+from sklearn.base import BaseEstimator
 
 from ..data_model import (
 	CalibrationModel,
@@ -490,6 +493,45 @@ class CalibrationWorkflowBase(ABC):
 			estimate (ParameterEstimateModel): The parameter estimate.
 		"""
 		self.parameter_estimates.estimates.append(estimate)
+
+	def calculate_shap_importances(
+		self,
+		X: np.ndarray,
+		emulator: BaseEstimator,
+		names: list[str],
+		test_size: float = 0,
+		outfile: str | None = None,
+	) -> None:
+		"""Calculate SHAP importances using Kernel SHAP.
+
+		Args:
+			X (np.ndarray): The training data.
+			emulator (BaseEstimator): The surrogate model.
+			names (list[str]): The parameter names.
+			test_size (float, optional): The test dataset size. Defaults to 0.
+			outfile (str | None, optional): The output file. Defaults to None.
+		"""
+		if test_size == 0:
+			test_indx = 25
+		else:
+			test_indx = int(test_size * len(X))
+
+		X_train = X[:test_indx]
+		X_test = X[-test_indx:]
+
+		explainer = KernelExplainer(emulator.predict, data=X_train, feature_names=names)
+		shap_values = explainer.shap_values(X_test)
+
+		show = False
+		if outfile is None:
+			show = True
+		shap.summary_plot(shap_values, X_test, show=show, feature_names=names)
+
+		if not show:
+			self.append_artifact(outfile)  # type: ignore[arg-type]
+			plt.tight_layout()
+			plt.savefig(outfile)
+			plt.close()
 
 
 class CalibrationMethodBase(CalibrationWorkflowBase):

@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "calisim"
 version = "0.2.0"
-description = "A library of methods to calibrate simulation models."
+description = "A toolbox for the calibration and evaluation of simulation models."
 authors = [
     "James Bristow <James.Bristow@plantandfood.co.nz>",
     "Hana Liang <Yongqi.Liang@plantandfood.co.n>",
@@ -51,6 +51,7 @@ seaborn = "^0.13.2"
 openturns = "^1.23"
 numpoly = "<= 1.2.14"
 corner = "^2.2.3"
+shap = "^0.47.0"
 sbi = { version = "<=0.22.0", optional = true }
 torch = { version = "^2.5.0", optional = true }
 pyro-ppl = { version = "^1.9.1", optional = true }

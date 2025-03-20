@@ -79,13 +79,21 @@ class GPyTorchSurrogateModel(SurrogateBase):
 		if self.specification.flatten_Y and len(self.Y_shape) > 1:
 			X_sample = self.extend_X(X_sample, self.Y_shape[1])
 		X_sample = torch.tensor(self.X_scaler.transform(X_sample), dtype=torch.double)
-
 		Y_sample = model.predict(X_sample, return_std=False)
 
 		names = self.names.copy()
 		if X.shape[1] > len(names):
 			names.append("_dummy_index")
 		df = pd.DataFrame(X, columns=names)
+
+		if self.specification.use_shap and outdir is not None:
+			outfile = self.join(
+				outdir,
+				f"{time_now}-{task}-{experiment_name}-param_importances.png",
+			)
+			self.calculate_shap_importances(
+				df, self.emulator, names, self.specification.test_size, outfile
+			)
 
 		output_label = self.specification.output_labels[0]  # type: ignore[index]
 		if len(self.Y_shape) == 1:

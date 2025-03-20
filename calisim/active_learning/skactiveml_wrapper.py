@@ -109,14 +109,23 @@ class SkActiveMLActiveLearning(EmukitBase):
 		X_sample = design.get_samples(n_samples)
 		if self.Y_shape > 1:
 			X_sample = self.extend_X(X_sample, self.Y_shape)
-		predicated = self.emulator.predict(X_sample)
+		predicted = self.emulator.predict(X_sample)
 
 		names = self.names.copy()
 		output_label = self.specification.output_labels[0]  # type: ignore[index]
 		if X_sample.shape[1] > len(names):
 			names.append("_dummy_index")
 		df = pd.DataFrame(X_sample, columns=names)
-		df[f"emulated-{output_label}"] = predicated
+		df[f"emulated-{output_label}"] = predicted
+
+		if self.specification.use_shap and outdir is not None:
+			outfile = self.join(
+				outdir,
+				f"{time_now}-{task}-{experiment_name}-param_importances.png",
+			)
+			self.calculate_shap_importances(
+				X_sample, self.emulator, names, self.specification.test_size, outfile
+			)
 
 		fig, axes = plt.subplots(
 			nrows=len(self.names), figsize=self.specification.figsize

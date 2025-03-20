@@ -3434,6 +3434,36 @@ docs = ["myst-parser", "setuptools-scm", "six", "sphinx", "sphinx-autodoc-typehi
 test = ["flake8 (==5.0.4)", "flake8-print (==5.0.0)", "pytest", "typeguard (>=2.13.3,<2.14.0)"]
 
 [[package]]
+name = "llvmlite"
+version = "0.44.0"
+description = "lightweight wrapper around basic LLVM functionality"
+optional = false
+python-versions = ">=3.10"
+files = [
+    {file = "llvmlite-0.44.0-cp310-cp310-macosx_10_14_x86_64.whl", hash = "sha256:9fbadbfba8422123bab5535b293da1cf72f9f478a65645ecd73e781f962ca614"},
+    {file = "llvmlite-0.44.0-cp310-cp310-macosx_11_0_arm64.whl", hash = "sha256:cccf8eb28f24840f2689fb1a45f9c0f7e582dd24e088dcf96e424834af11f791"},
+    {file = "llvmlite-0.44.0-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:7202b678cdf904823c764ee0fe2dfe38a76981f4c1e51715b4cb5abb6cf1d9e8"},
+    {file = "llvmlite-0.44.0-cp310-cp310-manylinux_2_27_aarch64.manylinux_2_28_aarch64.whl", hash = "sha256:40526fb5e313d7b96bda4cbb2c85cd5374e04d80732dd36a282d72a560bb6408"},
+    {file = "llvmlite-0.44.0-cp310-cp310-win_amd64.whl", hash = "sha256:41e3839150db4330e1b2716c0be3b5c4672525b4c9005e17c7597f835f351ce2"},
+    {file = "llvmlite-0.44.0-cp311-cp311-macosx_10_14_x86_64.whl", hash = "sha256:eed7d5f29136bda63b6d7804c279e2b72e08c952b7c5df61f45db408e0ee52f3"},
+    {file = "llvmlite-0.44.0-cp311-cp311-macosx_11_0_arm64.whl", hash = "sha256:ace564d9fa44bb91eb6e6d8e7754977783c68e90a471ea7ce913bff30bd62427"},
+    {file = "llvmlite-0.44.0-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:c5d22c3bfc842668168a786af4205ec8e3ad29fb1bc03fd11fd48460d0df64c1"},
+    {file = "llvmlite-0.44.0-cp311-cp311-manylinux_2_27_aarch64.manylinux_2_28_aarch64.whl", hash = "sha256:f01a394e9c9b7b1d4e63c327b096d10f6f0ed149ef53d38a09b3749dcf8c9610"},
+    {file = "llvmlite-0.44.0-cp311-cp311-win_amd64.whl", hash = "sha256:d8489634d43c20cd0ad71330dde1d5bc7b9966937a263ff1ec1cebb90dc50955"},
+    {file = "llvmlite-0.44.0-cp312-cp312-macosx_10_14_x86_64.whl", hash = "sha256:1d671a56acf725bf1b531d5ef76b86660a5ab8ef19bb6a46064a705c6ca80aad"},
+    {file = "llvmlite-0.44.0-cp312-cp312-macosx_11_0_arm64.whl", hash = "sha256:5f79a728e0435493611c9f405168682bb75ffd1fbe6fc360733b850c80a026db"},
+    {file = "llvmlite-0.44.0-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:c0143a5ef336da14deaa8ec26c5449ad5b6a2b564df82fcef4be040b9cacfea9"},
+    {file = "llvmlite-0.44.0-cp312-cp312-manylinux_2_27_aarch64.manylinux_2_28_aarch64.whl", hash = "sha256:d752f89e31b66db6f8da06df8b39f9b91e78c5feea1bf9e8c1fba1d1c24c065d"},
+    {file = "llvmlite-0.44.0-cp312-cp312-win_amd64.whl", hash = "sha256:eae7e2d4ca8f88f89d315b48c6b741dcb925d6a1042da694aa16ab3dd4cbd3a1"},
+    {file = "llvmlite-0.44.0-cp313-cp313-macosx_10_14_x86_64.whl", hash = "sha256:319bddd44e5f71ae2689859b7203080716448a3cd1128fb144fe5c055219d516"},
+    {file = "llvmlite-0.44.0-cp313-cp313-macosx_11_0_arm64.whl", hash = "sha256:9c58867118bad04a0bb22a2e0068c693719658105e40009ffe95c7000fcde88e"},
+    {file = "llvmlite-0.44.0-cp313-cp313-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:46224058b13c96af1365290bdfebe9a6264ae62fb79b2b55693deed11657a8bf"},
+    {file = "llvmlite-0.44.0-cp313-cp313-manylinux_2_27_aarch64.manylinux_2_28_aarch64.whl", hash = "sha256:aa0097052c32bf721a4efc03bd109d335dfa57d9bffb3d4c24cc680711b8b4fc"},
+    {file = "llvmlite-0.44.0-cp313-cp313-win_amd64.whl", hash = "sha256:2fb7c4f2fb86cbae6dca3db9ab203eeea0e22d73b99bc2341cdf9de93612e930"},
+    {file = "llvmlite-0.44.0.tar.gz", hash = "sha256:07667d66a5d150abed9157ab6c0b9393c9356f229784a4385c02f99e94fc94d4"},
+]
+
+[[package]]
 name = "locket"
 version = "1.0.0"
 description = "File-based locks for Python on Linux and Windows"
@@ -4207,6 +4237,40 @@ jupyter-server = ">=1.8,<3"
 
 [package.extras]
 test = ["pytest", "pytest-console-scripts", "pytest-jupyter", "pytest-tornasync"]
+
+[[package]]
+name = "numba"
+version = "0.61.0"
+description = "compiling Python code using LLVM"
+optional = false
+python-versions = ">=3.10"
+files = [
+    {file = "numba-0.61.0-cp310-cp310-macosx_10_14_x86_64.whl", hash = "sha256:9cab9783a700fa428b1a54d65295122bc03b3de1d01fb819a6b9dbbddfdb8c43"},
+    {file = "numba-0.61.0-cp310-cp310-macosx_11_0_arm64.whl", hash = "sha256:46c5ae094fb3706f5adf9021bfb7fc11e44818d61afee695cdee4eadfed45e98"},
+    {file = "numba-0.61.0-cp310-cp310-manylinux2014_x86_64.manylinux_2_17_x86_64.whl", hash = "sha256:6fb74e81aa78a2303e30593d8331327dfc0d2522b5db05ac967556a26db3ef87"},
+    {file = "numba-0.61.0-cp310-cp310-manylinux_2_28_aarch64.whl", hash = "sha256:0ebbd4827091384ab8c4615ba1b3ca8bc639a3a000157d9c37ba85d34cd0da1b"},
+    {file = "numba-0.61.0-cp310-cp310-win_amd64.whl", hash = "sha256:43aa4d7d10c542d3c78106b8481e0cbaaec788c39ee8e3d7901682748ffdf0b4"},
+    {file = "numba-0.61.0-cp311-cp311-macosx_10_14_x86_64.whl", hash = "sha256:bf64c2d0f3d161af603de3825172fb83c2600bcb1d53ae8ea568d4c53ba6ac08"},
+    {file = "numba-0.61.0-cp311-cp311-macosx_11_0_arm64.whl", hash = "sha256:de5aa7904741425f28e1028b85850b31f0a245e9eb4f7c38507fb893283a066c"},
+    {file = "numba-0.61.0-cp311-cp311-manylinux2014_x86_64.manylinux_2_17_x86_64.whl", hash = "sha256:21c2fe25019267a608e2710a6a947f557486b4b0478b02e45a81cf606a05a7d4"},
+    {file = "numba-0.61.0-cp311-cp311-manylinux_2_28_aarch64.whl", hash = "sha256:74250b26ed6a1428763e774dc5b2d4e70d93f73795635b5412b8346a4d054574"},
+    {file = "numba-0.61.0-cp311-cp311-win_amd64.whl", hash = "sha256:b72bbc8708e98b3741ad0c63f9929c47b623cc4ee86e17030a4f3e301e8401ac"},
+    {file = "numba-0.61.0-cp312-cp312-macosx_10_14_x86_64.whl", hash = "sha256:152146ecdbb8d8176f294e9f755411e6f270103a11c3ff50cecc413f794e52c8"},
+    {file = "numba-0.61.0-cp312-cp312-macosx_11_0_arm64.whl", hash = "sha256:5cafa6095716fcb081618c28a8d27bf7c001e09696f595b41836dec114be2905"},
+    {file = "numba-0.61.0-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.whl", hash = "sha256:ffe9fe373ed30638d6e20a0269f817b2c75d447141f55a675bfcf2d1fe2e87fb"},
+    {file = "numba-0.61.0-cp312-cp312-manylinux_2_28_aarch64.whl", hash = "sha256:9f25f7fef0206d55c1cfb796ad833cbbc044e2884751e56e798351280038484c"},
+    {file = "numba-0.61.0-cp312-cp312-win_amd64.whl", hash = "sha256:550d389573bc3b895e1ccb18289feea11d937011de4d278b09dc7ed585d1cdcb"},
+    {file = "numba-0.61.0-cp313-cp313-macosx_10_14_x86_64.whl", hash = "sha256:b96fafbdcf6f69b69855273e988696aae4974115a815f6818fef4af7afa1f6b8"},
+    {file = "numba-0.61.0-cp313-cp313-macosx_11_0_arm64.whl", hash = "sha256:5f6c452dca1de8e60e593f7066df052dd8da09b243566ecd26d2b796e5d3087d"},
+    {file = "numba-0.61.0-cp313-cp313-manylinux2014_x86_64.manylinux_2_17_x86_64.whl", hash = "sha256:44240e694d4aa321430c97b21453e46014fe6c7b8b7d932afa7f6a88cc5d7e5e"},
+    {file = "numba-0.61.0-cp313-cp313-manylinux_2_28_aarch64.whl", hash = "sha256:764f0e47004f126f58c3b28e0a02374c420a9d15157b90806d68590f5c20cc89"},
+    {file = "numba-0.61.0-cp313-cp313-win_amd64.whl", hash = "sha256:074cd38c5b1f9c65a4319d1f3928165f48975ef0537ad43385b2bd908e6e2e35"},
+    {file = "numba-0.61.0.tar.gz", hash = "sha256:888d2e89b8160899e19591467e8fdd4970e07606e1fbc248f239c89818d5f925"},
+]
+
+[package.dependencies]
+llvmlite = "==0.44.*"
+numpy = ">=1.24,<2.2"
 
 [[package]]
 name = "numpoly"
@@ -6685,6 +6749,60 @@ test = ["build[virtualenv] (>=1.0.3)", "filelock (>=3.4.0)", "ini2toml[lite] (>=
 type = ["importlib-metadata (>=7.0.2)", "jaraco.develop (>=7.21)", "mypy (>=1.12,<1.14)", "pytest-mypy"]
 
 [[package]]
+name = "shap"
+version = "0.47.0"
+description = "A unified approach to explain the output of any machine learning model."
+optional = false
+python-versions = ">=3.9"
+files = [
+    {file = "shap-0.47.0-cp310-cp310-macosx_10_9_x86_64.whl", hash = "sha256:68badecae73a0c6ac9d71a7948d089a9b95ede990708248650fa0ee516272c8a"},
+    {file = "shap-0.47.0-cp310-cp310-macosx_11_0_arm64.whl", hash = "sha256:add435becfd292984f34a8beec94968592be22cae33f55f61c2b14de4cf78edb"},
+    {file = "shap-0.47.0-cp310-cp310-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:8d92da7ec570ca152a22401d8d28e61a0082e5ecd758b071ec1b74a0588895ae"},
+    {file = "shap-0.47.0-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:a47d6f6aa68e5e0646b6c5a286242dcdbe86b28e65eac666230fe3069a3815b9"},
+    {file = "shap-0.47.0-cp310-cp310-musllinux_1_2_x86_64.whl", hash = "sha256:25f989d4afae666d1a7b12f3a19ab4df2bccfa7dc060e8e4ec9b5357c7431af5"},
+    {file = "shap-0.47.0-cp310-cp310-win_amd64.whl", hash = "sha256:cb917458a3a461b869eeb2bf9a9472241d09b0c54b62e0cfdd6d90ff280c141d"},
+    {file = "shap-0.47.0-cp311-cp311-macosx_10_9_x86_64.whl", hash = "sha256:aa357e5e517335cb6dc559f869fa726b6ad0a2936250f74db93869c1a267bc88"},
+    {file = "shap-0.47.0-cp311-cp311-macosx_11_0_arm64.whl", hash = "sha256:b667d1b10f8908cad93d9c9facc061ae46222e9e10ddd704bb9d9d859ca23287"},
+    {file = "shap-0.47.0-cp311-cp311-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:3e8f060a065df8f1fab67255c10bea54712ebfe6335c55aef8c16961188b8798"},
+    {file = "shap-0.47.0-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:270a15edbec650e35ecdb9c2801f9dfa44dcd4ecc950c2e836a0844fbd57c69e"},
+    {file = "shap-0.47.0-cp311-cp311-musllinux_1_2_x86_64.whl", hash = "sha256:a1e3a97c0745e619a3e14026764102e64dfa4fd1da15b883ef82f31e915773a7"},
+    {file = "shap-0.47.0-cp311-cp311-win_amd64.whl", hash = "sha256:7d2e306afbed24446253f5ebe84f51bb9d7a533fa7f959f60e040bb546526f54"},
+    {file = "shap-0.47.0-cp312-cp312-macosx_10_9_x86_64.whl", hash = "sha256:25126cf0bc5dd22721225bc46c2bb77fdf3ddddd951560a7252fc8161c031049"},
+    {file = "shap-0.47.0-cp312-cp312-macosx_11_0_arm64.whl", hash = "sha256:dc4adc136348ce6f85eb4644b2b83ecb6a6d49f554f7040511a99a6497131900"},
+    {file = "shap-0.47.0-cp312-cp312-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:6c11d67b12858ff69b71b7f05c8d0dc85d7e3fe2840b8ec877d1aef79fac3272"},
+    {file = "shap-0.47.0-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:faa5021da57b51706f5eefd2d9f1c375542ac61583475fe32179be3d16b60785"},
+    {file = "shap-0.47.0-cp312-cp312-musllinux_1_2_x86_64.whl", hash = "sha256:f50c7fb3b06c0b01d99d3134231907489b1ae3c5921bff3c2a8353348306d106"},
+    {file = "shap-0.47.0-cp312-cp312-win_amd64.whl", hash = "sha256:ebdd66a95217aa0819e85e4181a27749d7efcf2c742a6df7b242ab754f8ab53f"},
+    {file = "shap-0.47.0-cp39-cp39-macosx_10_9_x86_64.whl", hash = "sha256:a203491776b6ed31f8cd433d1002f86149652346ddfabf3eceb192d6cb50df4b"},
+    {file = "shap-0.47.0-cp39-cp39-macosx_11_0_arm64.whl", hash = "sha256:1c1262c53775ccb9480ee7440dae2e7beab38ed9189ce8d37b27ac2f0b9e9b48"},
+    {file = "shap-0.47.0-cp39-cp39-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:ad717677f0e9679c5a5516520e8e276aa914ce0ce8b43a4d21de198d425c79b1"},
+    {file = "shap-0.47.0-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:90212e994866664950130c1767be3efc2094e7a8332669b5017d657d9fc4364e"},
+    {file = "shap-0.47.0-cp39-cp39-musllinux_1_2_x86_64.whl", hash = "sha256:236b414141b3cd7c475c52cc77d449d722e776e6c5ba018c628a87adbe773bb2"},
+    {file = "shap-0.47.0-cp39-cp39-win_amd64.whl", hash = "sha256:0597dea34cdbba5307edccc0ec5a28ff1985466145b1ebe62604f193ac682517"},
+    {file = "shap-0.47.0.tar.gz", hash = "sha256:e1f78d885bf4ac388b0030c8ecc35529411650b78d6caa814e2a6e281f7ab395"},
+]
+
+[package.dependencies]
+cloudpickle = "*"
+numba = ">=0.54"
+numpy = "*"
+packaging = ">20.9"
+pandas = "*"
+scikit-learn = "*"
+scipy = "*"
+slicer = "0.0.8"
+tqdm = ">=4.27.0"
+typing-extensions = "*"
+
+[package.extras]
+docs = ["ipython", "ipywidgets", "matplotlib", "myst-parser", "nbsphinx", "numpydoc", "requests", "sphinx", "sphinx_github_changelog", "sphinx_rtd_theme"]
+others = ["lime"]
+plots = ["ipython", "matplotlib"]
+test = ["catboost", "gpboost", "lightgbm", "ngboost", "numpy (<2.0)", "opencv-python", "protobuf (==3.20.3)", "pyod", "pyspark", "pytest", "pytest-cov", "pytest-mpl", "sentencepiece", "tensorflow", "tf-keras", "torch", "torch (==2.2.0)", "torchvision", "transformers", "xgboost"]
+test-core = ["mypy", "pytest", "pytest-cov", "pytest-mpl"]
+test-notebooks = ["datasets", "jupyter", "keras", "nbconvert", "nbformat", "nlp", "transformers"]
+
+[[package]]
 name = "shapely"
 version = "2.0.7"
 description = "Manipulation and analysis of geometric objects"
@@ -6774,6 +6892,17 @@ tqdm = ">=4.14.0"
 [package.extras]
 docs = ["Sphinx", "numpydoc", "sphinx-rtd-theme"]
 testing = ["accelerate (>=0.22.0)", "fire", "flaky", "future (>=0.17.1)", "gpytorch (>=1.5)", "jupyter", "matplotlib (>=2.0.2)", "neptune", "numpydoc", "openpyxl", "pandas", "pillow", "protobuf (>=3.12.0,<4.0dev)", "pylint", "pytest (>=3.4)", "pytest-cov", "sacred", "safetensors (>=0.3.1)", "sphinx", "sphinx-rtd-theme", "tensorboard (>=1.14.0)", "tokenizers", "transformers", "wandb (>=0.12.17)"]
+
+[[package]]
+name = "slicer"
+version = "0.0.8"
+description = "A small package for big slicing."
+optional = false
+python-versions = ">=3.6"
+files = [
+    {file = "slicer-0.0.8-py3-none-any.whl", hash = "sha256:6c206258543aecd010d497dc2eca9d2805860a0b3758673903456b7df7934dc3"},
+    {file = "slicer-0.0.8.tar.gz", hash = "sha256:2e7553af73f0c0c2d355f4afcc3ecf97c6f2156fcf4593955c3f56cf6c4d6eb7"},
+]
 
 [[package]]
 name = "smmap"
@@ -8142,4 +8271,4 @@ tutorials = ["mesa", "mesa-geo", "pcse"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.10,<3.11"
-content-hash = "772bbd9005e9bb01f85b27633391840a07556026ddaaf262198c6998300cb047"
+content-hash = "71057383c56a8e7934d2ebf3912160d30acaf54ac25815d22a82f509a92dd3a8"

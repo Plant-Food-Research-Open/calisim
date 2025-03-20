@@ -56,6 +56,8 @@ specification = ActiveLearningMethodModel(
 	n_init=20,
 	n_iterations=10,
 	n_samples=50,
+	lr=0.01,
+	use_shap=True,
 	method="gp",
 	query_strategy="greedy_sampling_target",
 	method_kwargs=dict(alpha=1e-10, optimizer="fmin_l_bfgs_b"),

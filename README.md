@@ -152,6 +152,8 @@ docker compose run --rm calisim python examples/optimisation/optuna_example.py
 
 # Communication
 
+Please refer to the following links:
+
 - [GitHub Discussions] for questions.
 - [GitHub Issues] for bug reports and feature requests.
 
