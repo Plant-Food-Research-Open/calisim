@@ -51,6 +51,7 @@ calisim is primarily a wrapper around popular libraries and frameworks including
 # Quickstart
 
 ```
+# Load imports
 import numpy as np
 import pandas as pd
 
@@ -64,9 +65,11 @@ from calisim.optimisation import OptimisationMethod, OptimisationMethodModel
 from calisim.statistics import MeanSquaredError
 from calisim.utils import get_examples_outdir
 
+# Get model
 model = LotkaVolterraModel()
 observed_data = model.get_observed_data()
 
+# Specify parameter distributions
 parameter_spec = ParameterSpecification(
 	parameters=[
 		DistributionModel(
@@ -78,6 +81,7 @@ parameter_spec = ParameterSpecification(
 	]
 )
 
+# Define objective function
 def objective(
 	parameters: dict, simulation_id: str, observed_data: np.ndarray | None, t: pd.Series
 ) -> float | list[float]:
@@ -92,6 +96,7 @@ def objective(
 	discrepancy = metric.calculate(observed_data, simulated_data)
 	return discrepancy
 
+# Specify calibration parameter values
 specification = OptimisationMethodModel(
 	experiment_name="optuna_optimisation",
 	parameter_spec=parameter_spec,
@@ -104,12 +109,15 @@ specification = OptimisationMethodModel(
 	calibration_func_kwargs=dict(t=observed_data.year),
 )
 
+# Choose calibration engine
 calibrator = OptimisationMethod(
 	calibration_func=objective, specification=specification, engine="optuna"
 )
 
+# Run the workflow
 calibrator.specify().execute().analyze()
 
+# View the results
 result_artifacts = "\n".join(calibrator.get_artifacts())
 print(f"View results: \n{result_artifacts}")
 print(f"Parameter estimates: {calibrator.get_parameter_estimates()}")
@@ -144,9 +152,16 @@ pip install calisim[torch,hydra,torchx]
 You may also want to execute calisim inside of a Docker container. You can do so by running the following:
 
 ```
-export CALISIM_VERSION=0.2.0 # Change the version as needed
+# Change the image version as needed
+export CALISIM_VERSION=0.2.0
+
+# Get docker-compose.yaml file 
 wget https://raw.githubusercontent.com/Plant-Food-Research-Open/calisim/refs/heads/main/docker-compose.yaml
+
+# Pull the image
 docker compose pull calisim
+
+# Run an example
 docker compose run --rm calisim python examples/optimisation/optuna_example.py
 ```
 
