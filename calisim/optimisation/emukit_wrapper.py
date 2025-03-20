@@ -16,6 +16,7 @@ from emukit.bayesian_optimization.acquisitions.local_penalization import (
 )
 from emukit.bayesian_optimization.acquisitions.log_acquisition import LogAcquisition
 from emukit.bayesian_optimization.loops import BayesianOptimizationLoop
+from emukit.core.initial_designs import RandomDesign
 from matplotlib import pyplot as plt
 
 from ..base import EmukitBase
@@ -109,3 +110,19 @@ class EmukitOptimisation(EmukitBase):
 			estimate = parameter_df[name].item()
 			parameter_estimate = ParameterEstimateModel(name=name, estimate=estimate)
 			self.add_parameter_estimate(parameter_estimate)
+
+		if self.specification.use_shap and outdir is not None:
+			design = RandomDesign(self.parameter_space)
+			n_samples = self.specification.n_samples
+			X_sample = design.get_samples(n_samples)
+			outfile = self.join(
+				outdir,
+				f"{time_now}-{task}-{experiment_name}-param_importances.png",
+			)
+			self.calculate_shap_importances(
+				X_sample,
+				self.emulator,
+				self.names,
+				self.specification.test_size,
+				outfile,
+			)

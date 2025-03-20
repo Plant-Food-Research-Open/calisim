@@ -73,6 +73,19 @@ class EmukitExperimentalDesign(EmukitBase):
 		n_samples = self.specification.n_samples
 		X_sample = design.get_samples(n_samples)
 
+		if self.specification.use_shap and outdir is not None:
+			outfile = self.join(
+				outdir,
+				f"{time_now}-{task}-{experiment_name}-param_importances.png",
+			)
+			self.calculate_shap_importances(
+				X_sample,
+				self.emulator,
+				self.names,
+				self.specification.test_size,
+				outfile,
+			)
+
 		predicted_mu, predicted_std = self.emulator.predict(X_sample, return_std=True)
 
 		observed_data = self.specification.observed_data
