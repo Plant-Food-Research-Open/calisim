@@ -51,7 +51,7 @@ calisim is primarily a wrapper around popular libraries and frameworks including
 # Quickstart
 
 ```
-# Get imports
+# Load imports
 import numpy as np
 import pandas as pd
 
