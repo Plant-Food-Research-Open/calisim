@@ -13,6 +13,7 @@ from functools import wraps
 import numpy as np
 import pandas as pd
 import shap
+import uncertainty_toolbox as uct
 from matplotlib import pyplot as plt
 from matplotlib.figure import Figure
 from shap import KernelExplainer
@@ -439,7 +440,7 @@ class CalibrationWorkflowBase(ABC):
 		    outdir (str): The output directory.
 		    time_now (str): The current time.
 		    task (str): The calibration task.
-			experiment_name (str): The experiment name.
+		    experiment_name (str): The experiment name.
 		    label (str, optional): The plot axes label. Defaults to "".
 		"""
 		simulated_label = "simulated"
@@ -482,7 +483,7 @@ class CalibrationWorkflowBase(ABC):
 		"""Get the estimated parameter values, and potentially their uncertainties.
 
 		Returns:
-			ParameterEstimatesModel: The estimated parameter values.
+		    ParameterEstimatesModel: The estimated parameter values.
 		"""
 		return self.parameter_estimates
 
@@ -490,7 +491,7 @@ class CalibrationWorkflowBase(ABC):
 		"""Add a parameter estimate to the set of estimates.
 
 		Args:
-			estimate (ParameterEstimateModel): The parameter estimate.
+		    estimate (ParameterEstimateModel): The parameter estimate.
 		"""
 		self.parameter_estimates.estimates.append(estimate)
 
@@ -505,11 +506,11 @@ class CalibrationWorkflowBase(ABC):
 		"""Calculate SHAP importances using Kernel SHAP.
 
 		Args:
-			X (np.ndarray): The training data.
-			emulator (BaseEstimator): The surrogate model.
-			names (list[str]): The parameter names.
-			test_size (float, optional): The test dataset size. Defaults to 0.
-			outfile (str | None, optional): The output file. Defaults to None.
+		    X (np.ndarray): The training data.
+		    emulator (BaseEstimator): The surrogate model.
+		    names (list[str]): The parameter names.
+		    test_size (float, optional): The test dataset size. Defaults to 0.
+		    outfile (str | None, optional): The output file. Defaults to None.
 		"""
 		if test_size == 0:
 			test_indx = 25
@@ -532,6 +533,47 @@ class CalibrationWorkflowBase(ABC):
 			plt.tight_layout()
 			plt.savefig(outfile)
 			plt.close()
+
+	def calc_uncertainty_calibration_metric(
+		self,
+		metric: str,
+		mu: np.ndarray,
+		sigma: np.ndarray,
+		Y: np.ndarray,
+		recal_model: BaseEstimator | None = None,
+	) -> float:
+		"""Calculate predictive uncertainty calibration metrics.
+
+		Args:
+		    metric (str): The metric name.
+		    mu (np.ndarray): The conditional mean predictions.
+		    sigma (np.ndarray): The conditional predicted standard deviations.
+		    Y (np.ndarray): The simulation output data.
+		    recal_model (BaseEstimator | None, optional): The prediction
+		        recalibrator. Defaults to None.
+
+		Returns:
+		    float: The uncertainty calibration metric.
+		"""
+
+		metric_func = getattr(uct, metric)
+		score = metric_func(mu, sigma, Y, recal_model=recal_model)
+		return score
+
+	def fit_recalibrator(
+		self, emulator: BaseEstimator, mu: np.ndarray, sigma: np.ndarray, y: np.ndarray
+	) -> None:
+		"""Fit a model recalibrator using Isotonic regression.
+
+		Args:
+		    emulator (BaseEstimator): The surrogate model.
+		    mu (np.ndarray): The conditional mean predictions.
+		    sigma (np.ndarray): The conditional predicted standard deviations.
+		    Y (np.ndarray): The simulation output data.
+		"""
+		exp_props, obs_props = uct.get_proportion_lists_vectorized(mu, sigma, y)
+		recal_model = uct.iso_recal(exp_props, obs_props)
+		emulator.recal_model = recal_model
 
 
 class CalibrationMethodBase(CalibrationWorkflowBase):
@@ -662,7 +704,7 @@ class CalibrationMethodBase(CalibrationWorkflowBase):
 		"""Get the estimated parameter values, and potentially their uncertainties.
 
 		Returns:
-			ParameterEstimatesModel: The estimated parameter values.
+		    ParameterEstimatesModel: The estimated parameter values.
 		"""
 		self._implementation_check("get_parameter_estimates")
 		return self.implementation.get_parameter_estimates()
