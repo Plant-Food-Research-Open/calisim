@@ -69,7 +69,7 @@ from calisim.utils import get_examples_outdir
 model = LotkaVolterraModel()
 observed_data = model.get_observed_data()
 
-# Specify parameter distributions
+# Specify model parameter distributions
 parameter_spec = ParameterSpecification(
 	parameters=[
 		DistributionModel(
