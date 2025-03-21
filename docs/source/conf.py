@@ -8,7 +8,7 @@ sys.path.insert(0, os.path.abspath("../.."))
 project = "calisim"
 copyright = "2025, James Bristow"
 author = "James Bristow"
-release = "0.2.0"
+release = "0.2.1"
 
 extensions = [
 	"sphinx.ext.napoleon",

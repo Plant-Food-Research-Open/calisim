@@ -153,9 +153,9 @@ You may also want to execute calisim inside of a Docker container. You can do so
 
 ```
 # Change the image version as needed
-export CALISIM_VERSION=0.2.0
+export CALISIM_VERSION=0.2.1
 
-# Get docker-compose.yaml file 
+# Get docker-compose.yaml file
 wget https://raw.githubusercontent.com/Plant-Food-Research-Open/calisim/refs/heads/main/docker-compose.yaml
 
 # Pull the image

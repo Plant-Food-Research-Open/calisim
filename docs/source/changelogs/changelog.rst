@@ -1,6 +1,14 @@
 Changelog
 =========
 
+[0.2.1] - 2025/03/21
+--------------------
+
+Fixed
+^^^^^
+
+* Widened range of supported versions of Python.
+
 [0.2.0] - 2025/03/20
 --------------------
 

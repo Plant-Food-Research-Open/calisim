@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "calisim"
-version = "0.2.0"
+version = "0.2.1"
 description = "A toolbox for the calibration and evaluation of simulation models."
 authors = [
     "James Bristow <James.Bristow@plantandfood.co.nz>",
@@ -13,7 +13,7 @@ readme = "README.md"
 repository = "https://github.com/Plant-Food-Research-Open/calisim"
 
 [tool.poetry.dependencies]
-python = ">=3.10,<3.11"
+python = ">=3.10,<4.0.0"
 kaleido = "0.2.1"
 scikit-learn = "^1.5.2"
 numpy = "<2.0.0"
