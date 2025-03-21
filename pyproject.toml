@@ -87,7 +87,7 @@ myst-nb = "^1.1.2"
 
 
 [tool.poetry.group.dev.dependencies]
-ipython = "^8.28.0"
+ipython = "^8.34.0"
 ipywidgets = "^8.1.5"
 jupyter-core = "^5.7.2"
 pytest = "^8.3.3"
