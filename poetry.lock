@@ -8307,5 +8307,5 @@ tutorials = ["mesa", "mesa-geo", "pcse"]
 
 [metadata]
 lock-version = "2.0"
-python-versions = ">=3.10,<4.0.0"
-content-hash = "a61272653f8637eacdcb41037cb887396de6d924491501aea714e174cc85f8f8"
+python-versions = ">=3.10,<3.14"
+content-hash = "7f96044ba086a9823c072c2b0f1a80de05323682b115b864e0894b4bea1bf198"
