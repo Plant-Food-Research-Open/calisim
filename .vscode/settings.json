@@ -11,6 +11,11 @@
         "*.py.in": "python",
         "*.pyi.in": "python"
     },
+    "search.exclude": {
+        "**/.git": true,
+        "**/poetry.lock": true,
+        "**/tmp": true
+    },
     "files.eol": "\n",
     "files.insertFinalNewline": true,
     "files.trimFinalNewlines": true,
