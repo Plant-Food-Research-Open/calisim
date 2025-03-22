@@ -1,14 +1,14 @@
 import os
 import sys
 
-import calisim  # noqa: F401
+import calisim
 
 sys.path.insert(0, os.path.abspath("../.."))
 
 project = "calisim"
 copyright = "2025, James Bristow"
 author = "James Bristow"
-release = "0.2.1"
+release = calisim.__version__
 
 extensions = [
 	"sphinx.ext.napoleon",
