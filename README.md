@@ -178,10 +178,10 @@ Please refer to the following links:
 
 # Contributions and Support
 
-Contributions are more than welcome. For general guidelines on how to contribute to this project, take a look at [CONTRIBUTING.md](./CONTRIBUTING.md).
+Contributions are more than welcome. For general guidelines on how to contribute to this project, take a look at [CONTRIBUTING.md](https://github.com/Plant-Food-Research-Open/calisim/tree/main/CONTRIBUTING.md).
 
 # License
 
-calisim is published under the Apache License (see [LICENSE](./LICENSE)).
+calisim is published under the Apache License (see [LICENSE](https://github.com/Plant-Food-Research-Open/calisim/tree/main/LICENSE)).
 
-View all third party licenses (see [third_party](./third_party))
+View all third party licenses (see [third_party](https://github.com/Plant-Food-Research-Open/calisim/tree/main/third_party))
