@@ -3,6 +3,9 @@
    :width: 380px
    :height: 120px
 
+calisim
+-------
+
 `PyPI <https://pypi.python.org/pypi/calisim>`_ |
 `GitHub <https://github.com/Plant-Food-Research-Open/calisim/>`_ |
 `API <https://calisim.readthedocs.io/en/latest/api_reference/index.html>`_ |
