@@ -1,5 +1,15 @@
-calisim
-=======
+.. figure:: ../assets/calisim_logo.png
+   :alt: calisim
+   :width: 380px
+   :height: 120px
+
+`PyPI <https://pypi.python.org/pypi/calisim>`_ |
+`GitHub <https://github.com/Plant-Food-Research-Open/calisim/>`_ |
+`API <https://calisim.readthedocs.io/en/latest/api_reference/index.html>`_ |
+`Changelog <https://calisim.readthedocs.io/en/latest/changelogs/changelog.html>`_ |
+`Examples <https://github.com/Plant-Food-Research-Open/calisim/tree/main/examples>`_ |
+`Releases <https://github.com/Plant-Food-Research-Open/calisim/releases>`_ |
+`Docker <https://github.com/Plant-Food-Research-Open/calisim/pkgs/container/calisim>`_
 
 calisim is an open-source, low-code model calibration library that streamlines and standardises your workflows, while aiming to be as flexible and extensible as needed to support more complex use-cases. Using calisim will speed up your experiment cycle substantially and make you more productive.
 
