@@ -1,6 +1,19 @@
 Changelog
 =========
 
+[0.3.0] - 2025/03/24
+--------------------
+
+Fixed
+^^^^^
+
+* Removing Python 3.13 support.
+
+Fixed
+^^^^^
+
+* Unpinning PyMC for Python 3.13 support.
+
 [0.2.3] - 2025/03/24
 --------------------
 

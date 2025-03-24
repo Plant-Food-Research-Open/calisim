@@ -4380,9 +4380,9 @@ files = [
 
 [package.dependencies]
 numpy = [
-    {version = ">=1.26.0", markers = "python_version >= \"3.12\""},
     {version = ">=1.22.4", markers = "python_version < \"3.11\""},
     {version = ">=1.23.2", markers = "python_version == \"3.11\""},
+    {version = ">=1.26.0", markers = "python_version >= \"3.12\""},
 ]
 python-dateutil = ">=2.8.2"
 pytz = ">=2020.1"
@@ -4921,10 +4921,7 @@ files = [
 [package.dependencies]
 annotated-types = ">=0.6.0"
 pydantic-core = "2.23.4"
-typing-extensions = [
-    {version = ">=4.12.2", markers = "python_version >= \"3.13\""},
-    {version = ">=4.6.1", markers = "python_version < \"3.13\""},
-]
+typing-extensions = {version = ">=4.6.1", markers = "python_version < \"3.13\""}
 
 [package.extras]
 email = ["email-validator (>=2.0.0)"]
@@ -5096,28 +5093,31 @@ windows-terminal = ["colorama (>=0.4.6)"]
 
 [[package]]
 name = "pygpc"
-version = "0.3.9"
+version = "0.4.1"
 description = "A sensitivity and uncertainty analysis toolbox for Python"
 optional = false
 python-versions = "*"
 files = [
-    {file = "pygpc-0.3.9-cp310-cp310-macosx_14_0_arm64.whl", hash = "sha256:2ccb5f47ba22979b2e2c55cbef5aeb43a412210b8ff9627cb533cf6df9d14b9d"},
-    {file = "pygpc-0.3.9-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:ca8d5200673a03343907cf2f66ee8b0d9e7c115844993737a10fd66712f29f13"},
-    {file = "pygpc-0.3.9-cp310-cp310-win32.whl", hash = "sha256:8d27b6a7629c9912679cc0f53614eed56f80a375f2fd214daf5b69b98d7baa52"},
-    {file = "pygpc-0.3.9-cp310-cp310-win_amd64.whl", hash = "sha256:7418173c118d83d5817ae0e7d0650ee26b5bface9eefd5d413d3c7d6b3eae1a5"},
-    {file = "pygpc-0.3.9-cp311-cp311-macosx_14_0_arm64.whl", hash = "sha256:26b8c490a0e67c6d98162d4d11f3692a7c46a8c025fd5b22e8e2b89b7e210ef8"},
-    {file = "pygpc-0.3.9-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:d6077bcca267bd6695bb35b595079828fabc35741564c45e5589bd22aa102cbd"},
-    {file = "pygpc-0.3.9-cp311-cp311-win32.whl", hash = "sha256:c0ad5be321dd242ac254b3e40a637187a9bddf41969b2becb5ea49bbc4f840a4"},
-    {file = "pygpc-0.3.9-cp311-cp311-win_amd64.whl", hash = "sha256:60fae63b55591c9da21e24468135926b494fc8734db00d947e6e4e1549984c59"},
-    {file = "pygpc-0.3.9-cp312-cp312-macosx_14_0_arm64.whl", hash = "sha256:75b4c78d43044bc02faacc5e721d30f385ca6995325910d82eace2b585d086a6"},
-    {file = "pygpc-0.3.9-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:85c739d2ac462a0a5fffe51cfca54c12c248396ce3c9f605f1f8fb331185fd60"},
-    {file = "pygpc-0.3.9-cp312-cp312-win32.whl", hash = "sha256:b06fb3c0e4cfae01c2cb0aaa06f485898167e583e57827a332a5747970eb0cc0"},
-    {file = "pygpc-0.3.9-cp312-cp312-win_amd64.whl", hash = "sha256:ecc331587c880dbe2e37bba11f37ddd2ad7a0d264b74a975b22340e1d567db8d"},
-    {file = "pygpc-0.3.9-cp39-cp39-macosx_14_0_arm64.whl", hash = "sha256:e7a939138e28201aca8d035a46377277715c171df1652f471ee0b7755c843f26"},
-    {file = "pygpc-0.3.9-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:18d45a14710f16d651a8bf093bf9220f149b94557fd8d6af4a541edf192e80ea"},
-    {file = "pygpc-0.3.9-cp39-cp39-win32.whl", hash = "sha256:81fefe8db3d32b8e3854b755fe7f7015a936ab1220cabe127c74f3ac0445a49b"},
-    {file = "pygpc-0.3.9-cp39-cp39-win_amd64.whl", hash = "sha256:5d46be004f3550edd082cb6c80a642f69f71675dce1eed4df8ceb1c050c79d27"},
-    {file = "pygpc-0.3.9-py3-none-any.whl", hash = "sha256:d1100a2409ae0d0f34009c0ca83f87231dec0ab6663bcf3401321ecb04379c14"},
+    {file = "pygpc-0.4.1-cp310-cp310-macosx_10_13_x86_64.whl", hash = "sha256:c44374495e022b9d056eae08438253fae6f6b4c62a8a8407b701b44008c6ac1b"},
+    {file = "pygpc-0.4.1-cp310-cp310-macosx_11_0_arm64.whl", hash = "sha256:09e7aa69bea06550a578249ec731abce989ac9617bed4fe74869daf3efbd35fa"},
+    {file = "pygpc-0.4.1-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:18852ca7c820ac87dced64138f8618266da533b5eec8c070ff84f76a4e4f18e9"},
+    {file = "pygpc-0.4.1-cp310-cp310-win32.whl", hash = "sha256:1dadf33dfb1a4fa9f220d081ab87eb9a0cf8ed0913b8fb9eb3bb4e2b155d10b8"},
+    {file = "pygpc-0.4.1-cp310-cp310-win_amd64.whl", hash = "sha256:2414af26f3606ae525c912e33f178b06e78f6836da640d4df9a59a17515f9f86"},
+    {file = "pygpc-0.4.1-cp311-cp311-macosx_10_13_x86_64.whl", hash = "sha256:30c5d2451af30c64e4ded8b3e512d772f5cf821c099fc34c6f4dd793a13a6a20"},
+    {file = "pygpc-0.4.1-cp311-cp311-macosx_11_0_arm64.whl", hash = "sha256:12efd5ddfeb1940e6d57176c70fc660ad516af66e9b18e42bd972c05e453a37a"},
+    {file = "pygpc-0.4.1-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:6eaae5b33b99d1cc176265f65ef0347b144def1961b9d62f878ca83035a14ee3"},
+    {file = "pygpc-0.4.1-cp311-cp311-win32.whl", hash = "sha256:4a0320d494eb7788320af1d51da390c154561b6be09a377e0622ab0b36999dde"},
+    {file = "pygpc-0.4.1-cp311-cp311-win_amd64.whl", hash = "sha256:e971c5f1d238f640180046b8a15371d532c8a6eeeefe42a5dc801a2f76c0f312"},
+    {file = "pygpc-0.4.1-cp312-cp312-macosx_10_13_x86_64.whl", hash = "sha256:a707a22c83fb714778dd96c834ac39f8a5b21a057913beb1ec6568fb61108fbd"},
+    {file = "pygpc-0.4.1-cp312-cp312-macosx_11_0_arm64.whl", hash = "sha256:3b3da45e93704a959869fb811fdad78cb7b36d5427c81b9b2cf2bbd1e210d722"},
+    {file = "pygpc-0.4.1-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:a17fd84acc97486ede1a31ec663c355ba73131cab08b382540185be8a16a4361"},
+    {file = "pygpc-0.4.1-cp312-cp312-win32.whl", hash = "sha256:3e3a4d9249ef0435441c7f4f048b627dff62ac50aa9d5b84c7c9964997696c67"},
+    {file = "pygpc-0.4.1-cp312-cp312-win_amd64.whl", hash = "sha256:5dd35cc39ea6543a32871600c6743f1e41ea57676bff6a82c0ef91c235b5ab5f"},
+    {file = "pygpc-0.4.1-cp39-cp39-macosx_10_13_x86_64.whl", hash = "sha256:a1bd0136379b25848876b4ea8a62e2dadc57aaa4c8fb280b2f5dc0730c1c2b74"},
+    {file = "pygpc-0.4.1-cp39-cp39-macosx_11_0_arm64.whl", hash = "sha256:474e04d68279bb038f8c9c09bfce52c9a41305d2d75e22bf582b894690bceb7c"},
+    {file = "pygpc-0.4.1-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:848c197725a7921efdcbe10e45108af1442c2e2fffb9513ddc2a10ece10a196d"},
+    {file = "pygpc-0.4.1-cp39-cp39-win32.whl", hash = "sha256:f6980b52463654fde1b396ead08626e3a951d309793d198842375721d03b9cc8"},
+    {file = "pygpc-0.4.1-cp39-cp39-win_amd64.whl", hash = "sha256:23f5b0c53d52ea54d5c4ecbc1a82cb2937124475a15b0023e013fea8b5a2d273"},
 ]
 
 [package.dependencies]
@@ -7346,5 +7346,5 @@ torchx = ["torchx"]
 
 [metadata]
 lock-version = "2.0"
-python-versions = ">=3.10,<3.14"
-content-hash = "48ed99326fbb226293a0e7514d54b86d86d1f98cada245e59b977d2bff888cab"
+python-versions = ">=3.10,<3.13"
+content-hash = "febbf045aa76066a860b7f0e9ba228e2fa0aeaaa72dcdf8393bddc14aafc6212"
