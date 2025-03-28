@@ -54,6 +54,7 @@ specification = OptimisationMethodModel(
 	outdir=outdir,
 	method="tpes",
 	directions=["minimize"],
+	output_labels=["Lynx"],
 	n_iterations=100,
 	method_kwargs=dict(n_startup_trials=50),
 	calibration_func_kwargs=dict(t=observed_data.year),
