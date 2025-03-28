@@ -94,23 +94,34 @@ class OptunaOptimisation(CalibrationWorkflowBase):
 		"""Analyze the results of the simulation calibration procedure."""
 		task, time_now, experiment_name, outdir = self.prepare_analyze()
 
-		for plot_func in [
-			optuna.visualization.plot_edf,
-			optuna.visualization.plot_optimization_history,
-			optuna.visualization.plot_parallel_coordinate,
-			optuna.visualization.plot_param_importances,
-			optuna.visualization.plot_slice,
-		]:
-			optimisation_plot = plot_func(self.study)
-			if outdir is not None:
-				outfile = self.join(
-					outdir,
-					f"{time_now}-{task}-{experiment_name}_{plot_func.__name__}.png",
+		directions = self.specification.directions
+		output_labels = self.specification.output_labels
+		if output_labels is None:
+			output_labels = [f"objective_{i+1}" for i in range(len(directions))]
+
+		for i in range(len(directions)):
+			for plot_func in [
+				optuna.visualization.plot_edf,
+				optuna.visualization.plot_optimization_history,
+				optuna.visualization.plot_parallel_coordinate,
+				optuna.visualization.plot_param_importances,
+				optuna.visualization.plot_slice,
+			]:
+				optimisation_plot = plot_func(
+					self.study,
+					target=lambda t: t.values[i],
+					target_name=output_labels[i],
 				)
-				self.append_artifact(outfile)
-				optimisation_plot.write_image(outfile)
-			else:
-				optimisation_plot.show()
+				plot_name = plot_func.__name__
+				if outdir is not None:
+					outfile = self.join(
+						outdir,
+						f"{time_now}-{task}-{experiment_name}_{plot_name}_objective_{i+1}.png",
+					)
+					self.append_artifact(outfile)
+					optimisation_plot.write_image(outfile)
+				else:
+					optimisation_plot.show()
 
 		if outdir is None:
 			return
