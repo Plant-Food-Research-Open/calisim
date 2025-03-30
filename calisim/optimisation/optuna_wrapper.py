@@ -99,7 +99,7 @@ class OptunaOptimisation(CalibrationWorkflowBase):
 		if output_labels is None:
 			output_labels = [f"objective_{i+1}" for i in range(len(directions))]
 
-		for i in range(len(directions)):
+		for i in range(len(output_labels)):
 			for plot_func in [
 				optuna.visualization.plot_edf,
 				optuna.visualization.plot_optimization_history,
@@ -107,16 +107,17 @@ class OptunaOptimisation(CalibrationWorkflowBase):
 				optuna.visualization.plot_param_importances,
 				optuna.visualization.plot_slice,
 			]:
+				output_label = output_labels[i]
 				optimisation_plot = plot_func(
 					self.study,
 					target=lambda t: t.values[i],
-					target_name=output_labels[i],
+					target_name=output_label,
 				)
 				plot_name = plot_func.__name__
 				if outdir is not None:
 					outfile = self.join(
 						outdir,
-						f"{time_now}-{task}-{experiment_name}_{plot_name}_objective_{i+1}.png",
+						f"{time_now}-{task}-{experiment_name}_{plot_name}_{output_label}.png",
 					)
 					self.append_artifact(outfile)
 					optimisation_plot.write_image(outfile)

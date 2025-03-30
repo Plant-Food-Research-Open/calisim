@@ -198,7 +198,9 @@ class LAMPESimulationBasedInference(SimulationBasedInferenceBase):
 
 		for plot_func in [analysis.pairplot, analysis.marginal_plot]:
 			plt.rcParams.update({"font.size": 8})
-			fig, _ = plot_func(posterior_samples, figsize=(24, 24), labels=self.names)
+			fig, _ = plot_func(
+				posterior_samples, figsize=self.specification.figsize, labels=self.names
+			)
 			self.present_fig(
 				fig, outdir, time_now, task, experiment_name, plot_func.__name__
 			)

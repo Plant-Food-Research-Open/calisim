@@ -1193,6 +1193,7 @@ files = [
 [package.dependencies]
 click = ">=8.1"
 cloudpickle = ">=3.0.0"
+distributed = {version = "2024.11.2", optional = true, markers = "extra == \"distributed\""}
 fsspec = ">=2021.09.0"
 importlib-metadata = {version = ">=4.13.0", markers = "python_version < \"3.12\""}
 packaging = ">=20.0"
@@ -1373,6 +1374,39 @@ files = [
     {file = "durationpy-0.9-py3-none-any.whl", hash = "sha256:e65359a7af5cedad07fb77a2dd3f390f8eb0b74cb845589fa6c057086834dd38"},
     {file = "durationpy-0.9.tar.gz", hash = "sha256:fd3feb0a69a0057d582ef643c355c40d2fa1c942191f914d12203b1a01ac722a"},
 ]
+
+[[package]]
+name = "elfi"
+version = "0.8.7"
+description = "ELFI - Engine for Likelihood-free Inference"
+optional = false
+python-versions = "*"
+files = []
+develop = false
+
+[package.dependencies]
+arviz = ">=0.12.1"
+dask = {version = ">=2.30.0", extras = ["distributed"]}
+GPy = ">=1.0.9"
+ipyparallel = ">=6"
+matplotlib = ">=1.1"
+networkX = ">=2.0"
+numdifftools = ">=0.9"
+numpy = ">=1.12.1"
+scikit-learn = ">=0.18.1"
+scipy = ">=0.19"
+setuptools = ">=69"
+toolz = ">=0.8"
+
+[package.extras]
+doc = ["Sphinx"]
+graphviz = ["graphviz (>=0.7.1)"]
+
+[package.source]
+type = "git"
+url = "https://git@github.com/elfi-dev/elfi.git"
+reference = "a331349dd603f78a7ac444226fb3bd08d4e41fc0"
+resolved_reference = "a331349dd603f78a7ac444226fb3bd08d4e41fc0"
 
 [[package]]
 name = "emcee"
@@ -2381,6 +2415,37 @@ docs = ["myst-parser", "pydata-sphinx-theme", "sphinx", "sphinx-autodoc-typehint
 pyqt5 = ["pyqt5"]
 pyside6 = ["pyside6"]
 test = ["flaky", "ipyparallel", "pre-commit", "pytest (>=7.0)", "pytest-asyncio (>=0.23.5)", "pytest-cov", "pytest-timeout"]
+
+[[package]]
+name = "ipyparallel"
+version = "9.0.1"
+description = "Interactive Parallel Computing with IPython"
+optional = false
+python-versions = ">=3.8"
+files = [
+    {file = "ipyparallel-9.0.1-py3-none-any.whl", hash = "sha256:cc0702e26af416a1c35c73eb6dbc3a6a2c49417cb24dda4511be85c9fe87ea64"},
+    {file = "ipyparallel-9.0.1.tar.gz", hash = "sha256:2e592cad2200c5a94fbbff639bff36e6ec9122f34b36b2fc6b4d678d9e98f29c"},
+]
+
+[package.dependencies]
+decorator = "*"
+ipykernel = ">=6.9.1"
+ipython = ">=5"
+jupyter-client = ">=7"
+psutil = "*"
+python-dateutil = ">=2.1"
+pyzmq = ">=25"
+tornado = ">=6.1"
+tqdm = "*"
+traitlets = ">=5"
+
+[package.extras]
+benchmark = ["asv"]
+labextension = ["jupyter-server", "jupyterlab (>=3)"]
+nbext = ["jupyter-server", "notebook"]
+retroextension = ["jupyter-server", "retrolab"]
+serverextension = ["jupyter-server"]
+test = ["ipython[test]", "pytest", "pytest-asyncio", "pytest-cov", "testpath"]
 
 [[package]]
 name = "ipython"
@@ -3983,6 +4048,24 @@ files = [
 [package.dependencies]
 llvmlite = "==0.44.*"
 numpy = ">=1.24,<2.2"
+
+[[package]]
+name = "numdifftools"
+version = "0.9.41"
+description = "Solves automatic numerical differentiation problems in one or more variables."
+optional = false
+python-versions = "*"
+files = [
+    {file = "numdifftools-0.9.41-py2.py3-none-any.whl", hash = "sha256:a8b162e06889ea73643a47b84935a63d8214d4b4b0805d36a3c28c56379b3e51"},
+    {file = "numdifftools-0.9.41.tar.gz", hash = "sha256:4ef705cd3c06211b3a4e9fd05ad622be916dcfda40732f0128805a2c4be389b4"},
+]
+
+[package.dependencies]
+numpy = ">=1.9"
+scipy = ">=0.8"
+
+[package.extras]
+build-sphinx = ["sphinx (>=1.3.1)"]
 
 [[package]]
 name = "numpoly"
@@ -7340,6 +7423,7 @@ torch = ">=1.12.0"
 dev = ["pre-commit", "pytest", "ruff"]
 
 [extras]
+experimental = ["elfi"]
 hydra = ["hydra-core"]
 torch = ["ax-platform", "botorch", "evotorch", "gpytorch", "lampe", "nflows", "pyro-api", "pyro-ppl", "sbi", "skorch", "tensorboard", "torch", "zuko"]
 torchx = ["torchx"]
@@ -7347,4 +7431,4 @@ torchx = ["torchx"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.10,<3.13"
-content-hash = "febbf045aa76066a860b7f0e9ba228e2fa0aeaaa72dcdf8393bddc14aafc6212"
+content-hash = "b908f5d4624b9da91d3f16f8a371f1c8b4eb48b33dae7ced5fb5a15937719309"

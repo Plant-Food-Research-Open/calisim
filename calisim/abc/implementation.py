@@ -4,6 +4,7 @@ Implements the supported Approximate Bayesian Computation methods.
 
 """
 
+import importlib
 from collections.abc import Callable
 
 from pydantic import Field
@@ -17,6 +18,11 @@ TASK = "approximate_bayesian_computation"
 IMPLEMENTATIONS: dict[str, type[CalibrationWorkflowBase]] = dict(
 	pymc=PyMCApproximateBayesianComputation, pyabc=PyABCApproximateBayesianComputation
 )
+
+if importlib.util.find_spec("elfi") is not None:
+	from .elfi_wrapper import ELFIApproximateBayesianComputation
+
+	IMPLEMENTATIONS["elfi"] = ELFIApproximateBayesianComputation
 
 
 def get_implementations() -> dict[str, type[CalibrationWorkflowBase]]:
@@ -51,6 +57,10 @@ class ApproximateBayesianComputationMethodModel(CalibrationModel):
 	distance: str | Callable | None = Field(
 		description="The distance function between observed and simulated data",
 		default=None,
+	)
+	quantile: float = Field(
+		description="Selection quantile used for the sample acceptance threshold",
+		default=0.2,
 	)
 
 

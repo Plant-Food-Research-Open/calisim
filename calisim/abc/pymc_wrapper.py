@@ -138,7 +138,7 @@ class PyMCApproximateBayesianComputation(CalibrationWorkflowBase):
 		_create_plot(
 			az.plot_pair,
 			plot_kwargs={
-				"figsize": (12, 12),
+				"figsize": self.specification.figsize,
 				"scatter_kwargs": dict(alpha=0.01),
 				"marginals": True,
 				"textsize": textsize,
@@ -146,11 +146,13 @@ class PyMCApproximateBayesianComputation(CalibrationWorkflowBase):
 		)
 
 		_create_plot(
-			az.plot_violin, plot_kwargs={"figsize": (12, 12), "textsize": textsize}
+			az.plot_violin,
+			plot_kwargs={"figsize": self.specification.figsize, "textsize": textsize},
 		)
 
 		_create_plot(
-			az.plot_posterior, plot_kwargs={"figsize": (12, 12), "textsize": 5}
+			az.plot_posterior,
+			plot_kwargs={"figsize": self.specification.figsize, "textsize": 5},
 		)
 
 		if outdir is None:

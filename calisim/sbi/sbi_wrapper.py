@@ -97,7 +97,10 @@ class SBISimulationBasedInference(SimulationBasedInferenceBase):
 		for plot_func in [analysis.pairplot, analysis.marginal_plot]:
 			plt.rcParams.update({"font.size": 8})
 			fig, _ = plot_func(
-				posterior_samples, figsize=(24, 24), labels=self.names, limits=limits
+				posterior_samples,
+				figsize=self.specification.figsize,
+				labels=self.names,
+				limits=limits,
 			)
 			self.present_fig(
 				fig, outdir, time_now, task, experiment_name, plot_func.__name__
@@ -111,7 +114,7 @@ class SBISimulationBasedInference(SimulationBasedInferenceBase):
 			fig, _ = plot_func(
 				density=self.posterior,
 				condition=self.posterior.sample((1,)),
-				figsize=(24, 24),
+				figsize=self.specification.figsize,
 				labels=self.names,
 				limits=limits,
 			)
