@@ -7423,7 +7423,6 @@ torch = ">=1.12.0"
 dev = ["pre-commit", "pytest", "ruff"]
 
 [extras]
-experimental = ["elfi"]
 hydra = ["hydra-core"]
 torch = ["ax-platform", "botorch", "evotorch", "gpytorch", "lampe", "nflows", "pyro-api", "pyro-ppl", "sbi", "skorch", "tensorboard", "torch", "zuko"]
 torchx = ["torchx"]
@@ -7431,4 +7430,4 @@ torchx = ["torchx"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.10,<3.13"
-content-hash = "b908f5d4624b9da91d3f16f8a371f1c8b4eb48b33dae7ced5fb5a15937719309"
+content-hash = "73e4b09fc40bb3d607b909412a51b8d60130188e0c2469cab518eca13b343a97"
