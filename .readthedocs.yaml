@@ -9,7 +9,7 @@ build:
       - git update-index --assume-unchanged docs/source/conf.py
     post_install:
       - pip install poetry
-      - VIRTUAL_ENV=$READTHEDOCS_VIRTUALENV_PATH poetry install --no-interaction -E hydra -E torch
+      - VIRTUAL_ENV=$READTHEDOCS_VIRTUALENV_PATH poetry install --no-interaction -E hydra -E torch -E torchx
 
 sphinx:
   configuration: docs/source/conf.py
