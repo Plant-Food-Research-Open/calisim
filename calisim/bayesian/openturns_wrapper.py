@@ -30,7 +30,7 @@ class OpenTurnsBayesianCalibration(OpenTurnsBase):
 			parameter_name = spec.name
 			self.names.append(parameter_name)
 
-			bounds = self.get_parameter_bounds(spec)
+			bounds = spec.distribution_bounds
 			lower_bound, upper_bound = bounds
 			lower_bounds, upper_bounds = self.bounds
 			lower_bounds.append(lower_bound)
@@ -43,13 +43,16 @@ class OpenTurnsBayesianCalibration(OpenTurnsBase):
 				spec.distribution_name.replace("_", " ").title().replace(" ", "")
 			)
 
+			distribution_args = spec.distribution_args
+			if distribution_args is None:
+				distribution_args = []
+
 			distribution_kwargs = spec.distribution_kwargs
 			if distribution_kwargs is None:
 				distribution_kwargs = {}
 
-			distribution_args = list(distribution_kwargs.values())
 			dist_instance = getattr(ot, distribution_name)
-			parameter = dist_instance(*distribution_args)
+			parameter = dist_instance(*distribution_args, **distribution_kwargs)
 			parameters.append(parameter)
 
 		distribution_collection = ot.DistributionCollection(parameters)

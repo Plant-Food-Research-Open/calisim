@@ -37,7 +37,7 @@ class EmceeBayesianCalibration(CalibrationWorkflowBase):
 			data_type = spec.data_type
 			self.data_types.append(data_type)
 
-			bounds = self.get_parameter_bounds(spec)
+			bounds = spec.distribution_bounds
 			lower_bound, upper_bound = bounds
 			lower_bounds, upper_bounds = self.bounds
 			lower_bounds.append(lower_bound)
@@ -45,13 +45,18 @@ class EmceeBayesianCalibration(CalibrationWorkflowBase):
 
 			distribution_name = spec.distribution_name.replace(" ", "_").lower()
 
+			distribution_args = spec.distribution_args
+			if distribution_args is None:
+				distribution_args = []
+
 			distribution_kwargs = spec.distribution_kwargs
 			if distribution_kwargs is None:
 				distribution_kwargs = {}
-			distribution_args = list(distribution_kwargs.values())
 
 			dist_instance = getattr(self.rng, distribution_name)
-			samples = dist_instance(*distribution_args, size=n_walkers)
+			samples = dist_instance(
+				*distribution_args, **distribution_kwargs, size=n_walkers
+			)
 			self.parameters.append(samples)
 
 		self.parameters = np.array(self.parameters).T

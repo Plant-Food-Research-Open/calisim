@@ -22,15 +22,15 @@ parameter_spec = ParameterSpecification(
 		DistributionModel(
 			name="alpha",
 			distribution_name="normal",
-			distribution_args=[0.3, 0.7],
-			distribution_kwargs=dict(mu=0.51, sigma=0.01),
+			distribution_args=[0.51, 0.01],
+			distribution_bounds=[0.3, 0.7],
 			data_type=ParameterDataType.CONTINUOUS,
 		),
 		DistributionModel(
 			name="beta",
 			distribution_name="normal",
-			distribution_args=[0.01, 0.04],
-			distribution_kwargs=dict(mu=0.024, sigma=0.001),
+			distribution_args=[0.024, 0.001],
+			distribution_bounds=[0.01, 0.04],
 			data_type=ParameterDataType.CONTINUOUS,
 		),
 	]

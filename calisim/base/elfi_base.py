@@ -7,6 +7,7 @@ The defined base class for the ELFI library.
 from collections.abc import Callable
 
 import elfi
+import numpy as np
 
 from ..base import CalibrationWorkflowBase
 
@@ -32,6 +33,7 @@ class ELFIBase(CalibrationWorkflowBase):
 	def specify(self) -> None:
 		"""Specify the parameters of the model calibration procedure."""
 		self.names = []
+		self.bounds = {}
 		self.priors = []
 		parameter_spec = self.specification.parameter_spec.parameters
 
@@ -40,6 +42,11 @@ class ELFIBase(CalibrationWorkflowBase):
 			self.names.append(parameter_name)
 
 			distribution_name = self.dist_name_processing(spec.distribution_name)
+
+			bounds = spec.distribution_bounds
+			if bounds is not None:
+				self.bounds[parameter_name] = bounds
+
 			distribution_args = spec.distribution_args
 			if distribution_args is None:
 				distribution_args = []
@@ -56,11 +63,15 @@ class ELFIBase(CalibrationWorkflowBase):
 			)
 			self.priors.append(prior)
 
-	def create_simulator(self, simulator_func: Callable) -> None:
+	def create_simulator(
+		self, simulator_func: Callable, take_log: bool = False
+	) -> None:
 		"""Create a simulator object.
 
 		Args:
 			simulator_func (Callable): The simulator function.
+			take_log (bool, optional): Whether to take the log distance.
+				Defaults to False.
 		"""
 		simulator = elfi.Simulator(
 			simulator_func,
@@ -72,6 +83,10 @@ class ELFIBase(CalibrationWorkflowBase):
 			lambda y: y, simulator, name="identity_statistic"
 		)
 
-		self.distance = elfi.Distance(
+		distance = elfi.Distance(
 			lambda simulated, _: simulated, identity_statistic, name="identity_distance"
 		)
+		if take_log:
+			distance = elfi.Operation(np.log, distance, name="log_distance")
+
+		self.distance = distance

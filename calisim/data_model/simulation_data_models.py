@@ -60,8 +60,11 @@ class DistributionModel(ParameterModel):
 	distribution_name: str = Field(
 		description="The distribution name", default="uniform"
 	)
+	distribution_bounds: list | None = Field(
+		description="The distribution bounds", default=None
+	)
 	distribution_args: list | None = Field(
-		description="The distribution arguments", default=None
+		description="The distribution positional arguments", default=None
 	)
 	distribution_kwargs: dict[str, Any] | None = Field(
 		description="The distribution named arguments", default=None

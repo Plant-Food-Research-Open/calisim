@@ -1,7 +1,7 @@
-"""Contains the implementations for Approximate Bayesian Computation methods using
+"""Contains the implementations for likelihood-free methods using
 ELFI
 
-Implements the supported Approximate Bayesian Computation methods using
+Implements the supported likelihood-free methods using
 the ELFI library.
 
 """
@@ -16,8 +16,8 @@ from ..base import ELFIBase
 from ..data_model import ParameterEstimateModel
 
 
-class ELFIApproximateBayesianComputation(ELFIBase):
-	"""The ELFI Approximate Bayesian Computation method class."""
+class ELFILikelihoodFree(ELFIBase):
+	"""The ELFI likelihood-free method class."""
 
 	def execute(self) -> None:
 		"""Execute the simulation calibration procedure."""
@@ -49,9 +49,7 @@ class ELFIApproximateBayesianComputation(ELFIBase):
 
 		sampler_name = self.specification.method
 		supported_samplers = dict(
-			rejection=elfi.Rejection,
-			smc=elfi.SMC,
-			adaptive_threshold_smc=elfi.AdaptiveThresholdSMC,
+			bolfi=elfi.BOLFI,
 		)
 		sampler_class = supported_samplers.get(sampler_name, None)
 		if sampler_class is None:
@@ -60,47 +58,51 @@ class ELFIApproximateBayesianComputation(ELFIBase):
 				f"Supported ELFI samplers are {', '.join(supported_samplers)}",
 			)
 
-		sampler_kwargs = self.specification.method_kwargs
-		if sampler_kwargs is None:
-			sampler_kwargs = {}
+		n_init = self.specification.n_init
+		sampler_kwargs = dict(
+			target_name=self.distance,
+			initial_evidence=n_init,
+			batch_size=1,
+			update_interval=n_init // 10,
+			acq_noise_var=self.specification.acq_noise_var,
+			bounds=self.bounds,
+			seed=self.specification.random_seed,
+		)
 
-		random_seed = self.specification.random_seed
-		sampler_kwargs["batch_size"] = 1
-		sampler_kwargs["seed"] = random_seed
-		self.sampler = sampler_class(self.distance, **sampler_kwargs)
+		self.sampler = sampler_class(self.distance.model, **sampler_kwargs)
 
-		n_samples = self.specification.n_samples
-		quantile = self.specification.quantile
 		n_iterations = self.specification.n_iterations
-		self.sampler.bar = True
-		if sampler_name == "rejection":
-			self.sampler.set_objective(n_samples, quantile=quantile)
-		elif sampler_name == "smc":
-			quantiles = [quantile for _ in range(n_iterations)]
-			self.sampler.set_objective(n_samples, quantiles=quantiles)
-		elif sampler_name == "adaptive_threshold_smc":
-			self.sampler.set_objective(n_samples, max_iter=n_iterations)
-		else:
-			raise ValueError(f"Unsupported ELFI sampler: {sampler_name}")
+		objective_kwargs = dict(n_evidence=n_iterations)
+		self.sampler.set_objective(**objective_kwargs)
 
 		walltime = self.specification.walltime
 		walltime = time.time() + walltime * 60
 		while not self.sampler.finished and time.time() < walltime:
 			self.sampler.iterate()
 
-		self.history = self.sampler.extract_result()
+		n_samples = self.specification.n_samples
+		n_chains = self.specification.n_chains
+		sampler = self.specification.sampler
+
+		self.history = self.sampler.sample(
+			n_samples,
+			algorithm=sampler,
+			n_chains=n_chains,
+		)
 
 	def analyze(self) -> None:
 		"""Analyze the results of the simulation calibration procedure."""
 		task, time_now, experiment_name, outdir = self.prepare_analyze()
 
-		n_samples = self.specification.n_samples
-		num_bins = 25
-		if n_samples <= 20:
-			num_bins = n_samples
-
-		for plot_func in [self.history.plot_marginals, self.history.plot_pairs]:
-			plot_func(bins=num_bins, figsize=self.specification.figsize)
+		for plot_func in [
+			self.sampler.plot_state,
+			self.sampler.plot_discrepancy,
+			self.sampler.plot_gp,
+			self.history.plot_traces,
+			self.history.plot_marginals,
+			self.history.plot_pairs,
+		]:
+			plot_func(figsize=self.specification.figsize)
 			if outdir is not None:
 				outfile = self.join(
 					outdir,
