@@ -22,14 +22,14 @@ parameter_spec = ParameterSpecification(
 		DistributionModel(
 			name="alpha",
 			distribution_name="normal",
-			distribution_args=[0.51, 0.02],
+			distribution_args=[0.5, 0.03],
 			distribution_bounds=[0.3, 0.7],
 			data_type=ParameterDataType.CONTINUOUS,
 		),
 		DistributionModel(
 			name="beta",
 			distribution_name="normal",
-			distribution_args=[0.024, 0.001],
+			distribution_args=[0.025, 0.003],
 			distribution_bounds=[0.01, 0.04],
 			data_type=ParameterDataType.CONTINUOUS,
 		),
@@ -62,6 +62,7 @@ specification = LikelihoodFreeMethodModel(
 	walltime=3,  # minutes
 	n_iterations=100,
 	n_chains=4,
+	epsilon=1,
 	acq_noise_var=0,
 	method="bolfi",
 	sampler="metropolis",  # or nuts

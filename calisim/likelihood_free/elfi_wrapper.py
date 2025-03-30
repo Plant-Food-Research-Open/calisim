@@ -83,11 +83,10 @@ class ELFILikelihoodFree(ELFIBase):
 		n_samples = self.specification.n_samples
 		n_chains = self.specification.n_chains
 		sampler = self.specification.sampler
+		epsilon = self.specification.epsilon
 
 		self.history = self.sampler.sample(
-			n_samples,
-			algorithm=sampler,
-			n_chains=n_chains,
+			n_samples, algorithm=sampler, n_chains=n_chains, threshold=epsilon
 		)
 
 	def analyze(self) -> None:

@@ -38,6 +38,10 @@ class LikelihoodFreeMethodModel(CalibrationModel):
 	    BaseModel (CalibrationModel): The calibration base model class.
 	"""
 
+	epsilon: float = Field(
+		description="The dissimilarity threshold between observed and simulated data",
+		default=0,
+	)
 	acq_noise_var: float = Field(
 		description="Noise added to Lower Confidence Bound Selection Criterion",
 		default=0,
