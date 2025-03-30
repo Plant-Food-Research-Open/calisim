@@ -1,6 +1,21 @@
 Changelog
 =========
 
+[0.3.1] - 2025/03/30
+--------------------
+
+Added
+^^^^^
+
+* Implemented experimental support for the ELFI library.
+* Implemented ELFI wrapper for ABC.
+* Implemented ELFI wrapper for likelihood-free inference.
+
+Fixed
+^^^^^
+
+* Added multi-objective support for Optuna.
+
 [0.3.0] - 2025/03/24
 --------------------
 
