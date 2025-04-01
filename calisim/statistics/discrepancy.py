@@ -1,6 +1,6 @@
-"""Contains utilities for calculating distance values.
+"""Contains utilities for calculating discrepancy values.
 
-This module defines utility functions for distance metrics
+This module defines utility functions for discrepancies
 that can be used to compare simulated and observational data.
 """
 
@@ -10,6 +10,8 @@ from pydoc import locate
 
 import numpy as np
 import sklearn.metrics as metrics
+from scipy.spatial import distance as sp_distance
+from scipy.special import kl_div
 from scipy.stats import energy_distance, wasserstein_distance
 
 
@@ -85,8 +87,24 @@ class WassersteinDistance(DistanceMetricBase):
 		return distance
 
 
+class KlDivergence(DistanceMetricBase):
+	"""The K-L divergence."""
+
+	def calculate(
+		self, observed: np.ndarray, simulated: np.ndarray
+	) -> float | np.ndarray:
+		"""Calculate the distance between observed and simulated data.
+
+		Args:
+		    observed (np.ndarray): The observed data.
+		    simulated (np.ndarray): The simulated data.
+		"""
+		distance = kl_div(observed, simulated).sum()
+		return distance
+
+
 class EnergyDistance(DistanceMetricBase):
-	"""The Wasserstein ID distance."""
+	"""The energy distance distance."""
 
 	def calculate(
 		self, observed: np.ndarray, simulated: np.ndarray
@@ -98,6 +116,118 @@ class EnergyDistance(DistanceMetricBase):
 		    simulated (np.ndarray): The simulated data.
 		"""
 		distance = energy_distance(observed, simulated)
+		return distance
+
+
+class BrayCurtisDistance(DistanceMetricBase):
+	"""The Bray-Curtis distance."""
+
+	def calculate(
+		self, observed: np.ndarray, simulated: np.ndarray
+	) -> float | np.ndarray:
+		"""Calculate the distance between observed and simulated data.
+
+		Args:
+		    observed (np.ndarray): The observed data.
+		    simulated (np.ndarray): The simulated data.
+		"""
+		distance = sp_distance.braycurtis(observed, simulated)
+		return distance
+
+
+class CanberraDistance(DistanceMetricBase):
+	"""The Canberra distance."""
+
+	def calculate(
+		self, observed: np.ndarray, simulated: np.ndarray
+	) -> float | np.ndarray:
+		"""Calculate the distance between observed and simulated data.
+
+		Args:
+		    observed (np.ndarray): The observed data.
+		    simulated (np.ndarray): The simulated data.
+		"""
+		distance = sp_distance.canberra(observed, simulated)
+		return distance
+
+
+class ChebyshevDistance(DistanceMetricBase):
+	"""The Chebyshev distance."""
+
+	def calculate(
+		self, observed: np.ndarray, simulated: np.ndarray
+	) -> float | np.ndarray:
+		"""Calculate the distance between observed and simulated data.
+
+		Args:
+		    observed (np.ndarray): The observed data.
+		    simulated (np.ndarray): The simulated data.
+		"""
+		distance = sp_distance.chebyshev(observed, simulated)
+		return distance
+
+
+class CorrelationDistance(DistanceMetricBase):
+	"""The correlation distance."""
+
+	def calculate(
+		self, observed: np.ndarray, simulated: np.ndarray
+	) -> float | np.ndarray:
+		"""Calculate the distance between observed and simulated data.
+
+		Args:
+		    observed (np.ndarray): The observed data.
+		    simulated (np.ndarray): The simulated data.
+		"""
+		distance = sp_distance.correlation(observed, simulated)
+		return distance
+
+
+class CosineDistance(DistanceMetricBase):
+	"""The Cosine distance."""
+
+	def calculate(
+		self, observed: np.ndarray, simulated: np.ndarray
+	) -> float | np.ndarray:
+		"""Calculate the distance between observed and simulated data.
+
+		Args:
+		    observed (np.ndarray): The observed data.
+		    simulated (np.ndarray): The simulated data.
+		"""
+		distance = sp_distance.cosine(observed, simulated)
+		return distance
+
+
+class MinkowskiDistance(DistanceMetricBase):
+	"""The Minkowski distance."""
+
+	def calculate(
+		self, observed: np.ndarray, simulated: np.ndarray
+	) -> float | np.ndarray:
+		"""Calculate the distance between observed and simulated data.
+
+		Args:
+		    observed (np.ndarray): The observed data.
+		    simulated (np.ndarray): The simulated data.
+		"""
+		distance = sp_distance.minkowski(observed, simulated)
+		return distance
+
+
+class JensenShannonDistance(DistanceMetricBase):
+	"""The Jensen-Shannon distance."""
+
+	def calculate(
+		self, observed: np.ndarray, simulated: np.ndarray
+	) -> float | np.ndarray:
+		"""Calculate the distance between observed and simulated data.
+
+		Args:
+		    observed (np.ndarray): The observed data.
+		    simulated (np.ndarray): The simulated data.
+		"""
+		distance = sp_distance.jensenshannon(observed, simulated)
 		return distance
 
 
@@ -210,30 +340,3 @@ def get_distance_metric_func(distance_metric: str) -> Callable:
 	module = "calisim.statistics.distance_metrics"
 	func: Callable = locate(f"{module}.{distance_metric}")  # type: ignore[assignment]
 	return func
-
-
-def get_distance_metrics() -> list[dict]:
-	"""Get a list of available distance metrics and labels.
-
-	Returns:
-	    list[dict]: A list of available distance metrics and labels.
-	"""
-	distance_metrics: list[str] = [
-		"l1_norm",
-		"l2_norm",
-		"wasserstein_distance",
-		"energy_distance",
-		"mean_squared_error",
-		"mean_absolute_error",
-		"root_mean_squared_error",
-		"mean_pinball_loss",
-		"mean_absolute_percentage_error",
-		"median_absolute_error",
-	]
-
-	distance_metric_list = []
-	for distance_metric in distance_metrics:
-		label = distance_metric.replace("_", " ").title()
-		distance_metric_list.append({"value": distance_metric, "label": label})
-
-	return distance_metric_list
