@@ -185,6 +185,7 @@ def get_distance_metrics() -> list[dict]:
 	"""
 	distance_metrics: list[str] = [
 		"l1_norm",
+		"l2_norm",
 		"mean_squared_error",
 		"mean_absolute_error",
 		"root_mean_squared_error",
