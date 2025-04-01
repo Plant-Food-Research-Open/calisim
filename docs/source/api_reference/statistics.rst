@@ -10,5 +10,5 @@ Design
 Distance Metrics
 ----------------
 
-.. automodule:: calisim.statistics.distance_metrics
+.. automodule:: calisim.statistics.discrepancy
    :members:
