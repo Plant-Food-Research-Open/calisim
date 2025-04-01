@@ -10,6 +10,7 @@ from pydoc import locate
 
 import numpy as np
 import sklearn.metrics as metrics
+from scipy.stats import energy_distance, wasserstein_distance
 
 
 class DistanceMetricBase(ABC):
@@ -51,6 +52,7 @@ class L1Norm(DistanceMetricBase):
 		distance = np.linalg.norm(observed - simulated, ord=1)
 		return distance
 
+
 class L2Norm(DistanceMetricBase):
 	"""The L2 norm distance."""
 
@@ -65,7 +67,40 @@ class L2Norm(DistanceMetricBase):
 		"""
 		distance = np.linalg.norm(observed - simulated, ord=2)
 		return distance
-		
+
+
+class WassersteinDistance(DistanceMetricBase):
+	"""The Wasserstein ID distance."""
+
+	def calculate(
+		self, observed: np.ndarray, simulated: np.ndarray
+	) -> float | np.ndarray:
+		"""Calculate the distance between observed and simulated data.
+
+		Args:
+		    observed (np.ndarray): The observed data.
+		    simulated (np.ndarray): The simulated data.
+		"""
+		distance = wasserstein_distance(observed, simulated)
+		return distance
+
+
+class EnergyDistance(DistanceMetricBase):
+	"""The Wasserstein ID distance."""
+
+	def calculate(
+		self, observed: np.ndarray, simulated: np.ndarray
+	) -> float | np.ndarray:
+		"""Calculate the distance between observed and simulated data.
+
+		Args:
+		    observed (np.ndarray): The observed data.
+		    simulated (np.ndarray): The simulated data.
+		"""
+		distance = energy_distance(observed, simulated)
+		return distance
+
+
 class MeanSquaredError(DistanceMetricBase):
 	"""The mean squared error distance."""
 
@@ -186,6 +221,8 @@ def get_distance_metrics() -> list[dict]:
 	distance_metrics: list[str] = [
 		"l1_norm",
 		"l2_norm",
+		"wasserstein_distance",
+		"energy_distance",
 		"mean_squared_error",
 		"mean_absolute_error",
 		"root_mean_squared_error",
