@@ -52,7 +52,7 @@ class L1Norm(DistanceMetricBase):
 		return distance
 
 class L2Norm(DistanceMetricBase):
-	"""The L1 norm distance."""
+	"""The L2 norm distance."""
 
 	def calculate(
 		self, observed: np.ndarray, simulated: np.ndarray
