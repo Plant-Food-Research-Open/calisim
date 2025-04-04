@@ -101,6 +101,9 @@ class GPyTorchSurrogateModel(SurrogateBase):
 			fig, axes = plt.subplots(
 				nrows=len(self.names), figsize=self.specification.figsize
 			)
+			if not isinstance(axes, np.ndarray):
+				axes = [axes]
+
 			for i, parameter_name in enumerate(self.names):
 				df.plot.scatter(
 					parameter_name,
@@ -133,6 +136,8 @@ class GPyTorchSurrogateModel(SurrogateBase):
 				fig, axes = plt.subplots(
 					nrows=len(self.names), figsize=self.specification.figsize
 				)
+				if not isinstance(axes, np.ndarray):
+					axes = [axes]
 				for i, parameter_name in enumerate(self.names):
 					df.plot.scatter(
 						parameter_name,

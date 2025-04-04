@@ -147,6 +147,9 @@ class PyESMDAHistoryMatching(HistoryMatchingBase):
 		fig, axes = plt.subplots(
 			nrows=len(parameter_names), figsize=self.specification.figsize
 		)
+		if not isinstance(axes, np.ndarray):
+			axes = [axes]
+
 		for i, parameter_name in enumerate(parameter_names):
 			axes[i].set_title(parameter_name)
 			axes[i].hist(self.parameters[parameter_name], label="Prior")

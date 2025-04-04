@@ -151,7 +151,7 @@ class EvoTorchEvolutionary(CalibrationWorkflowBase):
 			figsize=self.specification.figsize,
 		)
 
-		if not isinstance(axes, list):
+		if not isinstance(axes, np.ndarray):
 			axes = [axes]
 
 		trials_df["index"] = trials_df.index
