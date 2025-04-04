@@ -68,6 +68,23 @@ class OpenTurnsBase(CalibrationWorkflowBase):
 
 		return ot.PythonFunction(n_dim, n_out, func_sample=func_sample)
 
+	def replicate_samples(self, X: ot.Sample) -> ot.Sample:
+		"""Replicate the sampled parameters.
+
+		Args:
+			X (ot.Sample): The sampled parameters.
+
+		Returns:
+			ot.Sample: The replicated samples.
+		"""
+		n_replicates = self.specification.n_replicates
+		if n_replicates > 1:
+			X = X.asDataFrame().values
+			X = np.repeat(X, n_replicates, axis=0)
+			self.rng.shuffle(X)
+			X = ot.Sample(X)
+		return X
+
 	def sample_parameters(self, n_samples: int) -> np.ndarray:
 		"""Get new parameter samples.
 
@@ -81,8 +98,10 @@ class OpenTurnsBase(CalibrationWorkflowBase):
 			self.experiment = ot.LHSExperiment(self.parameters, n_samples)
 
 		self.experiment.setSize(n_samples)
-		samples = self.experiment.generate()
-		return samples
+		X = self.experiment.generate()
+		X = self.replicate_samples(X)
+
+		return X
 
 	def get_X_Y(
 		self, n_samples: int, target_function: Callable

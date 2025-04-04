@@ -65,6 +65,12 @@ class EmukitBase(CalibrationWorkflowBase):
 		X = self.specification.X
 		if X is None:
 			X = design.get_samples(n_init)
+
+		n_replicates = self.specification.n_replicates
+		if n_replicates > 1:
+			X = np.repeat(X, n_replicates, axis=0)
+			self.rng.shuffle(X)
+
 		Y = self.specification.Y
 		if Y is None:
 			Y = target_function(X)

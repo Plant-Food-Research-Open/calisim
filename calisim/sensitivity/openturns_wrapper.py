@@ -57,6 +57,7 @@ class OpenTurnsSensitivityAnalysis(OpenTurnsBase):
 		if X is None:
 			sobol_experiment = ot.SobolIndicesExperiment(self.parameters, n_samples)
 			X = sobol_experiment.generate()
+			X = self.replicate_samples(X)
 		Y = self.specification.Y
 		if Y is None:
 			ot_func_wrapper = self.get_ot_func_wrapper(target_function)

@@ -4,6 +4,7 @@ Implements the supported sensitivity analysis methods using the SALib library.
 
 """
 
+import numpy as np
 import pandas as pd
 from matplotlib import pyplot as plt
 from SALib import ProblemSpec
@@ -62,13 +63,20 @@ class SALibSensitivityAnalysis(CalibrationWorkflowBase):
 		n_samples = self.specification.n_samples
 
 		sp_samples = self.specification.X
+		sp_results = self.specification.Y
 		if sp_samples is None:
 			sample_func(n_samples, **sampler_kwargs)
+			n_replicates = self.specification.n_replicates
+			if n_replicates > 1 and sp_results is None:
+				X = self.sp.samples
+				X = np.repeat(X, n_replicates, axis=0)
+				self.rng.shuffle(X)
+				self.sp.samples = X
 		else:
 			self.sp.samples = sp_samples
 
 		sensitivity_kwargs = self.get_calibration_func_kwargs()
-		sp_results = self.specification.Y
+
 		if sp_results is None:
 			self.sp.evaluate(
 				self.calibration_func_wrapper,
@@ -80,7 +88,6 @@ class SALibSensitivityAnalysis(CalibrationWorkflowBase):
 			)
 		else:
 			self.sp.results = sp_results
-
 		analyze_func = getattr(self.sp, f"analyze_{sampler_name}")
 		analyze_kwargs = self.specification.analyze_kwargs
 		if analyze_kwargs is None:

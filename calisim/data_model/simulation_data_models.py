@@ -142,6 +142,9 @@ class CalibrationModel(BaseModel):
 	use_shap: bool = Field(
 		description="Whether to use SHAP for feature explanations", default=False
 	)
+	n_replicates: int = Field(
+		description="The number of replicate simulations to run", default=1
+	)
 	n_jobs: int = Field(description="The number of jobs to run in parallel", default=1)
 	walltime: int = Field(description="The maximum calibration walltime", default=1)
 	output_labels: list[str] | None = Field(

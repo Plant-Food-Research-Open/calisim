@@ -72,6 +72,11 @@ class ChaospyUncertaintyAnalysis(CalibrationWorkflowBase):
 				n_samples = self.specification.n_samples
 				X = self.parameters.sample(n_samples, rule=rule).T
 
+		n_replicates = self.specification.n_replicates
+		if n_replicates > 1:
+			X = np.repeat(X, n_replicates, axis=0)
+			self.rng.shuffle(X)
+
 		uncertainty_kwargs = self.get_calibration_func_kwargs()
 		Y = self.specification.Y
 		if Y is None:

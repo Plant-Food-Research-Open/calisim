@@ -86,6 +86,9 @@ class CalibrationWorkflowBase(ABC):
 		self.artifacts: list[str] = []
 		self.parameter_estimates = ParameterEstimatesModel(estimates=[])
 
+		random_seed = self.specification.random_seed
+		self.rng = np.random.default_rng(random_seed)
+
 	@abstractmethod
 	def specify(self) -> None:
 		"""Specify the parameters of the model calibration procedure.

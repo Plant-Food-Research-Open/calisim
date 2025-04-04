@@ -22,7 +22,12 @@ class SurrogateBase(CalibrationWorkflowBase):
 		Returns:
 			np.ndarray: The sampled parameter values.
 		"""
-		return self.parameters.sample(n_samples, rule="sobol").T
+		X = self.parameters.sample(n_samples, rule="sobol").T
+		n_replicates = self.specification.n_replicates
+		if n_replicates > 1:
+			X = np.repeat(X, n_replicates, axis=0)
+			self.rng.shuffle(X)
+		return X
 
 	def specify(self) -> None:
 		"""Specify the parameters of the model calibration procedure."""

@@ -66,11 +66,23 @@ class BoTorchOptimisation(CalibrationWorkflowBase):
 				minimize = False
 			objectives[output_label] = ObjectiveProperties(minimize=minimize)
 
+		n_init = self.specification.n_init
+		random_seed = self.specification.random_seed
+		n_jobs = self.specification.n_jobs
+		use_saasbo = self.specification.use_saasbo
+		choose_generation_strategy_kwargs = dict(
+			max_initialization_trials=n_init,
+			random_seed=random_seed,
+			max_parallelism_cap=n_jobs,
+			use_saasbo=use_saasbo,
+		)
+
 		self.ax_client = AxClient(verbose_logging=False)
 		self.ax_client.create_experiment(
 			name=self.specification.experiment_name,
 			parameters=parameters,
 			objectives=objectives,
+			choose_generation_strategy_kwargs=choose_generation_strategy_kwargs,
 			overwrite_existing_experiment=True,
 		)
 

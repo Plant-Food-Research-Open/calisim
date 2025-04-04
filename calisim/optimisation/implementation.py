@@ -51,6 +51,10 @@ class OptimisationMethodModel(CalibrationModel):
 	acquisition_func: str | None = Field(
 		description="The acquisition function for Bayesian optimisation", default="ei"
 	)
+	use_saasbo: bool = Field(
+		description="Enable Sparse Axis-Aligned Subspace Bayesian Optimization",
+		default=False,
+	)
 
 
 class OptimisationMethod(CalibrationMethodBase):
