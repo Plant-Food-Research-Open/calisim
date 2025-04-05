@@ -1,6 +1,6 @@
 """Contains an implementation of the anharmonic oscillator model.
 
-An implementation of a anharmonic oscillator example model.
+An implementation of an anharmonic oscillator example model.
 
 """
 
