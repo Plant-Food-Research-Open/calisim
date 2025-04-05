@@ -14,7 +14,7 @@ authors:
     given-names: "Chris"
     orcid: "https://orcid.org/0000-0003-4428-9208"
 title: "calisim: A toolbox for the calibration and evaluation of simulation models "
-version: 0.2.1
-date-released: 2025-03-21
+version: 0.4.0
+date-released: 2025-04-06
 license: Apache-2.0
 url: "https://github.com/Plant-Food-Research-Open/calisim"
