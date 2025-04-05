@@ -1,6 +1,17 @@
 Changelog
 =========
 
+[0.4.0] - 2025/04/06
+--------------------
+
+Added
+^^^^^
+
+* Implemented Lorenz 95 and anharmonic oscillator example models.
+* Added replicate sampling functionality, particularly for stochastic simulators.
+* Incorporated several new discrepancy functions.
+* Included experimental support for the Ensemble Kalman Filter.
+
 [0.3.1] - 2025/03/30
 --------------------
 

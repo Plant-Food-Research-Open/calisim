@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "calisim"
-version = "0.3.1"
+version = "0.4.0"
 description = "A toolbox for the calibration and evaluation of simulation models."
 authors = [
     "James Bristow <James.Bristow@plantandfood.co.nz>",
