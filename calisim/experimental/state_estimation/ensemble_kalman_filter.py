@@ -99,11 +99,18 @@ class EKFStateEstimation(HistoryMatchingBase):
 		Aa = A + K * (D - (H * A))
 		df_Aa = pd.DataFrame(Aa.T, columns=outputs)
 
+		replace_state_variables = self.specification.replace_state_variables
 		for i, simulation_id in enumerate(self.ensemble):
 			for output in outputs:
-				self.ensemble[simulation_id]["result"][output][-1] = df_Aa[output].iloc[
-					i
-				]
+				updated_variable = df_Aa[output].iloc[i]
+				if replace_state_variables:
+					self.ensemble[simulation_id]["result"][output][-1] = (
+						updated_variable
+					)
+				else:
+					self.ensemble[simulation_id]["result"][output].append(
+						updated_variable
+					)
 
 		self.perform_update = False
 		self.observed_indx += 1

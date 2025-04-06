@@ -33,6 +33,10 @@ class StateEstimationMethodModel(CalibrationModel):
 	    BaseModel (CalibrationModel): The calibration base model class.
 	"""
 
+	replace_state_variables: bool = Field(
+		description="Whether to replace or append the updated state variable",
+		default=True,
+	)
 	stds: dict[str, float | list] | None = Field(
 		description="The observation standard deviations", default=None
 	)
