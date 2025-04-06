@@ -60,7 +60,7 @@ class EKFStateEstimation(HistoryMatchingBase):
 		self.t = 0
 
 	def update_step(self) -> None:
-		"""Perform the update/analyse step."""
+		"""Perform the update/analysis step."""
 		outputs = self.specification.output_labels
 		ensemble_size = self.specification.n_samples
 		observed_data = self.specification.observed_data
