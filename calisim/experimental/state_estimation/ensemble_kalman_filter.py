@@ -142,8 +142,9 @@ class EKFStateEstimation(HistoryMatchingBase):
 	def analyze(self) -> None:
 		"""Analyze the results of the simulation calibration procedure."""
 		task, time_now, experiment_name, outdir = self.prepare_analyze()
-		outputs = self.specification.output_labels
+		observed_data = self.specification.observed_data
 
+		outputs = self.specification.output_labels
 		results: dict[str, list] = dict(simulation_id=[], index=[])
 		for output in outputs:
 			results[output] = []
@@ -161,10 +162,13 @@ class EKFStateEstimation(HistoryMatchingBase):
 		results_df = pd.DataFrame(results)
 
 		for output in outputs:
-			fig, axes = plt.subplots(nrows=1, figsize=self.specification.figsize)
+			fig, axes = plt.subplots(
+				nrows=2, figsize=self.specification.figsize, sharex=False, sharey=False
+			)
 
+			observed_data[output].plot(ax=axes[0])
 			for _, df in results_df.groupby("simulation_id"):
-				df.plot.scatter(x="index", y=output, ax=axes)
+				df.plot(x="index", y=output, ax=axes[1], legend=False)
 
 			self.present_fig(
 				fig, outdir, time_now, task, experiment_name, f"ensemble-{output}"
@@ -189,9 +193,12 @@ class EKFStateEstimation(HistoryMatchingBase):
 				.reset_index()
 			)
 
-			fig, axes = plt.subplots(nrows=1, figsize=self.specification.figsize)
+			fig, axes = plt.subplots(
+				nrows=2, figsize=self.specification.figsize, sharex=False, sharey=False
+			)
+			observed_data[output].plot(ax=axes[0])
 			for quantile in quantile_list:
-				quantile_df[quantile.__name__].plot(ax=axes)
+				quantile_df[quantile.__name__].plot(ax=axes[1])
 
 			self.present_fig(
 				fig,
