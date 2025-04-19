@@ -108,8 +108,9 @@ class PyABCApproximateBayesianComputation(CalibrationWorkflowBase):
 
 			return summary_stats
 
-		if self.specification.n_jobs > 1:
-			sampler = pyabc.MulticoreEvalParallelSampler
+		n_jobs = self.specification.n_jobs
+		if n_jobs > 1:
+			sampler = pyabc.MulticoreEvalParallelSampler(n_procs=n_jobs)
 		else:
 			sampler = pyabc.SingleCoreSampler(check_max_eval=True)
 
