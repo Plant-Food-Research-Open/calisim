@@ -113,6 +113,7 @@ class ELFILikelihoodFree(ELFIBase):
 				plt.close()
 			else:
 				plt.show()
+				plt.close()
 
 		for name, values in self.history.samples.items():
 			estimate = values.mean()  # Unweighted samples
