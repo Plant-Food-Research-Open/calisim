@@ -65,6 +65,8 @@ class OpenTurnsSensitivityAnalysis(OpenTurnsBase):
 
 		if method in self.sobol_method_names:
 			self.sp = sobol_methods.get(method)(X, Y, n_samples)
+			self.first_order = self.sp.getFirstOrderIndices(0)
+			self.total_order = self.sp.getTotalOrderIndices(0)
 			return
 
 		estimator = FunctionalChaosEstimator(self.parameters, self.specification.order)
@@ -72,8 +74,11 @@ class OpenTurnsSensitivityAnalysis(OpenTurnsBase):
 		estimator.fit(X, Y)
 		self.emulator = estimator
 
+		input_dim = self.parameters.getDimension()
 		if method == "chaos_sobol":
 			self.sp = ot.FunctionalChaosSobolIndices(self.emulator.result)
+			self.first_order = [self.sp.getSobolIndex(i) for i in range(input_dim)]
+			self.total_order = [self.sp.getSobolTotalIndex(i) for i in range(input_dim)]
 		elif method == "chaos_ancova":
 			self.sp = ot.ANCOVA(self.emulator.result, X)
 
@@ -81,12 +86,11 @@ class OpenTurnsSensitivityAnalysis(OpenTurnsBase):
 		"""Analyze the results of the simulation calibration procedure."""
 		task, time_now, experiment_name, outdir = self.prepare_analyze()
 		method = self.specification.method
-		input_dim = self.parameters.getDimension()
 
 		if method in self.sobol_method_names:
 			graph = self.sp.draw()
 			graph.setXTitle(" ".join(self.names))
-			view = viewer.View(graph)
+			view = viewer.View(graph, figure_kw={"figsize": self.specification.figsize})
 			if outdir is not None:
 				outfile = self.join(
 					outdir,
@@ -95,13 +99,11 @@ class OpenTurnsSensitivityAnalysis(OpenTurnsBase):
 				self.append_artifact(outfile)
 				view.save(outfile)
 		elif method == "chaos_sobol":
-			first_order = [self.sp.getSobolIndex(i) for i in range(input_dim)]
-			total_order = [self.sp.getSobolTotalIndex(i) for i in range(input_dim)]
 			graph = ot.SobolIndicesAlgorithm.DrawSobolIndices(
-				self.names, first_order, total_order
+				self.names, self.first_order, self.total_order
 			)
-
-			view = viewer.View(graph)
+			graph.setXTitle(" ".join(self.names))
+			view = viewer.View(graph, figure_kw={"figsize": self.specification.figsize})
 			if outdir is not None:
 				outfile = self.join(
 					outdir,
@@ -117,7 +119,8 @@ class OpenTurnsSensitivityAnalysis(OpenTurnsBase):
 			graph = ot.SobolIndicesAlgorithm.DrawImportanceFactors(
 				indices, self.parameters.getDescription(), "ANCOVA indices (Sobol)"
 			)
-			view = viewer.View(graph)
+			graph.setXTitle(" ".join(self.names))
+			view = viewer.View(graph, figure_kw={"figsize": self.specification.figsize})
 			if outdir is not None:
 				outfile = self.join(
 					outdir, f"{time_now}-{task}-{experiment_name}-ancova_indices.png"
@@ -130,7 +133,7 @@ class OpenTurnsSensitivityAnalysis(OpenTurnsBase):
 				self.parameters.getDescription(),
 				"ANCOVA uncorrelated indices",
 			)
-			view = viewer.View(graph)
+			view = viewer.View(graph, figure_kw={"figsize": self.specification.figsize})
 			if outdir is not None:
 				outfile = self.join(
 					outdir,
@@ -144,7 +147,7 @@ class OpenTurnsSensitivityAnalysis(OpenTurnsBase):
 				self.parameters.getDescription(),
 				"ANCOVA correlated indices",
 			)
-			view = viewer.View(graph)
+			view = viewer.View(graph, figure_kw={"figsize": self.specification.figsize})
 			if outdir is not None:
 				outfile = self.join(
 					outdir,

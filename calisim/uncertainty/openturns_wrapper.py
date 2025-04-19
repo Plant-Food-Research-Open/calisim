@@ -95,7 +95,7 @@ class OpenTurnsUncertaintyAnalysis(OpenTurnsBase):
 				self.names, first_order, total_order
 			)
 
-			view = viewer.View(graph)
+			view = viewer.View(graph, figure_kw={"figsize": self.specification.figsize})
 			if outdir is not None:
 				outfile = self.join(
 					outdir, f"{time_now}-{task}-{experiment_name}-sobol_indices.png"
@@ -107,7 +107,7 @@ class OpenTurnsUncertaintyAnalysis(OpenTurnsBase):
 			y_pred = self.emulator.predict(self.X_test)
 			val = ot.MetaModelValidation(self.Y_test, y_pred)
 			graph = val.drawValidation()
-			view = viewer.View(graph)
+			view = viewer.View(graph, figure_kw={"figsize": self.specification.figsize})
 			r2 = self.emulator.score(self.X_test, self.Y_test)
 			graph.setTitle(f"R2: {r2}")
 
