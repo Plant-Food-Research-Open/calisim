@@ -11,7 +11,7 @@ from calisim.data_model import (
 	ParameterSpecification,
 )
 from calisim.example_models import LotkaVolterraModel
-from calisim.statistics import MeanSquaredError
+from calisim.statistics import GaussianLogLikelihood
 from calisim.utils import get_examples_outdir
 
 model = LotkaVolterraModel()
@@ -22,14 +22,14 @@ parameter_spec = ParameterSpecification(
 		DistributionModel(
 			name="alpha",
 			distribution_name="normal",
-			distribution_args=[0.51, 0.01],
+			distribution_args=[0.51, 0.05],
 			distribution_bounds=[0.3, 0.7],
 			data_type=ParameterDataType.CONTINUOUS,
 		),
 		DistributionModel(
 			name="beta",
 			distribution_name="normal",
-			distribution_args=[0.024, 0.001],
+			distribution_args=[0.024, 0.005],
 			distribution_bounds=[0.01, 0.04],
 			data_type=ParameterDataType.CONTINUOUS,
 		),
@@ -45,9 +45,9 @@ def bayesian_func(
 		simulation_parameters[k] = parameters[k]
 
 	simulated_data = model.simulate(simulation_parameters).lynx.values
-	metric = MeanSquaredError()
-	discrepancy = metric.calculate(observed_data, simulated_data)
-	return discrepancy
+	metric = GaussianLogLikelihood()
+	ll = metric.calculate(observed_data, simulated_data)
+	return ll
 
 
 outdir = get_examples_outdir()
@@ -57,7 +57,7 @@ specification = BayesianCalibrationMethodModel(
 	observed_data=observed_data.lynx.values,
 	outdir=outdir,
 	n_samples=250,
-	log_density=True,
+	log_density=False,
 	output_labels=["Lynx"],
 	verbose=True,
 	batched=False,

@@ -12,7 +12,8 @@ import numpy as np
 import sklearn.metrics as metrics
 from scipy.spatial import distance as sp_distance
 from scipy.special import kl_div
-from scipy.stats import energy_distance, wasserstein_distance
+from scipy.stats import energy_distance, norm, poisson, wasserstein_distance
+from scipy.stats import t as t_dist
 
 
 class DistanceMetricBase(ABC):
@@ -340,3 +341,62 @@ def get_distance_metric_func(distance_metric: str) -> Callable:
 	module = "calisim.statistics.distance_metrics"
 	func: Callable = locate(f"{module}.{distance_metric}")  # type: ignore[assignment]
 	return func
+
+
+class GaussianLogLikelihood(DistanceMetricBase):
+	"""The Gaussian log likelihood."""
+
+	def calculate(
+		self, observed: np.ndarray, simulated: np.ndarray
+	) -> float | np.ndarray:
+		"""Calculate the distance between observed and simulated data.
+
+		Args:
+		    observed (np.ndarray): The observed data.
+		    simulated (np.ndarray): The simulated data.
+		"""
+		residuals = observed - simulated
+		sigma = np.std(residuals, ddof=1)
+
+		likelihoods = norm.pdf(observed, loc=simulated, scale=sigma)
+		log_likelihood = np.sum(np.log(likelihoods))
+		return log_likelihood
+
+
+class StudentsTLogLikelihood(DistanceMetricBase):
+	"""The Student's t log likelihood."""
+
+	def calculate(
+		self, observed: np.ndarray, simulated: np.ndarray, nu: int = 1
+	) -> float | np.ndarray:
+		"""Calculate the distance between observed and simulated data.
+
+		Args:
+		    observed (np.ndarray): The observed data.
+		    simulated (np.ndarray): The simulated data.
+			nu (int, optional): The degrees of freedom for the
+				t distribution. Defaults to 1.
+		"""
+		residuals = observed - simulated
+		sigma = np.std(residuals, ddof=1)
+
+		likelihoods = t_dist.pdf(observed, df=nu, loc=simulated, scale=sigma)
+		log_likelihood = np.sum(np.log(likelihoods))
+		return log_likelihood
+
+
+class PoissonLogLikelihood(DistanceMetricBase):
+	"""The Poisson log likelihood."""
+
+	def calculate(
+		self, observed: np.ndarray, simulated: np.ndarray
+	) -> float | np.ndarray:
+		"""Calculate the distance between observed and simulated data.
+
+		Args:
+		    observed (np.ndarray): The observed data.
+		    simulated (np.ndarray): The simulated data.
+		"""
+		likelihoods = poisson.pmf(observed, mu=simulated)
+		log_likelihood = np.sum(np.log(likelihoods))
+		return log_likelihood
