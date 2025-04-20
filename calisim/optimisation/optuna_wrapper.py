@@ -117,7 +117,7 @@ class OptunaOptimisation(CalibrationWorkflowBase):
 				if outdir is not None:
 					outfile = self.join(
 						outdir,
-						f"{time_now}-{task}-{experiment_name}_{plot_name}_{output_label}.png",
+						f"{time_now}-{task}-{experiment_name}-{plot_name}-{output_label}.png",
 					)
 					self.append_artifact(outfile)
 					optimisation_plot.write_image(outfile)

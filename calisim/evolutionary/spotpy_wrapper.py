@@ -221,7 +221,7 @@ class SPOTPYEvolutionary(CalibrationWorkflowBase):
 		]:
 			plot_func_name = plot_func.__name__.replace("_", "-")
 			outfile = self.join(
-				outdir, f"{time_now}-{task}-{experiment_name}_{plot_func_name}.png"
+				outdir, f"{time_now}-{task}-{experiment_name}-{plot_func_name}.png"
 			)
 			self.append_artifact(outfile)
 			plot_func(results, fig_name=outfile)
@@ -233,7 +233,7 @@ class SPOTPYEvolutionary(CalibrationWorkflowBase):
 		]:
 			plot_func_name = plot_func.__name__.replace("_", "-")
 			outfile = self.join(
-				outdir, f"{time_now}-{task}-{experiment_name}_{plot_func_name}.png"
+				outdir, f"{time_now}-{task}-{experiment_name}-{plot_func_name}.png"
 			)
 			self.append_artifact(outfile)
 			plot_func(results, evaluation, fig_name=outfile)
@@ -242,7 +242,7 @@ class SPOTPYEvolutionary(CalibrationWorkflowBase):
 			plot_func = analyser.plot_gelman_rubin
 			plot_func_name = plot_func.__name__.replace("_", "-")
 			outfile = self.join(
-				outdir, f"{time_now}-{task}-{experiment_name}_{plot_func_name}.png"
+				outdir, f"{time_now}-{task}-{experiment_name}-{plot_func_name}.png"
 			)
 			self.append_artifact(outfile)
 			plot_func(results, self.sample_results, outfile)

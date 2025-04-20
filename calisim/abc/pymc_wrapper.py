@@ -112,7 +112,7 @@ class PyMCApproximateBayesianComputation(CalibrationWorkflowBase):
 
 			if outdir is not None:
 				outfile = self.join(
-					outdir, f"{time_now}-{task}-{experiment_name}_{plot}.png"
+					outdir, f"{time_now}-{task}-{experiment_name}-{plot}.png"
 				)
 				self.append_artifact(outfile)
 				plt.tight_layout()
@@ -127,7 +127,7 @@ class PyMCApproximateBayesianComputation(CalibrationWorkflowBase):
 				plot_name = plot_func.__name__.replace("_", "-")
 				outfile = self.join(
 					outdir,
-					f"{time_now}-{task}-{experiment_name}_{plot_name}.png",
+					f"{time_now}-{task}-{experiment_name}-{plot_name}.png",
 				)
 				self.append_artifact(outfile)
 				plt.tight_layout()
