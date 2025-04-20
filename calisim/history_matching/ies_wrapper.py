@@ -165,7 +165,7 @@ class IESHistoryMatching(HistoryMatchingBase):
 				alpha=0.5,
 			)
 			axes[i].legend()
-		self.present_fig(fig, outdir, time_now, task, experiment_name, "plot_slice")
+		self.present_fig(fig, outdir, time_now, task, experiment_name, "plot-slice")
 
 		ensemble_size = self.specification.n_samples
 		output_label = self.specification.output_labels[0]  # type: ignore[index]
@@ -180,29 +180,10 @@ class IESHistoryMatching(HistoryMatchingBase):
 			axes[1].plot(X, self.Y_IES.T[i])
 		axes[1].set_title(f"Ensemble {output_label}")
 		self.present_fig(
-			fig, outdir, time_now, task, experiment_name, f"ensemble_{output_label}"
+			fig, outdir, time_now, task, experiment_name, f"ensemble-{output_label}"
 		)
-
-		if outdir is None:
-			return
 
 		X_IES_df = pd.DataFrame(self.X_IES.T, columns=parameter_names)
-		outfile = self.join(
-			outdir, f"{time_now}-{task}-{experiment_name}_posterior.csv"
-		)
-		self.append_artifact(outfile)
-		X_IES_df.to_csv(outfile, index=False)
-
-		Y_IES_df = pd.DataFrame(
-			self.Y_IES.T,
-			columns=[f"{output_label}_{i + 1}" for i in range(self.Y_IES.shape[0])],
-		)
-		outfile = self.join(
-			outdir, f"{time_now}-{task}-{experiment_name}_ensemble_{output_label}.csv"
-		)
-		self.append_artifact(outfile)
-		Y_IES_df.to_csv(outfile, index=False)
-
 		for name in X_IES_df:
 			estimate = X_IES_df[name].mean()
 			uncertainty = X_IES_df[name].std()
@@ -211,3 +192,14 @@ class IESHistoryMatching(HistoryMatchingBase):
 				name=name, estimate=estimate, uncertainty=uncertainty
 			)
 			self.add_parameter_estimate(parameter_estimate)
+
+		if outdir is None:
+			return
+
+		self.to_csv(X_IES_df, "posterior")
+
+		Y_IES_df = pd.DataFrame(
+			self.Y_IES.T,
+			columns=[f"{output_label}_{i + 1}" for i in range(self.Y_IES.shape[0])],
+		)
+		self.to_csv(Y_IES_df, f"ensemble-{output_label}")

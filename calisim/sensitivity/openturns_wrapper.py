@@ -94,7 +94,7 @@ class OpenTurnsSensitivityAnalysis(OpenTurnsBase):
 			if outdir is not None:
 				outfile = self.join(
 					outdir,
-					f"{time_now}-{task}-{experiment_name}-sobol_{method}_indices.png",
+					f"{time_now}-{task}-{experiment_name}-sobol-{method}-indices.png",
 				)
 				self.append_artifact(outfile)
 				view.save(outfile)
@@ -107,7 +107,7 @@ class OpenTurnsSensitivityAnalysis(OpenTurnsBase):
 			if outdir is not None:
 				outfile = self.join(
 					outdir,
-					f"{time_now}-{task}-{experiment_name}-chaos_sobol_indices.png",
+					f"{time_now}-{task}-{experiment_name}-chaos-sobol-indices.png",
 				)
 				self.append_artifact(outfile)
 				view.save(outfile)
@@ -123,7 +123,7 @@ class OpenTurnsSensitivityAnalysis(OpenTurnsBase):
 			view = viewer.View(graph, figure_kw={"figsize": self.specification.figsize})
 			if outdir is not None:
 				outfile = self.join(
-					outdir, f"{time_now}-{task}-{experiment_name}-ancova_indices.png"
+					outdir, f"{time_now}-{task}-{experiment_name}-ancova-indices.png"
 				)
 				self.append_artifact(outfile)
 				view.save(outfile)
@@ -137,7 +137,7 @@ class OpenTurnsSensitivityAnalysis(OpenTurnsBase):
 			if outdir is not None:
 				outfile = self.join(
 					outdir,
-					f"{time_now}-{task}-{experiment_name}-uncorrelated_ancova_indices.png",
+					f"{time_now}-{task}-{experiment_name}-uncorrelated-ancova-indices.png",
 				)
 				self.append_artifact(outfile)
 				view.save(outfile)
@@ -151,7 +151,7 @@ class OpenTurnsSensitivityAnalysis(OpenTurnsBase):
 			if outdir is not None:
 				outfile = self.join(
 					outdir,
-					f"{time_now}-{task}-{experiment_name}-correlated_ancova_indices.png",
+					f"{time_now}-{task}-{experiment_name}-correlated-ancova-indices.png",
 				)
 				self.append_artifact(outfile)
 				view.save(outfile)

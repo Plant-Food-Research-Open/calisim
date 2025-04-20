@@ -75,14 +75,7 @@ class OpenTurnsBayesianCalibration(OpenTurnsBase):
 				Y = np.expand_dims(Y, axis=1)
 			return Y
 
-		def log_target_function(X: np.ndarray) -> np.ndarray:
-			return np.log(target_function(X))
-
-		if self.specification.log_density:
-			ot_func_wrapper = self.get_ot_func_wrapper(log_target_function)
-		else:
-			ot_func_wrapper = self.get_ot_func_wrapper(target_function)
-
+		ot_func_wrapper = self.get_ot_func_wrapper(target_function)
 		memoized_func = ot.MemoizeFunction(ot_func_wrapper)
 		lower_bounds, upper_bounds = self.bounds
 		support = ot.Interval(lower_bounds, upper_bounds)
@@ -124,19 +117,12 @@ class OpenTurnsBayesianCalibration(OpenTurnsBase):
 		view = viewer.View(grid, figure_kw={"figsize": self.specification.figsize})
 		if outdir is not None:
 			outfile = self.join(
-				outdir, f"{time_now}-{task}-{experiment_name}_plot_posterior.png"
+				outdir, f"{time_now}-{task}-{experiment_name}-plot-posterior.png"
 			)
 			self.append_artifact(outfile)
 			view.save(outfile)
 
-		if outdir is None:
-			return
-
 		trace_df = pd.DataFrame(sample, columns=self.names)
-		outfile = self.join(outdir, f"{time_now}-{task}-{experiment_name}_trace.csv")
-		self.append_artifact(outfile)
-		trace_df.to_csv(outfile, index=False)
-
 		for name in trace_df:
 			estimate = trace_df[name].mean()
 			uncertainty = trace_df[name].std()
@@ -145,3 +131,8 @@ class OpenTurnsBayesianCalibration(OpenTurnsBase):
 				name=name, estimate=estimate, uncertainty=uncertainty
 			)
 			self.add_parameter_estimate(parameter_estimate)
+
+		if outdir is None:
+			return
+
+		self.to_csv(trace_df, "trace")

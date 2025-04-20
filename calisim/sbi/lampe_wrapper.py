@@ -202,7 +202,12 @@ class LAMPESimulationBasedInference(SimulationBasedInferenceBase):
 				posterior_samples, figsize=self.specification.figsize, labels=self.names
 			)
 			self.present_fig(
-				fig, outdir, time_now, task, experiment_name, plot_func.__name__
+				fig,
+				outdir,
+				time_now,
+				task,
+				experiment_name,
+				plot_func.__name__.replace("_", "-"),
 			)
 
 		n_simulations = self.specification.num_simulations
@@ -213,15 +218,17 @@ class LAMPESimulationBasedInference(SimulationBasedInferenceBase):
 
 		fig = coverage_plot(levels, coverages, legend=task)
 		self.present_fig(
-			fig, outdir, time_now, task, experiment_name, coverage_plot.__name__
+			fig,
+			outdir,
+			time_now,
+			task,
+			experiment_name,
+			coverage_plot.__name__.replace("_", "-"),
 		)
 
 		trace_df = pd.DataFrame(
 			posterior_samples.cpu().detach().numpy(), columns=self.names
 		)
-		outfile = self.join(outdir, f"{time_now}-{task}-{experiment_name}_trace.csv")  # type: ignore[arg-type]
-		self.append_artifact(outfile)
-		trace_df.to_csv(outfile, index=False)
 
 		for name in trace_df:
 			estimate = trace_df[name].mean()
@@ -231,3 +238,8 @@ class LAMPESimulationBasedInference(SimulationBasedInferenceBase):
 				name=name, estimate=estimate, uncertainty=uncertainty
 			)
 			self.add_parameter_estimate(parameter_estimate)
+
+		if outdir is None:
+			return
+
+		self.to_csv(trace_df, "trace")

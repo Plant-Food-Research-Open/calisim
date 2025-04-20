@@ -418,7 +418,7 @@ class CalibrationWorkflowBase(ABC):
 		fig.tight_layout()
 		if outdir is not None:
 			outfile = self.join(
-				outdir, f"{time_now}-{task}-{experiment_name}_{suffix}.png"
+				outdir, f"{time_now}-{task}-{experiment_name}-{suffix}.png"
 			)
 			self.append_artifact(outfile)
 			fig.savefig(outfile)
@@ -577,6 +577,22 @@ class CalibrationWorkflowBase(ABC):
 		exp_props, obs_props = uct.get_proportion_lists_vectorized(mu, sigma, y)
 		recal_model = uct.iso_recal(exp_props, obs_props)
 		emulator.recal_model = recal_model
+
+	def to_csv(self, df: pd.DataFrame, file_suffix: str) -> None:
+		"""Convert dataframe to csv file.
+
+		Args:
+			df (pd.DataFrame): The dataframe.
+			file_suffix (str): The file name suffix.
+		"""
+		task, time_now, experiment_name, outdir = self.prepare_analyze()
+
+		outfile = self.join(
+			outdir,  # type: ignore[arg-type]
+			f"{time_now}-{task}-{experiment_name}-{file_suffix}.csv",
+		)
+		self.append_artifact(outfile)
+		df.to_csv(outfile, index=False)
 
 
 class CalibrationMethodBase(CalibrationWorkflowBase):

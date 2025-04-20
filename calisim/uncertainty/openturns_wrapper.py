@@ -98,7 +98,7 @@ class OpenTurnsUncertaintyAnalysis(OpenTurnsBase):
 			view = viewer.View(graph, figure_kw={"figsize": self.specification.figsize})
 			if outdir is not None:
 				outfile = self.join(
-					outdir, f"{time_now}-{task}-{experiment_name}-sobol_indices.png"
+					outdir, f"{time_now}-{task}-{experiment_name}-sobol-indices.png"
 				)
 				self.append_artifact(outfile)
 				view.save(outfile)

@@ -124,9 +124,10 @@ class PyMCApproximateBayesianComputation(CalibrationWorkflowBase):
 		def _create_plot(plot_func: Callable, plot_kwargs: dict) -> None:
 			plot_func(self.trace, **plot_kwargs)
 			if outdir is not None:
+				plot_name = plot_func.__name__.replace("_", "-")
 				outfile = self.join(
 					outdir,
-					f"{time_now}-{task}-{experiment_name}_{plot_func.__name__}.png",
+					f"{time_now}-{task}-{experiment_name}_{plot_name}.png",
 				)
 				self.append_artifact(outfile)
 				plt.tight_layout()
@@ -155,21 +156,8 @@ class PyMCApproximateBayesianComputation(CalibrationWorkflowBase):
 			plot_kwargs={"figsize": self.specification.figsize, "textsize": 5},
 		)
 
-		if outdir is None:
-			return
-
-		trace_df = self.trace.to_dataframe(include_coords=False, groups="posterior")
-		outfile = self.join(outdir, f"{time_now}-{task}-{experiment_name}_trace.csv")
-		self.append_artifact(outfile)
-		trace_df.to_csv(outfile, index=False)
-
 		trace_summary_df = az.summary(self.trace).reset_index()
 		trace_summary_df = trace_summary_df.rename(columns={"index": "name"})
-		outfile = self.join(
-			outdir, f"{time_now}-{task}-{experiment_name}_trace_summary.csv"
-		)
-		self.append_artifact(outfile)
-		trace_summary_df.to_csv(outfile, index=False)
 
 		for row in trace_summary_df.to_dict("records"):
 			name = row["name"]
@@ -179,3 +167,11 @@ class PyMCApproximateBayesianComputation(CalibrationWorkflowBase):
 				name=name, estimate=estimate, uncertainty=uncertainty
 			)
 			self.add_parameter_estimate(parameter_estimate)
+
+		if outdir is None:
+			return
+
+		self.to_csv(trace_summary_df, "trace-summary")
+
+		trace_df = self.trace.to_dataframe(include_coords=False, groups="posterior")
+		self.to_csv(trace_df, "trace")

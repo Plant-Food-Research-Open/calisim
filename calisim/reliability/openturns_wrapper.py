@@ -98,7 +98,7 @@ class OpenTurnsReliabilityAnalysis(OpenTurnsBase):
 		if outdir is not None:
 			outfile = self.join(
 				outdir,
-				f"{time_now}-{task}-{experiment_name}-{method}_plot_importance_factors.png",
+				f"{time_now}-{task}-{experiment_name}-{method}-plot-importance-factors.png",
 			)
 			self.append_artifact(outfile)
 			view.save(outfile)
@@ -109,7 +109,7 @@ class OpenTurnsReliabilityAnalysis(OpenTurnsBase):
 		if outdir is not None:
 			outfile = self.join(
 				outdir,
-				f"{time_now}-{task}-{experiment_name}-{method}_plot_probability_convergence.png",
+				f"{time_now}-{task}-{experiment_name}-{method}-plot-probability-convergence.png",
 			)
 			self.append_artifact(outfile)
 			view.save(outfile)

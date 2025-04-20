@@ -89,7 +89,7 @@ class GPyTorchSurrogateModel(SurrogateBase):
 		if self.specification.use_shap and outdir is not None:
 			outfile = self.join(
 				outdir,
-				f"{time_now}-{task}-{experiment_name}-param_importances.png",
+				f"{time_now}-{task}-{experiment_name}-param-importances.png",
 			)
 			self.calculate_shap_importances(
 				df, self.emulator, names, self.specification.test_size, outfile
@@ -111,7 +111,7 @@ class GPyTorchSurrogateModel(SurrogateBase):
 					ax=axes[i],
 					title=f"simulated_{output_label} against {parameter_name}",
 				)
-			self.present_fig(fig, outdir, time_now, task, experiment_name, "plot_slice")
+			self.present_fig(fig, outdir, time_now, task, experiment_name, "plot-slice")
 
 			fig, axes = plt.subplots(nrows=2, figsize=self.specification.figsize)
 			df = pd.DataFrame(
@@ -146,7 +146,7 @@ class GPyTorchSurrogateModel(SurrogateBase):
 						title=f"simulated_{output_label} against {parameter_name}",
 					)
 				self.present_fig(
-					fig, outdir, time_now, task, experiment_name, "plot_slice"
+					fig, outdir, time_now, task, experiment_name, "plot-slice"
 				)
 
 				reshaped_Y_sample = Y_sample.reshape(self.Y_shape)

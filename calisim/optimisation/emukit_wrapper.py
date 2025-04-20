@@ -89,27 +89,24 @@ class EmukitOptimisation(EmukitBase):
 		ax.plot(t, trial_history)
 		ax.set_title("Optimisation history")
 		self.present_fig(
-			fig, outdir, time_now, task, experiment_name, "plot_optimization_history"
+			fig, outdir, time_now, task, experiment_name, "plot-optimization-history"
 		)
-
-		if outdir is None:
-			return
 
 		optimised_parameters = results.minimum_location
 		parameter_dict = {}
 		for i, name in enumerate(self.names):
 			parameter_dict[name] = optimised_parameters[i]
 		parameter_df = pd.DataFrame(parameter_dict, index=[0])
-		outfile = self.join(
-			outdir, f"{time_now}-{task}-{experiment_name}-parameters.csv"
-		)
-		self.append_artifact(outfile)
-		parameter_df.to_csv(outfile, index=False)
 
 		for name in parameter_df.columns:
 			estimate = parameter_df[name].item()
 			parameter_estimate = ParameterEstimateModel(name=name, estimate=estimate)
 			self.add_parameter_estimate(parameter_estimate)
+
+		if outdir is None:
+			return
+
+		self.to_csv(parameter_df, "parameters")
 
 		if self.specification.use_shap and outdir is not None:
 			design = RandomDesign(self.parameter_space)
@@ -117,7 +114,7 @@ class EmukitOptimisation(EmukitBase):
 			X_sample = design.get_samples(n_samples)
 			outfile = self.join(
 				outdir,
-				f"{time_now}-{task}-{experiment_name}-param_importances.png",
+				f"{time_now}-{task}-{experiment_name}-param-importances.png",
 			)
 			self.calculate_shap_importances(
 				X_sample,

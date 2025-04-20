@@ -113,7 +113,7 @@ class OptunaOptimisation(CalibrationWorkflowBase):
 					target=lambda t: t.values[i],
 					target_name=output_label,
 				)
-				plot_name = plot_func.__name__
+				plot_name = plot_func.__name__.replace("_", "-")
 				if outdir is not None:
 					outfile = self.join(
 						outdir,
@@ -124,14 +124,7 @@ class OptunaOptimisation(CalibrationWorkflowBase):
 				else:
 					optimisation_plot.show()
 
-		if outdir is None:
-			return
-
 		trials_df: pd.DataFrame = self.study.trials_dataframe()
-		outfile = self.join(outdir, f"{time_now}-{task}-{experiment_name}_trials.csv")
-		self.append_artifact(outfile)
-		trials_df.to_csv(outfile, index=False)
-
 		values = [value for value in trials_df.columns if value.startswith("value")]
 
 		trials_df_best = trials_df.sort_values(values).head(1)
@@ -142,3 +135,8 @@ class OptunaOptimisation(CalibrationWorkflowBase):
 			estimate = trials_df_best[col].item()
 			parameter_estimate = ParameterEstimateModel(name=name, estimate=estimate)
 			self.add_parameter_estimate(parameter_estimate)
+
+		if outdir is None:
+			return
+
+		self.to_csv(trials_df, "trials")

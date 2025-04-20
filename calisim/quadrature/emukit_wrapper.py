@@ -76,5 +76,5 @@ class EmukitQuadrature(EmukitBase):
 		)
 		ax.legend()
 		self.present_fig(
-			fig, outdir, time_now, task, experiment_name, "integral_density"
+			fig, outdir, time_now, task, experiment_name, "integral-density"
 		)

@@ -177,5 +177,5 @@ class ChaospyUncertaintyAnalysis(CalibrationWorkflowBase):
 			axes[1].set_title(f"Emulated {output_label} for Polynomial Kriging")
 			axes[1].fill_between(X, mu - sigma, mu + sigma, alpha=0.5)
 			self.present_fig(
-				fig, outdir, time_now, task, experiment_name, "polynomial_kriging"
+				fig, outdir, time_now, task, experiment_name, "polynomial-kriging"
 			)

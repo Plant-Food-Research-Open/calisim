@@ -134,19 +134,11 @@ class SALibSensitivityAnalysis(CalibrationWorkflowBase):
 			else:
 				si_df = dfs.reset_index().rename(columns={"index": "parameter"})
 				si_type = si_df.columns[1]
-				outfile = self.join(
-					outdir, f"{time_now}-{task}-{experiment_name}-{si_type}.csv"
-				)
-				self.append_artifact(outfile)
-				si_df.to_csv(outfile, index=False)
+				self.to_csv(si_df, si_type)
 
 		si_dfs = self.sp.to_df()
 		if isinstance(si_dfs, list):
 			recursive_write_csv(si_dfs)
 		else:
 			si_df = si_dfs.reset_index().rename(columns={"index": "parameter"})
-			outfile = self.join(
-				outdir, f"{time_now}-{task}-{experiment_name}-{sampler_name}.csv"
-			)
-			self.append_artifact(outfile)
-			si_df.to_csv(outfile, index=False)
+			self.to_csv(si_df, sampler_name)

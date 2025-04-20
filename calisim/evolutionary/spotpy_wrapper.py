@@ -192,15 +192,34 @@ class SPOTPYEvolutionary(CalibrationWorkflowBase):
 		task, time_now, experiment_name, outdir = self.prepare_analyze()
 		results = self.sampler.getdata()
 
+		parameter_values = {}
+		for col in results.dtype.names:
+			if not col.startswith("par"):
+				continue
+			values = np.array(results[col])
+			parameter_values[col] = values
+
+			name = col.replace("par", "")
+			estimate = values.mean()
+			uncertainty = values.std()
+
+			parameter_estimate = ParameterEstimateModel(
+				name=name, estimate=estimate, uncertainty=uncertainty
+			)
+			self.add_parameter_estimate(parameter_estimate)
+
 		if outdir is None:
 			return
+
+		trace_df = pd.DataFrame(parameter_values)
+		self.to_csv(trace_df, "trace")
 
 		for plot_func in [
 			analyser.plot_fast_sensitivity,
 			analyser.plot_parametertrace,
 			analyser.plot_parameterInteraction,
 		]:
-			plot_func_name = plot_func.__name__
+			plot_func_name = plot_func.__name__.replace("_", "-")
 			outfile = self.join(
 				outdir, f"{time_now}-{task}-{experiment_name}_{plot_func_name}.png"
 			)
@@ -212,7 +231,7 @@ class SPOTPYEvolutionary(CalibrationWorkflowBase):
 			analyser.plot_objectivefunction,
 			analyser.plot_regression,
 		]:
-			plot_func_name = plot_func.__name__
+			plot_func_name = plot_func.__name__.replace("_", "-")
 			outfile = self.join(
 				outdir, f"{time_now}-{task}-{experiment_name}_{plot_func_name}.png"
 			)
@@ -221,22 +240,9 @@ class SPOTPYEvolutionary(CalibrationWorkflowBase):
 
 		if self.specification.method == "dream":
 			plot_func = analyser.plot_gelman_rubin
-			plot_func_name = plot_func.__name__
+			plot_func_name = plot_func.__name__.replace("_", "-")
 			outfile = self.join(
 				outdir, f"{time_now}-{task}-{experiment_name}_{plot_func_name}.png"
 			)
 			self.append_artifact(outfile)
 			plot_func(results, self.sample_results, outfile)
-
-		for col in results.dtype.names:
-			if not col.startswith("par"):
-				continue
-			values = np.array(results[col])
-			name = col.replace("par", "")
-			estimate = values.mean()
-			uncertainty = values.std()
-
-			parameter_estimate = ParameterEstimateModel(
-				name=name, estimate=estimate, uncertainty=uncertainty
-			)
-			self.add_parameter_estimate(parameter_estimate)

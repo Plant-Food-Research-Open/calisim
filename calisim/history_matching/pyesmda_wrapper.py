@@ -164,7 +164,7 @@ class PyESMDAHistoryMatching(HistoryMatchingBase):
 				alpha=0.5,
 			)
 			axes[i].legend()
-		self.present_fig(fig, outdir, time_now, task, experiment_name, "plot_slice")
+		self.present_fig(fig, outdir, time_now, task, experiment_name, "plot-slice")
 
 		pred_dfs = [pd.DataFrame(preds) for preds in self.solver.d_pred]
 		output_label = self.specification.output_labels[0]  # type: ignore[index]
@@ -179,29 +179,10 @@ class PyESMDAHistoryMatching(HistoryMatchingBase):
 		axes[1].set_title(f"Ensemble {output_label}")
 		fig.tight_layout()
 		self.present_fig(
-			fig, outdir, time_now, task, experiment_name, f"ensemble_{output_label}"
+			fig, outdir, time_now, task, experiment_name, f"ensemble-{output_label}"
 		)
-
-		if outdir is None:
-			return
 
 		X_IES_df = pd.DataFrame(parameter_samples)
-		outfile = self.join(
-			outdir, f"{time_now}-{task}-{experiment_name}_posterior.csv"
-		)
-		self.append_artifact(outfile)
-		X_IES_df.to_csv(outfile, index=False)
-
-		for pred_df in pred_dfs:
-			pred_df["x"] = pred_df.index
-		pred_df = pd.concat(pred_dfs)
-		pred_df.columns = [output_label, "x"]
-		outfile = self.join(
-			outdir, f"{time_now}-{task}-{experiment_name}_ensemble_{output_label}.csv"
-		)
-		self.append_artifact(outfile)
-		pred_df.to_csv(outfile, index=False)
-
 		for name in X_IES_df:
 			estimate = X_IES_df[name].mean()
 			uncertainty = X_IES_df[name].std()
@@ -210,3 +191,14 @@ class PyESMDAHistoryMatching(HistoryMatchingBase):
 				name=name, estimate=estimate, uncertainty=uncertainty
 			)
 			self.add_parameter_estimate(parameter_estimate)
+
+		if outdir is None:
+			return
+
+		self.to_csv(X_IES_df, "posterior")
+
+		for pred_df in pred_dfs:
+			pred_df["x"] = pred_df.index
+		pred_df = pd.concat(pred_dfs)
+		pred_df.columns = [output_label, "x"]
+		self.to_csv(pred_df, f"ensemble-{output_label}")

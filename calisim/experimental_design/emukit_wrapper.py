@@ -76,7 +76,7 @@ class EmukitExperimentalDesign(EmukitBase):
 		if self.specification.use_shap and outdir is not None:
 			outfile = self.join(
 				outdir,
-				f"{time_now}-{task}-{experiment_name}-param_importances.png",
+				f"{time_now}-{task}-{experiment_name}-param-importances.png",
 			)
 			self.calculate_shap_importances(
 				X_sample,

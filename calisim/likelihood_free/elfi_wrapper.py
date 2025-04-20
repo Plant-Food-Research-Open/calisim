@@ -103,9 +103,10 @@ class ELFILikelihoodFree(ELFIBase):
 		]:
 			plot_func(figsize=self.specification.figsize)
 			if outdir is not None:
+				plot_name = plot_func.__name__.replace("_", "-")
 				outfile = self.join(
 					outdir,
-					f"{time_now}-{task}-{experiment_name}-{plot_func.__name__}.png",
+					f"{time_now}-{task}-{experiment_name}-{plot_name}.png",
 				)
 				self.append_artifact(outfile)
 				plt.tight_layout()

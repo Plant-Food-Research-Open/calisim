@@ -102,7 +102,7 @@ class SklearnSurrogateModel(SurrogateBase):
 		if self.specification.use_shap and outdir is not None:
 			outfile = self.join(
 				outdir,
-				f"{time_now}-{task}-{experiment_name}-param_importances.png",
+				f"{time_now}-{task}-{experiment_name}-param-importances.png",
 			)
 			self.calculate_shap_importances(
 				X_sample, self.emulator, names, self.specification.test_size, outfile
@@ -123,7 +123,7 @@ class SklearnSurrogateModel(SurrogateBase):
 					ax=axes[i],
 					title=f"simulated_{output_label} against {parameter_name}",
 				)
-			self.present_fig(fig, outdir, time_now, task, experiment_name, "plot_slice")
+			self.present_fig(fig, outdir, time_now, task, experiment_name, "plot-slice")
 
 			fig, axes = plt.subplots(nrows=2, figsize=self.specification.figsize)
 			df = pd.DataFrame(
@@ -159,7 +159,7 @@ class SklearnSurrogateModel(SurrogateBase):
 						title=f"simulated_{output_label} against {parameter_name}",
 					)
 				self.present_fig(
-					fig, outdir, time_now, task, experiment_name, "plot_slice"
+					fig, outdir, time_now, task, experiment_name, "plot-slice"
 				)
 
 				Y_sample = Y_sample.reshape(self.Y_shape)
@@ -212,5 +212,5 @@ class SklearnSurrogateModel(SurrogateBase):
 						row_indx += 1
 
 				self.present_fig(
-					fig, outdir, time_now, task, experiment_name, "plot_slice"
+					fig, outdir, time_now, task, experiment_name, "plot-slice"
 				)

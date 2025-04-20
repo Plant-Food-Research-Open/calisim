@@ -99,7 +99,7 @@ class OpenTurnsOptimisation(OpenTurnsBase):
 		if outdir is not None:
 			outfile = self.join(
 				outdir,
-				f"{time_now}-{task}-{experiment_name}_plot_optimization_history.png",
+				f"{time_now}-{task}-{experiment_name}-plot-optimization-history.png",
 			)
 			self.append_artifact(outfile)
 			view.save(outfile)
@@ -108,13 +108,10 @@ class OpenTurnsOptimisation(OpenTurnsBase):
 		view = viewer.View(graph, figure_kw={"figsize": self.specification.figsize})
 		if outdir is not None:
 			outfile = self.join(
-				outdir, f"{time_now}-{task}-{experiment_name}_plot_error_history.png"
+				outdir, f"{time_now}-{task}-{experiment_name}-plot-error-history.png"
 			)
 			self.append_artifact(outfile)
 			view.save(outfile)
-
-		if outdir is None:
-			return
 
 		parameters = result.getInputSample()
 		objective_results = result.getOutputSample()
@@ -131,14 +128,9 @@ class OpenTurnsOptimisation(OpenTurnsBase):
 				trial_row[f"param_{name}"] = parameter_set[j]
 
 			trial_rows.append(trial_row)
-
 		trials_df: pd.DataFrame = pd.DataFrame(trial_rows)
-		outfile = self.join(outdir, f"{time_now}-{task}-{experiment_name}_trials.csv")
-		self.append_artifact(outfile)
-		trials_df.to_csv(outfile, index=False)
 
 		values = [value for value in trials_df.columns if value.startswith("value")]
-
 		trials_df_best = trials_df.sort_values(values).head(1)
 		for col in trials_df_best.columns:
 			if not col.startswith("param_"):
@@ -147,3 +139,8 @@ class OpenTurnsOptimisation(OpenTurnsBase):
 			estimate = trials_df_best[col].item()
 			parameter_estimate = ParameterEstimateModel(name=name, estimate=estimate)
 			self.add_parameter_estimate(parameter_estimate)
+
+		if outdir is None:
+			return
+
+		self.to_csv(trials_df, "trials")

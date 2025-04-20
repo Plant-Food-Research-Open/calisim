@@ -183,7 +183,7 @@ class EvoTorchEvolutionary(CalibrationWorkflowBase):
 			if outdir is not None:
 				outfile = self.join(
 					outdir,
-					f"{time_now}-{task}-{experiment_name}-{output_label}-plot_slice.png",
+					f"{time_now}-{task}-{experiment_name}-{output_label}-plot-slice.png",
 				)
 				self.append_artifact(outfile)
 				fig.write_image(outfile)
@@ -193,12 +193,6 @@ class EvoTorchEvolutionary(CalibrationWorkflowBase):
 		if outdir is None:
 			return
 
-		outfile = self.join(
-			outdir, f"{time_now}-{task}-{experiment_name}-objective.csv"
-		)
-		self.append_artifact(outfile)
-		objective_df.to_csv(outfile, index=False)
+		self.to_csv(objective_df, "objective")
 
-		outfile = self.join(outdir, f"{time_now}-{task}-{experiment_name}-trials.csv")
-		self.append_artifact(outfile)
-		trials_df.to_csv(outfile, index=False)
+		self.to_csv(trials_df, "trials")

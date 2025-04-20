@@ -103,7 +103,12 @@ class SBISimulationBasedInference(SimulationBasedInferenceBase):
 				limits=limits,
 			)
 			self.present_fig(
-				fig, outdir, time_now, task, experiment_name, plot_func.__name__
+				fig,
+				outdir,
+				time_now,
+				task,
+				experiment_name,
+				plot_func.__name__.replace("_", "-"),
 			)
 
 		for plot_func in [
@@ -119,7 +124,12 @@ class SBISimulationBasedInference(SimulationBasedInferenceBase):
 				limits=limits,
 			)
 			self.present_fig(
-				fig, outdir, time_now, task, experiment_name, plot_func.__name__
+				fig,
+				outdir,
+				time_now,
+				task,
+				experiment_name,
+				plot_func.__name__.replace("_", "-"),
 			)
 
 		thetas = self.prior.sample((n_draws,))
@@ -141,11 +151,27 @@ class SBISimulationBasedInference(SimulationBasedInferenceBase):
 				plot_type=plot_type,
 				parameter_labels=self.names,
 			)
-			fig_suffix = f"{analysis.sbc_rank_plot.__name__}_{plot_type}"
+			fig_suffix = (
+				f"{analysis.sbc_rank_plot.__name__.replace('_', '-')}_{plot_type}"
+			)
 			self.present_fig(fig, outdir, time_now, task, experiment_name, fig_suffix)
+
+		trace_df = pd.DataFrame(
+			posterior_samples.cpu().detach().numpy(), columns=self.names
+		)
+		for name in trace_df:
+			estimate = trace_df[name].mean()
+			uncertainty = trace_df[name].std()
+
+			parameter_estimate = ParameterEstimateModel(
+				name=name, estimate=estimate, uncertainty=uncertainty
+			)
+			self.add_parameter_estimate(parameter_estimate)
 
 		if outdir is None:
 			return
+
+		self.to_csv(trace_df, "trace")
 
 		check_stats = analysis.check_sbc(
 			ranks, thetas, dap_samples, num_posterior_samples=n_draws
@@ -161,24 +187,4 @@ class SBISimulationBasedInference(SimulationBasedInferenceBase):
 				metric_dict[col_name] = score
 
 		check_stats_df = pd.DataFrame(check_stats_list)
-		outfile = self.join(
-			outdir, f"{time_now}-{task}-{experiment_name}_diagnostics.csv"
-		)
-		self.append_artifact(outfile)
-		check_stats_df.to_csv(outfile, index=False)
-
-		trace_df = pd.DataFrame(
-			posterior_samples.cpu().detach().numpy(), columns=self.names
-		)
-		outfile = self.join(outdir, f"{time_now}-{task}-{experiment_name}_trace.csv")
-		self.append_artifact(outfile)
-		trace_df.to_csv(outfile, index=False)
-
-		for name in trace_df:
-			estimate = trace_df[name].mean()
-			uncertainty = trace_df[name].std()
-
-			parameter_estimate = ParameterEstimateModel(
-				name=name, estimate=estimate, uncertainty=uncertainty
-			)
-			self.add_parameter_estimate(parameter_estimate)
+		self.to_csv(check_stats_df, "diagnostics")

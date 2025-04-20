@@ -121,7 +121,7 @@ class SkActiveMLActiveLearning(EmukitBase):
 		if self.specification.use_shap and outdir is not None:
 			outfile = self.join(
 				outdir,
-				f"{time_now}-{task}-{experiment_name}-param_importances.png",
+				f"{time_now}-{task}-{experiment_name}-param-importances.png",
 			)
 			self.calculate_shap_importances(
 				X_sample, self.emulator, names, self.specification.test_size, outfile
@@ -139,8 +139,4 @@ class SkActiveMLActiveLearning(EmukitBase):
 		if outdir is None:
 			return
 
-		outfile = self.join(
-			outdir, f"{time_now}-{task}-{experiment_name}-emulated-{output_label}.csv"
-		)
-		self.append_artifact(outfile)
-		df.to_csv(outfile, index=False)
+		self.to_csv(df, f"emulated-{output_label}")

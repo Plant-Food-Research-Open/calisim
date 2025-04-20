@@ -160,10 +160,11 @@ class PyABCApproximateBayesianComputation(CalibrationWorkflowBase):
 			pyabc.visualization.plot_kde_matrix_highlevel,
 		]:
 			plot_func(self.history)
+			plot_name = plot_func.__name__.replace("_", "-")
 			if outdir is not None:
 				outfile = self.join(
 					outdir,
-					f"{time_now}-{task}-{experiment_name}-{plot_func.__name__}.png",
+					f"{time_now}-{task}-{experiment_name}-{plot_name}.png",
 				)
 				self.append_artifact(outfile)
 				plt.tight_layout()
@@ -173,50 +174,13 @@ class PyABCApproximateBayesianComputation(CalibrationWorkflowBase):
 				plt.show()
 				plt.close()
 
-		if outdir is None:
-			return
-
 		distribution_dfs = []
 		for t in range(self.history.max_t + 1):
 			df, w = self.history.get_distribution(m=0, t=t)
 			df["t"] = t
 			df["w"] = w
 			distribution_dfs.append(df)
-
 		distribution_dfs = pd.concat(distribution_dfs)
-		outfile = self.join(
-			outdir, f"{time_now}-{task}-{experiment_name}_parameters.csv"
-		)
-		self.append_artifact(outfile)
-		distribution_dfs.to_csv(outfile, index=False)
-
-		populations_df = self.history.get_all_populations()
-		outfile = self.join(
-			outdir, f"{time_now}-{task}-{experiment_name}_populations.csv"
-		)
-		self.append_artifact(outfile)
-		populations_df.to_csv(outfile, index=False)
-
-		population_particles_df = self.history.get_nr_particles_per_population()
-		outfile = self.join(
-			outdir,
-			f"{time_now}-{task}-{experiment_name}_nr_particles_per_population.csv",
-		)
-		self.append_artifact(outfile)
-		population_particles_df.to_csv(outfile, index=False)
-
-		distances_df = []
-		for t in range(self.history.max_t + 1):
-			df = self.history.get_weighted_distances(t=t)
-			df["t"] = t
-			distances_df.append(df)
-		distances_df = pd.concat(distances_df)
-
-		outfile = self.join(
-			outdir, f"{time_now}-{task}-{experiment_name}_distances.csv"
-		)
-		self.append_artifact(outfile)
-		distances_df.to_csv(outfile, index=False)
 
 		max_t = distribution_dfs["t"].max()
 		trace_df = distribution_dfs.query(f"t == {max_t}")
@@ -230,3 +194,22 @@ class PyABCApproximateBayesianComputation(CalibrationWorkflowBase):
 				name=name, estimate=estimate, uncertainty=uncertainty
 			)
 			self.add_parameter_estimate(parameter_estimate)
+
+		if outdir is None:
+			return
+
+		self.to_csv(distribution_dfs, "parameters")
+
+		populations_df = self.history.get_all_populations()
+		self.to_csv(populations_df, "populations")
+
+		population_particles_df = self.history.get_nr_particles_per_population()
+		self.to_csv(population_particles_df, "particles-per-population")
+
+		distances_df = []
+		for t in range(self.history.max_t + 1):
+			df = self.history.get_weighted_distances(t=t)
+			df["t"] = t
+			distances_df.append(df)
+		distances_df = pd.concat(distances_df)
+		self.to_csv(distances_df, "distances")

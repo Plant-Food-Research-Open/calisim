@@ -170,11 +170,7 @@ class BoTorchOptimisation(CalibrationWorkflowBase):
 		)
 
 		if outdir is not None:
-			outfile = self.join(
-				outdir, f"{time_now}-{task}-{experiment_name}-objective.csv"
-			)
-			self.append_artifact(outfile)
-			trials_df.to_csv(outfile, index=False)
+			self.to_csv(trials_df, "objective")
 
 		parameter_names = [col for col in trials_df if col.startswith("param_")]
 		fig = make_subplots(
@@ -192,7 +188,7 @@ class BoTorchOptimisation(CalibrationWorkflowBase):
 		fig.update_layout(yaxis_title="Score", showlegend=False)
 		if outdir is not None:
 			outfile = self.join(
-				outdir, f"{time_now}-{task}-{experiment_name}-plot_slice.png"
+				outdir, f"{time_now}-{task}-{experiment_name}-plot-slice.png"
 			)
 			self.append_artifact(outfile)
 			fig.write_image(outfile)
@@ -207,7 +203,7 @@ class BoTorchOptimisation(CalibrationWorkflowBase):
 		fig.update_layout(xaxis_title="Trial", yaxis_title="Score", showlegend=False)
 		if outdir is not None:
 			outfile = self.join(
-				outdir, f"{time_now}-{task}-{experiment_name}-trial_history.png"
+				outdir, f"{time_now}-{task}-{experiment_name}-trial-history.png"
 			)
 			fig.write_image(outfile)
 			self.append_artifact(outfile)

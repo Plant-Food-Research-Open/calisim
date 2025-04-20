@@ -86,18 +86,7 @@ class EmceeBayesianCalibration(CalibrationWorkflowBase):
 
 			return Y
 
-		def log_target_function(X: np.ndarray) -> np.ndarray:
-			Y = target_function(X)
-			if Y == -np.inf:
-				return Y
-			return np.log(Y)
-
 		n_walkers, n_dim = self.parameters.shape
-
-		if self.specification.log_density:
-			log_probability = log_target_function
-		else:
-			log_probability = target_function
 
 		supported_moves = dict(
 			RedBlueMove=emcee.moves.RedBlueMove,
@@ -125,7 +114,7 @@ class EmceeBayesianCalibration(CalibrationWorkflowBase):
 				moves.append((move, weight))
 
 		self.sampler = emcee.EnsembleSampler(
-			n_walkers, n_dim, log_probability, moves=moves, vectorize=False
+			n_walkers, n_dim, target_function, moves=moves, vectorize=False
 		)
 
 		n_iterations = self.specification.n_iterations
@@ -165,13 +154,6 @@ class EmceeBayesianCalibration(CalibrationWorkflowBase):
 
 		self.present_fig(fig, outdir, time_now, task, experiment_name, "plot_slice")
 
-		if outdir is None:
-			return
-
-		outfile = self.join(outdir, f"{time_now}-{task}-{experiment_name}_trace.csv")
-		self.append_artifact(outfile)
-		trace_df.to_csv(outfile, index=False)
-
 		for name in trace_df:
 			estimate = trace_df[name].mean()
 			uncertainty = trace_df[name].std()
@@ -180,3 +162,8 @@ class EmceeBayesianCalibration(CalibrationWorkflowBase):
 				name=name, estimate=estimate, uncertainty=uncertainty
 			)
 			self.add_parameter_estimate(parameter_estimate)
+
+		if outdir is None:
+			return
+
+		self.to_csv(trace_df, "trace")

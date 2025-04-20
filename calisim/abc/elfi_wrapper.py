@@ -102,9 +102,10 @@ class ELFIApproximateBayesianComputation(ELFIBase):
 		for plot_func in [self.history.plot_marginals, self.history.plot_pairs]:
 			plot_func(bins=num_bins, figsize=self.specification.figsize)
 			if outdir is not None:
+				plot_name = plot_func.__name__.replace("_", "-")
 				outfile = self.join(
 					outdir,
-					f"{time_now}-{task}-{experiment_name}-{plot_func.__name__}.png",
+					f"{time_now}-{task}-{experiment_name}-{plot_name}.png",
 				)
 				self.append_artifact(outfile)
 				plt.tight_layout()
