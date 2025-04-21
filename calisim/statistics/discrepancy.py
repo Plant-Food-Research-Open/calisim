@@ -12,7 +12,13 @@ import numpy as np
 import sklearn.metrics as metrics
 from scipy.spatial import distance as sp_distance
 from scipy.special import kl_div
-from scipy.stats import energy_distance, norm, poisson, wasserstein_distance
+from scipy.stats import (
+	energy_distance,
+	multivariate_normal,
+	norm,
+	poisson,
+	wasserstein_distance,
+)
 from scipy.stats import t as t_dist
 
 
@@ -358,8 +364,7 @@ class GaussianLogLikelihood(DistanceMetricBase):
 		residuals = observed - simulated
 		sigma = np.std(residuals, ddof=1)
 
-		likelihoods = norm.pdf(observed, loc=simulated, scale=sigma)
-		log_likelihood = np.sum(np.log(likelihoods))
+		log_likelihood = norm.logpdf(observed, loc=simulated, scale=sigma).sum()
 		return log_likelihood
 
 
@@ -380,8 +385,9 @@ class StudentsTLogLikelihood(DistanceMetricBase):
 		residuals = observed - simulated
 		sigma = np.std(residuals, ddof=1)
 
-		likelihoods = t_dist.pdf(observed, df=nu, loc=simulated, scale=sigma)
-		log_likelihood = np.sum(np.log(likelihoods))
+		log_likelihood = t_dist.logpdf(
+			observed, df=nu, loc=simulated, scale=sigma
+		).sum()
 		return log_likelihood
 
 
@@ -397,6 +403,31 @@ class PoissonLogLikelihood(DistanceMetricBase):
 		    observed (np.ndarray): The observed data.
 		    simulated (np.ndarray): The simulated data.
 		"""
-		likelihoods = poisson.pmf(observed, mu=simulated)
-		log_likelihood = np.sum(np.log(likelihoods))
+		log_likelihood = poisson.logpmf(observed, mu=simulated).sum()
+		return log_likelihood
+
+
+class MultivariateNormalLogLikelihood(DistanceMetricBase):
+	"""The multivariate normal log likelihood."""
+
+	def calculate(
+		self, observed: np.ndarray, simulated: np.ndarray
+	) -> float | np.ndarray:
+		"""Calculate the distance between observed and simulated data.
+
+		Args:
+		    observed (np.ndarray): The observed data.
+		    simulated (np.ndarray): The simulated data.
+		"""
+		residuals = observed - simulated
+		cov_matrix = np.cov(residuals, rowvar=False, ddof=1)
+		lambda_ = 1e-7
+		cov_matrix = cov_matrix + lambda_ * np.eye(cov_matrix.shape[0])
+
+		log_likelihoods = [
+			multivariate_normal.logpdf(obs, mean=pred, cov=cov_matrix)
+			for obs, pred in zip(observed, simulated)
+		]
+
+		log_likelihood = np.sum(log_likelihoods)
 		return log_likelihood
