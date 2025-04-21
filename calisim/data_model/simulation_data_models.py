@@ -29,6 +29,7 @@ class BaseModel(PydanticBaseModel):
 class ParameterDataType(Enum):
 	DISCRETE: str = "discrete"
 	CONTINUOUS: str = "continuous"
+	CATEGORICAL: str = "categorical"
 
 
 class ParameterModel(BaseModel):

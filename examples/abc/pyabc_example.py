@@ -11,7 +11,7 @@ from calisim.data_model import (
 	ParameterSpecification,
 )
 from calisim.example_models import LotkaVolterraModel
-from calisim.statistics import WassersteinDistance
+from calisim.statistics import L2Norm
 from calisim.utils import get_examples_outdir
 
 model = LotkaVolterraModel()
@@ -44,7 +44,7 @@ def abc_func(
 		simulation_parameters[k] = parameters[k]
 
 	simulated_data = model.simulate(simulation_parameters).lynx.values
-	metric = WassersteinDistance()
+	metric = L2Norm()
 	discrepancy = metric.calculate(observed_data, simulated_data)
 	return discrepancy
 
