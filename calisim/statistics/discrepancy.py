@@ -353,16 +353,22 @@ class GaussianLogLikelihood(DistanceMetricBase):
 	"""The Gaussian log likelihood."""
 
 	def calculate(
-		self, observed: np.ndarray, simulated: np.ndarray
+		self,
+		observed: np.ndarray,
+		simulated: np.ndarray,
+		sigma: float | np.ndarray | None = None,
 	) -> float | np.ndarray:
 		"""Calculate the distance between observed and simulated data.
 
 		Args:
 		    observed (np.ndarray): The observed data.
 		    simulated (np.ndarray): The simulated data.
+			sigma (float | np.ndarray | None, optional): The standard
+				deviation. Defaults to None.
 		"""
-		residuals = observed - simulated
-		sigma = np.std(residuals, ddof=1)
+		if sigma is None:
+			residuals = observed - simulated
+			sigma = np.std(residuals, ddof=1)
 
 		log_likelihood = norm.logpdf(observed, loc=simulated, scale=sigma).sum()
 		return log_likelihood
@@ -372,7 +378,11 @@ class StudentsTLogLikelihood(DistanceMetricBase):
 	"""The Student's t log likelihood."""
 
 	def calculate(
-		self, observed: np.ndarray, simulated: np.ndarray, nu: int = 1
+		self,
+		observed: np.ndarray,
+		simulated: np.ndarray,
+		nu: int = 1,
+		sigma: float | np.ndarray | None = None,
 	) -> float | np.ndarray:
 		"""Calculate the distance between observed and simulated data.
 
@@ -381,9 +391,12 @@ class StudentsTLogLikelihood(DistanceMetricBase):
 		    simulated (np.ndarray): The simulated data.
 			nu (int, optional): The degrees of freedom for the
 				t distribution. Defaults to 1.
+			sigma (float | np.ndarray | None, optional): The standard
+				deviation. Defaults to None.
 		"""
-		residuals = observed - simulated
-		sigma = np.std(residuals, ddof=1)
+		if sigma is None:
+			residuals = observed - simulated
+			sigma = np.std(residuals, ddof=1)
 
 		log_likelihood = t_dist.logpdf(
 			observed, df=nu, loc=simulated, scale=sigma
@@ -411,18 +424,24 @@ class MultivariateNormalLogLikelihood(DistanceMetricBase):
 	"""The multivariate normal log likelihood."""
 
 	def calculate(
-		self, observed: np.ndarray, simulated: np.ndarray
+		self,
+		observed: np.ndarray,
+		simulated: np.ndarray,
+		cov_matrix: np.ndarray | None = None,
 	) -> float | np.ndarray:
 		"""Calculate the distance between observed and simulated data.
 
 		Args:
 		    observed (np.ndarray): The observed data.
 		    simulated (np.ndarray): The simulated data.
+			cov_matrix (np.ndarray | None, optional): The covariance
+				matrix. Defaults to None.
 		"""
-		residuals = observed - simulated
-		cov_matrix = np.cov(residuals, rowvar=False, ddof=1)
-		lambda_ = 1e-7
-		cov_matrix = cov_matrix + lambda_ * np.eye(cov_matrix.shape[0])
+		if cov_matrix is None:
+			residuals = observed - simulated
+			cov_matrix = np.cov(residuals, rowvar=False, ddof=1)
+			epsilon = 1e-7
+			cov_matrix = cov_matrix + epsilon * np.eye(cov_matrix.shape[0])
 
 		log_likelihoods = [
 			multivariate_normal.logpdf(obs, mean=pred, cov=cov_matrix)
