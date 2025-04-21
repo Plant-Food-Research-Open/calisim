@@ -11,7 +11,7 @@ from calisim.likelihood_free import (
 	LikelihoodFreeMethod,
 	LikelihoodFreeMethodModel,
 )
-from calisim.statistics import MeanSquaredError
+from calisim.statistics import WassersteinDistance
 from calisim.utils import get_examples_outdir
 
 model = LotkaVolterraModel()
@@ -46,7 +46,7 @@ def likelihood_free_func(
 		simulation_parameters[k] = parameters[k]
 
 	simulated_data = model.simulate(simulation_parameters).lynx.values
-	metric = MeanSquaredError()
+	metric = WassersteinDistance()
 	discrepancy = metric.calculate(observed_data, simulated_data)
 	return discrepancy
 
