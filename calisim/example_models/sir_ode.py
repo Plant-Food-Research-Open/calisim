@@ -29,6 +29,8 @@ class SirOdeModel(ExampleModelBase):
 			S0=1000 - 1.0 - 0,
 		)
 
+		self.OUTPUT_LABELS = ["dotS", "dotI", "dotR"]
+
 	def get_observed_data(self) -> np.ndarray | pd.DataFrame:
 		"""Retrieve observed data.
 

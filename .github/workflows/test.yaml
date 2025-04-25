@@ -1,6 +1,9 @@
 name: Test
 
 on:
+  release:
+    types:
+      - published
   pull_request:
     types:
       - opened
@@ -44,6 +47,15 @@ jobs:
          poetry install --no-interaction
 
     - name: Test code
+      if: github.event_name == 'push'
+      run: |
+        export CICD_TESTING_ENV=true
+
+        source .venv/bin/activate
+        pytest -v --ignore=tests/functional --cov=calisim --cov-report json --md-report --md-report-flavor gfm --md-report-output md_report.md
+
+    - name: Test code
+      if: github.event_name != 'push'
       run: |
         export CICD_TESTING_ENV=true
 
@@ -51,7 +63,7 @@ jobs:
         pytest -v --cov=calisim --cov-report json --md-report --md-report-flavor gfm --md-report-output md_report.md
 
     - name: Update Coverage Badge
-      if: matrix.python-version == 3.10
+      if: matrix.python-version == 3.10 && (github.event_name == 'release' || github.event_name == 'workflow_dispatch')
       uses: we-cli/coverage-badge-action@main
 
     - name: Output reports to the job summary

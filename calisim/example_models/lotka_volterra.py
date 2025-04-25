@@ -16,6 +16,12 @@ from ..base import ExampleModelBase
 class LotkaVolterraModel(ExampleModelBase):
 	"""Lotka Volterra simulation model."""
 
+	def __init__(self) -> None:
+		"""LotkaVolterraModel constructor."""
+		super().__init__()
+
+		self.OUTPUT_LABELS = ["lynx", "hare"]
+
 	def get_observed_data(self) -> np.ndarray | pd.DataFrame:
 		"""Retrieve observed data.
 

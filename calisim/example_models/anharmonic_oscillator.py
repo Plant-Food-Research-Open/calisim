@@ -22,6 +22,7 @@ class AnharmonicOscillator(ExampleModelBase):
 		self.reset_y()
 
 		self.GROUND_TRUTH = {"omega": 3.5e-2, "lambda": 3e-4, "K": 2000}
+		self.OUTPUT_LABELS = ["y"]
 
 	def reset_y(self) -> None:
 		"""Reset the trajectory vector."""

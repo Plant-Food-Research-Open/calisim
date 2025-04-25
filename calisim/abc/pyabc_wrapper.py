@@ -89,6 +89,9 @@ class PyABCApproximateBayesianComputation(CalibrationWorkflowBase):
 		)
 
 		output_labels = self.specification.output_labels
+		if output_labels is None:
+			output_labels = ["output"]
+
 		abc_kwargs = self.get_calibration_func_kwargs()
 
 		def simulator_func(parameters: dict) -> dict:
@@ -100,10 +103,10 @@ class PyABCApproximateBayesianComputation(CalibrationWorkflowBase):
 			)
 
 			summary_stats = {}
-			if len(output_labels) == 1:  # type: ignore[arg-type]
-				summary_stats[output_labels[0]] = results  # type: ignore[index]
+			if len(output_labels) == 1:
+				summary_stats[output_labels[0]] = results
 			else:
-				for i, output_label in enumerate(output_labels):  # type: ignore[arg-type]
+				for i, output_label in enumerate(output_labels):
 					summary_stats[output_label] = results[i]  # type: ignore[index]
 
 			return summary_stats
