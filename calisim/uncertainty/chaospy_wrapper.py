@@ -150,7 +150,10 @@ class ChaospyUncertaintyAnalysis(CalibrationWorkflowBase):
 		std = chaospy.Std(self.emulator, self.parameters)
 
 		fig, axes = plt.subplots(nrows=2, figsize=self.specification.figsize)
-		output_label = self.specification.output_labels[0]  # type: ignore[index]
+		output_labels = self.specification.output_labels
+		if output_labels is None:
+			output_labels = ["output"]
+		output_label = output_labels[0]
 		observed_data = self.specification.observed_data
 		X = np.arange(0, expected.shape[0], 1)
 		axes[0].plot(X, observed_data)

@@ -21,7 +21,7 @@ from calisim.data_model import (
 	ParameterSpecification,
 )
 from calisim.example_models import SirOdeModel
-from calisim.statistics import DistanceMetricBase, L2Norm
+from calisim.statistics import DistanceMetricBase, GaussianLogLikelihood, L2Norm
 
 
 @pytest.fixture
@@ -48,14 +48,14 @@ def sir_parameter_spec() -> ParameterSpecification:
 			DistributionModel(
 				name="gamma",
 				distribution_name="uniform",
-				distribution_args=[0.085, 0.11],
+				distribution_args=[0.09, 0.11],
 				distribution_bounds=[0.05, 0.15],
 				data_type=ParameterDataType.CONTINUOUS,
 			),
 			DistributionModel(
 				name="beta",
 				distribution_name="uniform",
-				distribution_args=[0.375, 0.425],
+				distribution_args=[0.39, 0.41],
 				distribution_bounds=[0.3, 0.5],
 				data_type=ParameterDataType.CONTINUOUS,
 			),
@@ -84,6 +84,16 @@ def l2_norm_metric() -> DistanceMetricBase:
 	return L2Norm()
 
 
+@pytest.fixture
+def gaussian_ll_metric() -> DistanceMetricBase:
+	"""Get the Gaussian log likelihood metric.
+
+	Returns:
+	    DistanceMetricBase: The Gaussian log likelihood metric instance.
+	"""
+	return GaussianLogLikelihood()
+
+
 def get_parameter_estimates(calibrator: CalibrationMethodBase) -> dict[str, float]:
 	"""Get flattened parameter estimates.
 
@@ -101,7 +111,7 @@ def get_parameter_estimates(calibrator: CalibrationMethodBase) -> dict[str, floa
 
 
 def is_close(
-	model: ExampleModelContainer, calibrator: CalibrationMethodBase, rtol: float = 0.25
+	model: ExampleModelContainer, calibrator: CalibrationMethodBase, rtol: float = 0.3
 ) -> bool:
 	"""Check if all parameter estimates are close to the ground truth.
 

@@ -60,7 +60,7 @@ jobs:
         export CICD_TESTING_ENV=true
 
         source .venv/bin/activate
-        pytest -v --cov=calisim --cov-report json --md-report --md-report-flavor gfm --md-report-output md_report.md
+        pytest -v -n 4 --cov=calisim --cov-report json --md-report --md-report-flavor gfm --md-report-output md_report.md
 
     - name: Update Coverage Badge
       if: matrix.python-version == 3.10 && (github.event_name == 'release' || github.event_name == 'workflow_dispatch')

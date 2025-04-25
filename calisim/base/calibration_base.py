@@ -594,6 +594,14 @@ class CalibrationWorkflowBase(ABC):
 		self.append_artifact(outfile)
 		df.to_csv(outfile, index=False)
 
+	def get_emulator(self) -> BaseEstimator:
+		"""Get the trained emulator model.
+
+		Returns:
+			BaseEstimator: The emulator.
+		"""
+		return self.emulator
+
 
 class CalibrationMethodBase(CalibrationWorkflowBase):
 	"""The calibration method abstract class."""
@@ -727,3 +735,12 @@ class CalibrationMethodBase(CalibrationWorkflowBase):
 		"""
 		self._implementation_check("get_parameter_estimates")
 		return self.implementation.get_parameter_estimates()
+
+	def get_emulator(self) -> BaseEstimator:
+		"""Get the trained emulator model.
+
+		Returns:
+			BaseEstimator: The emulator.
+		"""
+		self._implementation_check("get_emulator")
+		return self.implementation.get_emulator()
