@@ -14,7 +14,7 @@ class SurrogateBase(CalibrationWorkflowBase):
 	"""The surrogate modelling base class."""
 
 	def sample_parameters(self, n_samples: int) -> np.ndarray:
-		"""Sample from the paramete space.
+		"""Sample from the parameter space.
 
 		Args:
 			n_samples (int): The number of samples.

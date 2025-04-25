@@ -164,16 +164,16 @@ class SklearnSurrogateModel(SurrogateBase):
 
 				Y_sample = Y_sample.reshape(self.Y_shape)
 				Y = self.Y.reshape(self.Y_shape)
-				indx = np.arange(0, Y_sample.shape[1], 1)
+				index = np.arange(0, Y_sample.shape[1], 1)
 
 				fig, axes = plt.subplots(nrows=2, figsize=self.specification.figsize)
 
 				for i in range(Y.shape[0]):
-					axes[0].plot(indx, Y[i])
+					axes[0].plot(index, Y[i])
 				axes[0].set_title(f"Simulated {output_label}")
 
 				for i in range(Y_sample.shape[0]):
-					axes[1].plot(indx, Y_sample[i])
+					axes[1].plot(index, Y_sample[i])
 				axes[1].set_title(f"Emulated {output_label}")
 				self.present_fig(
 					fig,
@@ -194,22 +194,24 @@ class SklearnSurrogateModel(SurrogateBase):
 					figsize=self.specification.figsize,
 				)
 
-				row_indx = 0
-				for x_indx, parameter_name in enumerate(self.names):
-					for y_indx, output_label in enumerate(output_labels):  # type: ignore[arg-type]
-						axes[row_indx, 0].scatter(self.X[:, x_indx], self.Y[:, y_indx])
-						axes[row_indx, 0].set_xlabel(parameter_name)
-						axes[row_indx, 0].set_ylabel(output_label)
-						axes[row_indx, 0].set_title(f"Simulated {output_label}")
-
-						axes[row_indx, 1].scatter(
-							X_sample[:, x_indx], Y_sample[:, y_indx]
+				row_index = 0
+				for x_index, parameter_name in enumerate(self.names):
+					for y_index, output_label in enumerate(output_labels):  # type: ignore[arg-type]
+						axes[row_index, 0].scatter(
+							self.X[:, x_index], self.Y[:, y_index]
 						)
-						axes[row_indx, 1].set_xlabel(parameter_name)
-						axes[row_indx, 1].set_ylabel(output_label)
-						axes[row_indx, 1].set_title(f"Emulated {output_label}")
+						axes[row_index, 0].set_xlabel(parameter_name)
+						axes[row_index, 0].set_ylabel(output_label)
+						axes[row_index, 0].set_title(f"Simulated {output_label}")
 
-						row_indx += 1
+						axes[row_index, 1].scatter(
+							X_sample[:, x_index], Y_sample[:, y_index]
+						)
+						axes[row_index, 1].set_xlabel(parameter_name)
+						axes[row_index, 1].set_ylabel(output_label)
+						axes[row_index, 1].set_title(f"Emulated {output_label}")
+
+						row_index += 1
 
 				self.present_fig(
 					fig, outdir, time_now, task, experiment_name, "plot-slice"

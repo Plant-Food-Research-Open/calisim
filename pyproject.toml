@@ -98,6 +98,8 @@ pytest-env = "^1.1.5"
 types-pyyaml = "^6.0.12.20240917"
 ruff = "^0.7.0"
 jupyterlab = "^4.3.1"
+codespell = "^2.4.1"
+tomli = "^2.2.1"
 
 [tool.poetry.group.experimental.dependencies]
 elfi = {git = "https://git@github.com/elfi-dev/elfi.git", rev = "a331349dd603f78a7ac444226fb3bd08d4e41fc0"}
@@ -150,3 +152,9 @@ extend-ignore = [
     "E101",
     "RUF012"
 ]
+
+[tool.codespell]
+skip = './docs/build,poetry.lock,./third_party'
+count = true
+quiet-level = 3
+ignore-words-list = 'ot,sies,SIES'

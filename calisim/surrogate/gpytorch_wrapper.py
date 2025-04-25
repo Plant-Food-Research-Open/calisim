@@ -151,16 +151,16 @@ class GPyTorchSurrogateModel(SurrogateBase):
 
 				reshaped_Y_sample = Y_sample.reshape(self.Y_shape)
 				Y = self.Y.reshape(self.Y_shape).detach().cpu().numpy()
-				indx = np.arange(0, reshaped_Y_sample.shape[1], 1)
+				index = np.arange(0, reshaped_Y_sample.shape[1], 1)
 
 				fig, axes = plt.subplots(nrows=2, figsize=self.specification.figsize)
 
 				for i in range(Y.shape[0]):
-					axes[0].plot(indx, Y[i])
+					axes[0].plot(index, Y[i])
 				axes[0].set_title(f"Simulated {output_label}")
 
 				for i in range(reshaped_Y_sample.shape[0]):
-					axes[1].plot(indx, reshaped_Y_sample[i])
+					axes[1].plot(index, reshaped_Y_sample[i])
 				axes[1].set_title(f"Emulated {output_label}")
 				self.present_fig(
 					fig,
