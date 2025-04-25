@@ -1,6 +1,21 @@
 Changelog
 =========
 
+[0.5.0] - 2025/04/25
+--------------------
+
+Added
+^^^^^
+
+* Implemented likelihood-based discrepancy metrics.
+* Included log likelihood for fully Bayesian calibration examples.
+
+Fixed
+^^^^^
+
+* Refactored logic for best parameter estimates to always set estimates.
+* Debugged parallelisation and plot rendering for pyABC wrapper.
+
 [0.4.0] - 2025/04/06
 --------------------
 
