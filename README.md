@@ -4,7 +4,6 @@ ______________________________________________________________________
 
 [![Python](https://img.shields.io/badge/python-3.10%20%7C%203.11%20%7C%203.12-blue)](https://www.python.org)
 [![pypi](https://img.shields.io/pypi/v/calisim.svg)](https://pypi.python.org/pypi/calisim)
-[![PyPI downloads](https://shields.io/pypi/dm/calisim)](https://pypi.org/project/calisim/)
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
 [![pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit)](https://github.com/pre-commit/pre-commit)
@@ -13,7 +12,6 @@ ______________________________________________________________________
 [![Publish](https://github.com/Plant-Food-Research-Open/calisim/actions/workflows/publish.yaml/badge.svg?branch=main)](https://github.com/Plant-Food-Research-Open/calisim/actions/workflows/publish.yaml)
 [![Build](https://github.com/Plant-Food-Research-Open/calisim/actions/workflows/build.yaml/badge.svg?branch=main)](https://github.com/Plant-Food-Research-Open/calisim/actions/workflows/build.yaml)
 [![CodeQL Advanced](https://github.com/Plant-Food-Research-Open/calisim/actions/workflows/codeql.yaml/badge.svg?branch=main)](https://github.com/Plant-Food-Research-Open/calisim/actions/workflows/codeql.yaml)
-[![Run with Docker](https://img.shields.io/badge/run%20with-docker-0db7ed?labelColor=000000&logo=docker)](https://www.docker.com/)
 
 [**PyPI**](https://pypi.python.org/pypi/calisim)
 | [**Documentation**](https://calisim.readthedocs.io)
