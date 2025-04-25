@@ -30,7 +30,7 @@ jobs:
       uses: actions/setup-python@v5
       with:
         python-version: ${{ matrix.python-version }}
-          
+
     - name: Install and configure Poetry
       uses: snok/install-poetry@v1
       with:
@@ -48,4 +48,22 @@ jobs:
         export CICD_TESTING_ENV=true
 
         source .venv/bin/activate
-        pytest --cov=calisim --junit-xml=test_results.xml
+        pytest -v --cov=calisim --md-report --md-report-flavor gfm --md-report-output md_report.md
+
+    - name: Output reports to the job summary
+      shell: bash
+      run: |
+        if [ -f md_report.md ]; then
+          echo "<details><summary>Test Report</summary>" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          cat md_report.md >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "</details>" >> $GITHUB_STEP_SUMMARY
+        fi
+
+    - name: Render the report to the PR
+      uses: marocchino/sticky-pull-request-comment@v2
+      with:
+        header: Test Report
+        recreate: true
+        path: md_report.md
