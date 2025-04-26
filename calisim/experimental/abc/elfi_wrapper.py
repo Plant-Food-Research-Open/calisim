@@ -12,8 +12,8 @@ import elfi
 import numpy as np
 from matplotlib import pyplot as plt
 
-from ..base import ELFIBase
-from ..data_model import ParameterEstimateModel
+from ...base import ELFIBase
+from ...data_model import ParameterEstimateModel
 
 
 class ELFIApproximateBayesianComputation(ELFIBase):

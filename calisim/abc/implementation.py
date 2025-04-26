@@ -20,7 +20,7 @@ IMPLEMENTATIONS: dict[str, type[CalibrationWorkflowBase]] = dict(
 )
 
 if importlib.util.find_spec("elfi") is not None:
-	from .elfi_wrapper import ELFIApproximateBayesianComputation
+	from ..experimental.abc.elfi_wrapper import ELFIApproximateBayesianComputation
 
 	IMPLEMENTATIONS["elfi"] = ELFIApproximateBayesianComputation
 

@@ -16,7 +16,7 @@ TASK = "likelihood_free"
 IMPLEMENTATIONS: dict[str, type[CalibrationWorkflowBase]] = dict()
 
 if importlib.util.find_spec("elfi") is not None:
-	from .elfi_wrapper import ELFILikelihoodFree
+	from ..experimental.likelihood_free.elfi_wrapper import ELFILikelihoodFree
 
 	IMPLEMENTATIONS["elfi"] = ELFILikelihoodFree
 
