@@ -1,7 +1,7 @@
 """
-Functional tests for the surrogate module.
+Functional tests for the simulation-based inference module.
 
-A battery of tests to validate the surrogate modelling procedures.
+A battery of tests to validate the simulation-based inference procedures.
 
 """
 

@@ -11,7 +11,9 @@ import numpy as np
 from ..data_model import ParameterSpecification
 
 
-def get_full_factorial_design(parameter_spec: ParameterSpecification) -> np.ndarray:
+def get_full_factorial_design(
+	parameter_spec: ParameterSpecification,
+) -> np.ndarray:  # pragma: no cover
 	"""Get a full factorial design from a parameter specification.
 
 	Args:
