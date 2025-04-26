@@ -874,6 +874,23 @@ constrained-solution-tracking = ["moarchiving"]
 plotting = ["matplotlib"]
 
 [[package]]
+name = "cmaes"
+version = "0.11.1"
+description = "Lightweight Covariance Matrix Adaptation Evolution Strategy (CMA-ES) implementation for Python 3."
+optional = false
+python-versions = ">=3.7"
+files = [
+    {file = "cmaes-0.11.1-py3-none-any.whl", hash = "sha256:1de77d2175045389680619c1e9b6d59d90e7888524d9e440e1704ba001de9fcc"},
+    {file = "cmaes-0.11.1.tar.gz", hash = "sha256:cf71fa3679814723be771f2c9edd85f465b1bc1e409e1ad6d8a9e481efcd5160"},
+]
+
+[package.dependencies]
+numpy = "*"
+
+[package.extras]
+cmawm = ["scipy"]
+
+[[package]]
 name = "codespell"
 version = "2.4.1"
 description = "Fix common misspellings in text files"
@@ -7648,4 +7665,4 @@ torchx = ["torchx"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.10,<3.13"
-content-hash = "9a9c7d58596207a5d0e9c9ca44cb004a5a3739824f2596c2a21555a2286b7b30"
+content-hash = "f3439a5cc540628fbc62cb5568b525b4529c75fd3a99e7ef5e2d6a21c2d34f30"

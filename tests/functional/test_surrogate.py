@@ -19,6 +19,41 @@ from calisim.surrogate import (
 from ..conftest import get_calibrator
 
 
+def test_sklearn_unsupported_emulator(
+	sir_model: ExampleModelContainer,
+	sir_parameter_spec: ParameterSpecification,
+	outdir: str,
+	l2_norm_metric: DistanceMetricBase,
+) -> None:
+	observed_data = sir_model.observed_data
+
+	calibration_kwargs = dict(
+		method="__functional_test__",
+		n_samples=50,
+		use_shap=True,
+		test_size=0.1,
+		flatten_Y=True,
+		calibration_func_kwargs=dict(t=observed_data.day),
+		method_kwargs=dict(),
+	)
+
+	calibrator = get_calibrator(
+		SurrogateModelMethod,
+		SurrogateModelMethodModel,
+		sir_model,
+		sir_parameter_spec,
+		"sklearn",
+		outdir,
+		sir_model.output_labels,
+		calibration_kwargs,
+		l2_norm_metric,
+	)
+
+	with pytest.raises(ValueError) as exc_info:
+		calibrator.specify().execute().analyze()
+	assert "Unsupported emulator" in str(exc_info.value)
+
+
 def test_sklearn_gp(
 	sir_model: ExampleModelContainer,
 	sir_parameter_spec: ParameterSpecification,

@@ -49,12 +49,19 @@ class OpenTurnsUncertaintyAnalysis(OpenTurnsBase):
 			self.X_test = None
 			self.Y_test = None
 
+		solvers = ["functional_chaos", "kriging"]
 		solver_name = self.specification.solver
+		if solver_name not in solvers:
+			raise ValueError(
+				f"Unsupported solver: {solver_name}.",
+				f"Supported solvers are {', '.join(solvers)}",
+			)
+
 		if solver_name == "functional_chaos":
 			estimator = FunctionalChaosEstimator(
 				self.parameters, self.specification.order
 			)
-		elif solver_name == "kriging":
+		else:
 			method_kwargs = self.specification.method_kwargs
 			if method_kwargs is None:
 				method_kwargs = {}
@@ -68,11 +75,6 @@ class OpenTurnsUncertaintyAnalysis(OpenTurnsBase):
 			method_kwargs["parameters"] = self.parameters
 			method_kwargs["n_out"] = self.specification.n_out
 			estimator = KrigingEstimator(**method_kwargs)
-		else:
-			raise ValueError(
-				"Solver must be 'functional_chaos' or 'kriging' \
-					for OpenTurnsUncertaintyAnalysis execute()"
-			)
 
 		estimator.fit(X, Y)
 		self.emulator = estimator

@@ -5,6 +5,8 @@ A battery of tests to validate the sensitivity calibration procedures.
 
 """
 
+import pytest
+
 from calisim.base import ExampleModelContainer
 from calisim.data_model import ParameterSpecification
 from calisim.sensitivity import (
@@ -50,6 +52,38 @@ def test_salib(
 
 	calibrator.specify().execute().analyze()
 	assert calibrator.implementation.sp is not None
+
+
+def test_openturns_unsupported_algorithm(
+	sir_model: ExampleModelContainer,
+	sir_parameter_spec: ParameterSpecification,
+	outdir: str,
+	l2_norm_metric: DistanceMetricBase,
+) -> None:
+	observed_data = sir_model.observed_data
+
+	calibration_kwargs = dict(
+		method="__functional_test__",
+		order=4,
+		n_samples=256,
+		calibration_func_kwargs=dict(t=observed_data.day),
+	)
+
+	calibrator = get_calibrator(
+		SensitivityAnalysisMethod,
+		SensitivityAnalysisMethodModel,
+		sir_model,
+		sir_parameter_spec,
+		"openturns",
+		outdir,
+		sir_model.output_labels,
+		calibration_kwargs,
+		l2_norm_metric,
+	)
+
+	with pytest.raises(ValueError) as exc_info:
+		calibrator.specify().execute().analyze()
+	assert "Unsupported sensitivity analysis algorithm" in str(exc_info.value)
 
 
 def test_openturns_saltelli(

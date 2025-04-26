@@ -55,8 +55,8 @@ class ChaospyUncertaintyAnalysis(CalibrationWorkflowBase):
 		solver_name = self.specification.solver
 		if solver_name not in solvers:
 			raise ValueError(
-				f"Unsupported Chaospy solver: {solver_name}.",
-				f"Supported Chaospy solvers are {', '.join(solvers)}",
+				f"Unsupported solver: {solver_name}.",
+				f"Supported solvers are {', '.join(solvers)}",
 			)
 
 		order = self.specification.order

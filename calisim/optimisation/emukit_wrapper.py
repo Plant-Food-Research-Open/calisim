@@ -14,7 +14,6 @@ from emukit.bayesian_optimization.acquisitions import (
 from emukit.bayesian_optimization.acquisitions.local_penalization import (
 	LocalPenalization,
 )
-from emukit.bayesian_optimization.acquisitions.log_acquisition import LogAcquisition
 from emukit.bayesian_optimization.loops import BayesianOptimizationLoop
 from emukit.core.initial_designs import RandomDesign
 from matplotlib import pyplot as plt
@@ -52,7 +51,6 @@ class EmukitOptimisation(EmukitBase):
 		acquisition_funcs = dict(
 			ei=ExpectedImprovement,
 			poi=ProbabilityOfImprovement,
-			la=LogAcquisition,
 			lp=LocalPenalization,
 			nlcb=NegativeLowerConfidenceBound,
 		)
