@@ -19,7 +19,7 @@ from calisim.surrogate import (
 from ..conftest import get_calibrator
 
 
-def test_sklearn(
+def test_sklearn_gp(
 	sir_model: ExampleModelContainer,
 	sir_parameter_spec: ParameterSpecification,
 	outdir: str,
@@ -35,6 +35,344 @@ def test_sklearn(
 		flatten_Y=True,
 		calibration_func_kwargs=dict(t=observed_data.day),
 		method_kwargs=dict(kernel=kernels.RBF()),
+	)
+
+	calibrator = get_calibrator(
+		SurrogateModelMethod,
+		SurrogateModelMethodModel,
+		sir_model,
+		sir_parameter_spec,
+		"sklearn",
+		outdir,
+		sir_model.output_labels,
+		calibration_kwargs,
+		l2_norm_metric,
+	)
+
+	calibrator.specify().execute().analyze()
+	assert calibrator.get_emulator() is not None
+
+
+def test_sklearn_emukit_gp(
+	sir_model: ExampleModelContainer,
+	sir_parameter_spec: ParameterSpecification,
+	outdir: str,
+) -> None:
+	observed_data = sir_model.observed_data
+
+	calibration_kwargs = dict(
+		method="emukit_gp",
+		n_samples=5,
+		use_shap=True,
+		test_size=0.1,
+		flatten_Y=True,
+		calibration_func_kwargs=dict(t=observed_data.day),
+		method_kwargs=dict(),
+	)
+
+	calibrator = get_calibrator(
+		SurrogateModelMethod,
+		SurrogateModelMethodModel,
+		sir_model,
+		sir_parameter_spec,
+		"sklearn",
+		outdir,
+		sir_model.output_labels,
+		calibration_kwargs,
+	)
+
+	calibrator.specify().execute().analyze()
+	assert calibrator.get_emulator() is not None
+
+
+def test_sklearn_rf(
+	sir_model: ExampleModelContainer,
+	sir_parameter_spec: ParameterSpecification,
+	outdir: str,
+	l2_norm_metric: DistanceMetricBase,
+) -> None:
+	observed_data = sir_model.observed_data
+
+	calibration_kwargs = dict(
+		method="rf",
+		n_samples=50,
+		use_shap=True,
+		test_size=0.1,
+		flatten_Y=True,
+		calibration_func_kwargs=dict(t=observed_data.day),
+		method_kwargs=dict(),
+	)
+
+	calibrator = get_calibrator(
+		SurrogateModelMethod,
+		SurrogateModelMethodModel,
+		sir_model,
+		sir_parameter_spec,
+		"sklearn",
+		outdir,
+		sir_model.output_labels,
+		calibration_kwargs,
+		l2_norm_metric,
+	)
+
+	calibrator.specify().execute().analyze()
+	assert calibrator.get_emulator() is not None
+
+
+def test_sklearn_gb(
+	sir_model: ExampleModelContainer,
+	sir_parameter_spec: ParameterSpecification,
+	outdir: str,
+	l2_norm_metric: DistanceMetricBase,
+) -> None:
+	observed_data = sir_model.observed_data
+
+	calibration_kwargs = dict(
+		method="gb",
+		n_samples=50,
+		use_shap=True,
+		test_size=0.1,
+		flatten_Y=True,
+		calibration_func_kwargs=dict(t=observed_data.day),
+		method_kwargs=dict(),
+	)
+
+	calibrator = get_calibrator(
+		SurrogateModelMethod,
+		SurrogateModelMethodModel,
+		sir_model,
+		sir_parameter_spec,
+		"sklearn",
+		outdir,
+		sir_model.output_labels,
+		calibration_kwargs,
+		l2_norm_metric,
+	)
+
+	calibrator.specify().execute().analyze()
+	assert calibrator.get_emulator() is not None
+
+
+def test_sklearn_lr(
+	sir_model: ExampleModelContainer,
+	sir_parameter_spec: ParameterSpecification,
+	outdir: str,
+	l2_norm_metric: DistanceMetricBase,
+) -> None:
+	observed_data = sir_model.observed_data
+
+	calibration_kwargs = dict(
+		method="lr",
+		n_samples=50,
+		use_shap=True,
+		test_size=0.1,
+		flatten_Y=True,
+		calibration_func_kwargs=dict(t=observed_data.day),
+		method_kwargs=dict(),
+	)
+
+	calibrator = get_calibrator(
+		SurrogateModelMethod,
+		SurrogateModelMethodModel,
+		sir_model,
+		sir_parameter_spec,
+		"sklearn",
+		outdir,
+		sir_model.output_labels,
+		calibration_kwargs,
+		l2_norm_metric,
+	)
+
+	calibrator.specify().execute().analyze()
+	assert calibrator.get_emulator() is not None
+
+
+def test_sklearn_elastic(
+	sir_model: ExampleModelContainer,
+	sir_parameter_spec: ParameterSpecification,
+	outdir: str,
+	l2_norm_metric: DistanceMetricBase,
+) -> None:
+	observed_data = sir_model.observed_data
+
+	calibration_kwargs = dict(
+		method="elastic",
+		n_samples=50,
+		use_shap=True,
+		test_size=0.1,
+		flatten_Y=True,
+		calibration_func_kwargs=dict(t=observed_data.day),
+		method_kwargs=dict(),
+	)
+
+	calibrator = get_calibrator(
+		SurrogateModelMethod,
+		SurrogateModelMethodModel,
+		sir_model,
+		sir_parameter_spec,
+		"sklearn",
+		outdir,
+		sir_model.output_labels,
+		calibration_kwargs,
+		l2_norm_metric,
+	)
+
+	calibrator.specify().execute().analyze()
+	assert calibrator.get_emulator() is not None
+
+
+def test_sklearn_ridge(
+	sir_model: ExampleModelContainer,
+	sir_parameter_spec: ParameterSpecification,
+	outdir: str,
+	l2_norm_metric: DistanceMetricBase,
+) -> None:
+	observed_data = sir_model.observed_data
+
+	calibration_kwargs = dict(
+		method="ridge",
+		n_samples=50,
+		use_shap=True,
+		test_size=0.1,
+		flatten_Y=True,
+		calibration_func_kwargs=dict(t=observed_data.day),
+		method_kwargs=dict(),
+	)
+
+	calibrator = get_calibrator(
+		SurrogateModelMethod,
+		SurrogateModelMethodModel,
+		sir_model,
+		sir_parameter_spec,
+		"sklearn",
+		outdir,
+		sir_model.output_labels,
+		calibration_kwargs,
+		l2_norm_metric,
+	)
+
+	calibrator.specify().execute().analyze()
+	assert calibrator.get_emulator() is not None
+
+
+def test_sklearn_knn(
+	sir_model: ExampleModelContainer,
+	sir_parameter_spec: ParameterSpecification,
+	outdir: str,
+	l2_norm_metric: DistanceMetricBase,
+) -> None:
+	observed_data = sir_model.observed_data
+
+	calibration_kwargs = dict(
+		method="knn",
+		n_samples=50,
+		use_shap=True,
+		test_size=0.1,
+		flatten_Y=True,
+		calibration_func_kwargs=dict(t=observed_data.day),
+		method_kwargs=dict(),
+	)
+
+	calibrator = get_calibrator(
+		SurrogateModelMethod,
+		SurrogateModelMethodModel,
+		sir_model,
+		sir_parameter_spec,
+		"sklearn",
+		outdir,
+		sir_model.output_labels,
+		calibration_kwargs,
+		l2_norm_metric,
+	)
+
+	calibrator.specify().execute().analyze()
+	assert calibrator.get_emulator() is not None
+
+
+def test_sklearn_kr(
+	sir_model: ExampleModelContainer,
+	sir_parameter_spec: ParameterSpecification,
+	outdir: str,
+	l2_norm_metric: DistanceMetricBase,
+) -> None:
+	observed_data = sir_model.observed_data
+
+	calibration_kwargs = dict(
+		method="kr",
+		n_samples=50,
+		use_shap=True,
+		test_size=0.1,
+		flatten_Y=True,
+		calibration_func_kwargs=dict(t=observed_data.day),
+		method_kwargs=dict(),
+	)
+
+	calibrator = get_calibrator(
+		SurrogateModelMethod,
+		SurrogateModelMethodModel,
+		sir_model,
+		sir_parameter_spec,
+		"sklearn",
+		outdir,
+		sir_model.output_labels,
+		calibration_kwargs,
+		l2_norm_metric,
+	)
+
+	calibrator.specify().execute().analyze()
+	assert calibrator.get_emulator() is not None
+
+
+def test_sklearn_linear_svm(
+	sir_model: ExampleModelContainer,
+	sir_parameter_spec: ParameterSpecification,
+	outdir: str,
+	l2_norm_metric: DistanceMetricBase,
+) -> None:
+	observed_data = sir_model.observed_data
+
+	calibration_kwargs = dict(
+		method="linear_svm",
+		n_samples=50,
+		use_shap=True,
+		test_size=0.1,
+		flatten_Y=True,
+		calibration_func_kwargs=dict(t=observed_data.day),
+		method_kwargs=dict(),
+	)
+
+	calibrator = get_calibrator(
+		SurrogateModelMethod,
+		SurrogateModelMethodModel,
+		sir_model,
+		sir_parameter_spec,
+		"sklearn",
+		outdir,
+		sir_model.output_labels,
+		calibration_kwargs,
+		l2_norm_metric,
+	)
+
+	calibrator.specify().execute().analyze()
+	assert calibrator.get_emulator() is not None
+
+
+def test_sklearn_nu_svm(
+	sir_model: ExampleModelContainer,
+	sir_parameter_spec: ParameterSpecification,
+	outdir: str,
+	l2_norm_metric: DistanceMetricBase,
+) -> None:
+	observed_data = sir_model.observed_data
+
+	calibration_kwargs = dict(
+		method="nu_svm",
+		n_samples=50,
+		use_shap=True,
+		test_size=0.1,
+		flatten_Y=True,
+		calibration_func_kwargs=dict(t=observed_data.day),
+		method_kwargs=dict(),
 	)
 
 	calibrator = get_calibrator(

@@ -18,7 +18,7 @@ from calisim.uncertainty import (
 from ..conftest import get_calibrator
 
 
-def test_chaospy(
+def test_chaospy_linear_least_squares(
 	sir_model: ExampleModelContainer,
 	sir_parameter_spec: ParameterSpecification,
 	outdir: str,
@@ -31,6 +31,237 @@ def test_chaospy(
 		method="sobol",
 		order=4,
 		n_samples=100,
+		flatten_Y=True,
+		calibration_func_kwargs=dict(t=observed_data.day),
+		method_kwargs=dict(rule="cholesky", normed=False, cross_truncation=1.0),
+	)
+
+	calibrator = get_calibrator(
+		UncertaintyAnalysisMethod,
+		UncertaintyAnalysisMethodModel,
+		sir_model,
+		sir_parameter_spec,
+		"chaospy",
+		outdir,
+		sir_model.output_labels,
+		calibration_kwargs,
+	)
+
+	calibrator.specify().execute().analyze()
+	assert calibrator.get_emulator() is not None
+
+
+def test_chaospy_linear_elastic(
+	sir_model: ExampleModelContainer,
+	sir_parameter_spec: ParameterSpecification,
+	outdir: str,
+) -> None:
+	observed_data = sir_model.observed_data
+
+	calibration_kwargs = dict(
+		solver="linear",
+		algorithm="elastic",
+		method="sobol",
+		order=4,
+		n_samples=100,
+		flatten_Y=True,
+		calibration_func_kwargs=dict(t=observed_data.day),
+		method_kwargs=dict(rule="cholesky", normed=False, cross_truncation=1.0),
+	)
+
+	calibrator = get_calibrator(
+		UncertaintyAnalysisMethod,
+		UncertaintyAnalysisMethodModel,
+		sir_model,
+		sir_parameter_spec,
+		"chaospy",
+		outdir,
+		sir_model.output_labels,
+		calibration_kwargs,
+	)
+
+	calibrator.specify().execute().analyze()
+	assert calibrator.get_emulator() is not None
+
+
+def test_chaospy_linear_lasso(
+	sir_model: ExampleModelContainer,
+	sir_parameter_spec: ParameterSpecification,
+	outdir: str,
+) -> None:
+	observed_data = sir_model.observed_data
+
+	calibration_kwargs = dict(
+		solver="linear",
+		algorithm="lasso",
+		method="sobol",
+		order=4,
+		n_samples=100,
+		flatten_Y=True,
+		calibration_func_kwargs=dict(t=observed_data.day),
+		method_kwargs=dict(rule="cholesky", normed=False, cross_truncation=1.0),
+	)
+
+	calibrator = get_calibrator(
+		UncertaintyAnalysisMethod,
+		UncertaintyAnalysisMethodModel,
+		sir_model,
+		sir_parameter_spec,
+		"chaospy",
+		outdir,
+		sir_model.output_labels,
+		calibration_kwargs,
+	)
+
+	calibrator.specify().execute().analyze()
+	assert calibrator.get_emulator() is not None
+
+
+def test_chaospy_linear_lasso_lars(
+	sir_model: ExampleModelContainer,
+	sir_parameter_spec: ParameterSpecification,
+	outdir: str,
+) -> None:
+	observed_data = sir_model.observed_data
+
+	calibration_kwargs = dict(
+		solver="linear",
+		algorithm="lasso_lars",
+		method="sobol",
+		order=4,
+		n_samples=100,
+		flatten_Y=True,
+		calibration_func_kwargs=dict(t=observed_data.day),
+		method_kwargs=dict(rule="cholesky", normed=False, cross_truncation=1.0),
+	)
+
+	calibrator = get_calibrator(
+		UncertaintyAnalysisMethod,
+		UncertaintyAnalysisMethodModel,
+		sir_model,
+		sir_parameter_spec,
+		"chaospy",
+		outdir,
+		sir_model.output_labels,
+		calibration_kwargs,
+	)
+
+	calibrator.specify().execute().analyze()
+	assert calibrator.get_emulator() is not None
+
+
+def test_chaospy_linear_lars(
+	sir_model: ExampleModelContainer,
+	sir_parameter_spec: ParameterSpecification,
+	outdir: str,
+) -> None:
+	observed_data = sir_model.observed_data
+
+	calibration_kwargs = dict(
+		solver="linear",
+		algorithm="lars",
+		method="sobol",
+		order=4,
+		n_samples=100,
+		flatten_Y=True,
+		calibration_func_kwargs=dict(t=observed_data.day),
+		method_kwargs=dict(rule="cholesky", normed=False, cross_truncation=1.0),
+	)
+
+	calibrator = get_calibrator(
+		UncertaintyAnalysisMethod,
+		UncertaintyAnalysisMethodModel,
+		sir_model,
+		sir_parameter_spec,
+		"chaospy",
+		outdir,
+		sir_model.output_labels,
+		calibration_kwargs,
+	)
+
+	calibrator.specify().execute().analyze()
+	assert calibrator.get_emulator() is not None
+
+
+def test_chaospy_linear_ridge(
+	sir_model: ExampleModelContainer,
+	sir_parameter_spec: ParameterSpecification,
+	outdir: str,
+) -> None:
+	observed_data = sir_model.observed_data
+
+	calibration_kwargs = dict(
+		solver="linear",
+		algorithm="ridge",
+		method="sobol",
+		order=4,
+		n_samples=100,
+		flatten_Y=True,
+		calibration_func_kwargs=dict(t=observed_data.day),
+		method_kwargs=dict(rule="cholesky", normed=False, cross_truncation=1.0),
+	)
+
+	calibrator = get_calibrator(
+		UncertaintyAnalysisMethod,
+		UncertaintyAnalysisMethodModel,
+		sir_model,
+		sir_parameter_spec,
+		"chaospy",
+		outdir,
+		sir_model.output_labels,
+		calibration_kwargs,
+	)
+
+	calibrator.specify().execute().analyze()
+	assert calibrator.get_emulator() is not None
+
+
+def test_chaospy_quadrature(
+	sir_model: ExampleModelContainer,
+	sir_parameter_spec: ParameterSpecification,
+	outdir: str,
+) -> None:
+	observed_data = sir_model.observed_data
+
+	calibration_kwargs = dict(
+		solver="quadrature",
+		algorithm="least_squares",
+		method="gaussian",
+		order=4,
+		n_samples=5,
+		flatten_Y=True,
+		calibration_func_kwargs=dict(t=observed_data.day),
+		method_kwargs=dict(rule="cholesky", normed=False, cross_truncation=1.0),
+	)
+
+	calibrator = get_calibrator(
+		UncertaintyAnalysisMethod,
+		UncertaintyAnalysisMethodModel,
+		sir_model,
+		sir_parameter_spec,
+		"chaospy",
+		outdir,
+		sir_model.output_labels,
+		calibration_kwargs,
+	)
+
+	calibrator.specify().execute().analyze()
+	assert calibrator.get_emulator() is not None
+
+
+def test_chaospy_gp(
+	sir_model: ExampleModelContainer,
+	sir_parameter_spec: ParameterSpecification,
+	outdir: str,
+) -> None:
+	observed_data = sir_model.observed_data
+
+	calibration_kwargs = dict(
+		solver="gp",
+		algorithm="least_squares",
+		method="sobol",
+		order=4,
+		n_samples=5,
 		flatten_Y=True,
 		calibration_func_kwargs=dict(t=observed_data.day),
 		method_kwargs=dict(rule="cholesky", normed=False, cross_truncation=1.0),

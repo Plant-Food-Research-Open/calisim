@@ -50,7 +50,7 @@ class SklearnSurrogateModel(SurrogateBase):
 			rf=ensemble.RandomForestRegressor,
 			gb=ensemble.GradientBoostingRegressor,
 			lr=lm.LinearRegression,
-			elastic=lm.MultiTaskElasticNet,
+			elastic=lm.ElasticNet,
 			ridge=lm.Ridge,
 			knn=neighbors.KNeighborsRegressor,
 			kr=kernel_ridge.KernelRidge,

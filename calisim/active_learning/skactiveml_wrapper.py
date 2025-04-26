@@ -13,11 +13,12 @@ from skactiveml.pool import (
 	ExpectedModelVarianceReduction,
 	GreedySamplingTarget,
 	GreedySamplingX,
-	KLDivergenceMaximization,
 	RegressionTreeBasedAL,
 )
 from skactiveml.regressor import NICKernelRegressor, SklearnRegressor
+from sklearn.ensemble import RandomForestRegressor
 from sklearn.gaussian_process import GaussianProcessRegressor
+from sklearn.tree import DecisionTreeRegressor
 
 from ..base import EmukitBase
 
@@ -57,6 +58,8 @@ class SkActiveMLActiveLearning(EmukitBase):
 		surrogates = dict(
 			nick=NICKernelRegressor,
 			gp=GaussianProcessRegressor,
+			rf=RandomForestRegressor,
+			dt=DecisionTreeRegressor,
 		)
 		surrogate_class = surrogates.get(surrogate_name, None)
 		if surrogate_class is None:
@@ -78,7 +81,7 @@ class SkActiveMLActiveLearning(EmukitBase):
 			greedy_sampling_x=GreedySamplingX,
 			greedy_sampling_target=GreedySamplingTarget,
 			regression_tree_based_al=RegressionTreeBasedAL,
-			kl_divergence_maximization=KLDivergenceMaximization,
+			# kl_divergence_maximization=KLDivergenceMaximization,
 			expected_model_change_maximization=ExpectedModelChangeMaximization,
 			expected_model_variance_reduction=ExpectedModelVarianceReduction,
 		)

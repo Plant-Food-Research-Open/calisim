@@ -101,8 +101,8 @@ class ChaospyUncertaintyAnalysis(CalibrationWorkflowBase):
 		linear_kwargs = {"fit_intercept": False}
 		linear_models = dict(
 			least_squares=lm.LinearRegression(**linear_kwargs),
-			elastic=lm.MultiTaskElasticNet(alpha=0.5, **linear_kwargs),
-			lasso=lm.MultiTaskLasso(**linear_kwargs),
+			elastic=lm.ElasticNet(alpha=0.5, **linear_kwargs),
+			lasso=lm.Lasso(**linear_kwargs),
 			lasso_lars=lm.LassoLars(**linear_kwargs),
 			lars=lm.Lars(**linear_kwargs),
 			ridge=lm.Ridge(**linear_kwargs),
