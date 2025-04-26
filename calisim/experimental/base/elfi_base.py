@@ -9,7 +9,7 @@ from collections.abc import Callable
 import elfi
 import numpy as np
 
-from ..base import CalibrationWorkflowBase
+from ...base import CalibrationWorkflowBase
 
 
 class ELFIBase(CalibrationWorkflowBase):

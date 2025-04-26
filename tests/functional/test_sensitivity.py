@@ -52,7 +52,7 @@ def test_salib(
 	assert calibrator.implementation.sp is not None
 
 
-def test_openturns(
+def test_openturns_saltelli(
 	sir_model: ExampleModelContainer,
 	sir_parameter_spec: ParameterSpecification,
 	outdir: str,
@@ -62,6 +62,37 @@ def test_openturns(
 
 	calibration_kwargs = dict(
 		method="saltelli",
+		order=4,
+		n_samples=256,
+		calibration_func_kwargs=dict(t=observed_data.day),
+	)
+
+	calibrator = get_calibrator(
+		SensitivityAnalysisMethod,
+		SensitivityAnalysisMethodModel,
+		sir_model,
+		sir_parameter_spec,
+		"openturns",
+		outdir,
+		sir_model.output_labels,
+		calibration_kwargs,
+		l2_norm_metric,
+	)
+
+	calibrator.specify().execute().analyze()
+	assert calibrator.implementation.sp is not None
+
+
+def test_openturns_chaos_sobol(
+	sir_model: ExampleModelContainer,
+	sir_parameter_spec: ParameterSpecification,
+	outdir: str,
+	l2_norm_metric: DistanceMetricBase,
+) -> None:
+	observed_data = sir_model.observed_data
+
+	calibration_kwargs = dict(
+		method="chaos_sobol",
 		order=4,
 		n_samples=256,
 		calibration_func_kwargs=dict(t=observed_data.day),

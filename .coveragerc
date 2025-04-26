@@ -9,7 +9,7 @@ omit =
 
 [report]
 skip_empty = true
-fail_under = 0
+fail_under = 70
 omit =
     */tmp*
     */Temp/*

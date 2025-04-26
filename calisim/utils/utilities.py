@@ -35,7 +35,7 @@ def get_simulation_uuid() -> str:
 	return simulation_uuid
 
 
-def get_examples_outdir() -> str:
+def get_examples_outdir() -> str:  # pragma: no cover
 	"""Get the output directory for calibration examples.
 
 	Returns:

@@ -118,7 +118,7 @@ def test_botorch(
 	assert is_close(sir_model, calibrator)
 
 
-def test_openturns(
+def test_openturns_kriging(
 	sir_model: ExampleModelContainer,
 	sir_parameter_spec: ParameterSpecification,
 	outdir: str,

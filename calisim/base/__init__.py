@@ -22,8 +22,3 @@ if importlib.util.find_spec("torch") is not None:
 	from .sbi_base import SimulationBasedInferenceBase
 
 	__all__.append(SimulationBasedInferenceBase)
-
-if importlib.util.find_spec("elfi") is not None:
-	from .elfi_base import ELFIBase
-
-	__all__.append(ELFIBase)
