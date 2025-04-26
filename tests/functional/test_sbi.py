@@ -58,9 +58,9 @@ def test_sbi(
 	observed_data = sir_model.observed_data
 
 	calibration_kwargs = dict(
-		n_samples=100,
-		n_iterations=100,
-		num_simulations=100,
+		n_samples=300,
+		n_iterations=200,
+		num_simulations=200,
 		method="nsf",
 		calibration_func_kwargs=dict(t=observed_data.day),
 		method_kwargs=dict(
