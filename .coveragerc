@@ -15,4 +15,4 @@ omit =
     */Temp/*
     */usr/local/lib*
     *tests/*
-    calisim/experimental/*
+    *calisim/experimental/*
