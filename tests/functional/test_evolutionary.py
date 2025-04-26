@@ -219,7 +219,7 @@ def test_evotorch_cmaes(
 		method="cmaes",
 		directions=["minimize"],
 		calibration_func_kwargs=dict(t=observed_data.day),
-		method_kwargs=dict(),
+		method_kwargs=dict(stdev_init=1),
 	)
 
 	calibrator = get_calibrator(
@@ -253,7 +253,7 @@ def test_evotorch_cosyne(
 		method="cosyne",
 		directions=["minimize"],
 		calibration_func_kwargs=dict(t=observed_data.day),
-		method_kwargs=dict(),
+		method_kwargs=dict(popsize=100, tournament_size=20, mutation_stdev=1),
 	)
 
 	calibrator = get_calibrator(
