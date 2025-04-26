@@ -112,7 +112,10 @@ class SkActiveMLActiveLearning(EmukitBase):
 		predicted = self.emulator.predict(X_sample)
 
 		names = self.names.copy()
-		output_label = self.specification.output_labels[0]  # type: ignore[index]
+		output_labels = self.specification.output_labels
+		if output_labels is None:
+			output_labels = ["output"]
+		output_label = output_labels[0]
 		if X_sample.shape[1] > len(names):
 			names.append("_dummy_index")
 		df = pd.DataFrame(X_sample, columns=names)

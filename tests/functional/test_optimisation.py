@@ -83,7 +83,8 @@ def test_emukit(
 	assert is_close(sir_model, calibrator)
 
 
-def test_openturns(
+@pytest.mark.torch
+def test_botorch(
 	sir_model: ExampleModelContainer,
 	sir_parameter_spec: ParameterSpecification,
 	outdir: str,
@@ -117,8 +118,7 @@ def test_openturns(
 	assert is_close(sir_model, calibrator)
 
 
-@pytest.mark.torch
-def test_botorch(
+def test_openturns(
 	sir_model: ExampleModelContainer,
 	sir_parameter_spec: ParameterSpecification,
 	outdir: str,

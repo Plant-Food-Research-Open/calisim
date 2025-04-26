@@ -167,7 +167,11 @@ class PyESMDAHistoryMatching(HistoryMatchingBase):
 		self.present_fig(fig, outdir, time_now, task, experiment_name, "plot-slice")
 
 		pred_dfs = [pd.DataFrame(preds) for preds in self.solver.d_pred]
-		output_label = self.specification.output_labels[0]  # type: ignore[index]
+		output_labels = self.specification.output_labels
+		if output_labels is None:
+			output_labels = ["output"]
+		output_label = output_labels[0]
+
 		observed_data = self.specification.observed_data
 		fig, axes = plt.subplots(nrows=2, figsize=self.specification.figsize)
 		X = np.arange(0, observed_data.shape[0], 1)

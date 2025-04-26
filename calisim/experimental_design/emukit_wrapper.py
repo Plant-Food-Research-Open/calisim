@@ -89,7 +89,11 @@ class EmukitExperimentalDesign(EmukitBase):
 		predicted_mu, predicted_std = self.emulator.predict(X_sample, return_std=True)
 
 		observed_data = self.specification.observed_data
-		output_label = self.specification.output_labels[0]  # type: ignore[index]
+		output_labels = self.specification.output_labels
+		if output_labels is None:
+			output_labels = ["output"]
+		output_label = output_labels[0]
+
 		X = np.arange(0, observed_data.shape[0], 1)
 		fig, axes = plt.subplots(nrows=2, figsize=self.specification.figsize)
 

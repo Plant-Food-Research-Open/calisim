@@ -9,6 +9,7 @@ import os.path as osp
 from abc import ABC, abstractmethod
 from collections.abc import Callable
 from functools import wraps
+from typing import Any
 
 import numpy as np
 import pandas as pd
@@ -602,6 +603,14 @@ class CalibrationWorkflowBase(ABC):
 		"""
 		return self.emulator
 
+	def get_sampler(self) -> Any:
+		"""Get the parameter sampler.
+
+		Returns:
+			Any: The sampler.
+		"""
+		return self.sampler
+
 
 class CalibrationMethodBase(CalibrationWorkflowBase):
 	"""The calibration method abstract class."""
@@ -744,3 +753,12 @@ class CalibrationMethodBase(CalibrationWorkflowBase):
 		"""
 		self._implementation_check("get_emulator")
 		return self.implementation.get_emulator()
+
+	def get_sampler(self) -> Any:
+		"""Get the parameter sampler.
+
+		Returns:
+			Any: The sampler.
+		"""
+		self._implementation_check("get_sampler")
+		return self.implementation.get_sampler()
