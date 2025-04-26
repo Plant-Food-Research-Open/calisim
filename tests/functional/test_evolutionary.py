@@ -14,34 +14,128 @@ from calisim.statistics import DistanceMetricBase
 
 from ..conftest import get_calibrator, is_close
 
-# def test_spotpy_dream(
-# 	sir_model: ExampleModelContainer,
-# 	sir_parameter_spec: ParameterSpecification,
-# 	outdir: str,
-# ) -> None:
-# 	observed_data = sir_model.observed_data
 
-# 	calibration_kwargs = dict(
-# 		n_samples=250,
-# 		method="dream",
-# 		objective="gaussianLikelihoodMeasErrorOut",
-# 		calibration_func_kwargs=dict(t=observed_data.day),
-# 		method_kwargs=dict(nChains=4, nCr=3, delta=1),
-# 	)
+def test_spotpy_unsupported_abc_objective(
+	sir_model: ExampleModelContainer,
+	sir_parameter_spec: ParameterSpecification,
+	outdir: str,
+) -> None:
+	observed_data = sir_model.observed_data
 
-# 	calibrator = get_calibrator(
-# 		EvolutionaryMethod,
-# 		EvolutionaryMethodModel,
-# 		sir_model,
-# 		sir_parameter_spec,
-# 		"spotpy",
-# 		outdir,
-# 		sir_model.output_labels,
-# 		calibration_kwargs,
-# 	)
+	calibration_kwargs = dict(
+		n_samples=250,
+		method="abc",
+		objective="__functional_test__",
+		calibration_func_kwargs=dict(t=observed_data.day),
+		method_kwargs=dict(nChains=4, nCr=3, delta=1),
+	)
 
-# 	calibrator.specify().execute().analyze()
-# 	assert is_close(sir_model, calibrator)
+	calibrator = get_calibrator(
+		EvolutionaryMethod,
+		EvolutionaryMethodModel,
+		sir_model,
+		sir_parameter_spec,
+		"spotpy",
+		outdir,
+		sir_model.output_labels,
+		calibration_kwargs,
+	)
+
+	with pytest.raises(AttributeError) as exc_info:
+		calibrator.specify().execute().analyze()
+	assert "module 'spotpy.objectivefunctions' has no attribute" in str(exc_info.value)
+
+
+def test_spotpy_unsupported_dream_likelihood(
+	sir_model: ExampleModelContainer,
+	sir_parameter_spec: ParameterSpecification,
+	outdir: str,
+) -> None:
+	observed_data = sir_model.observed_data
+
+	calibration_kwargs = dict(
+		n_samples=250,
+		method="dream",
+		objective="__functional_test__",
+		calibration_func_kwargs=dict(t=observed_data.day),
+		method_kwargs=dict(nChains=4, nCr=3, delta=1),
+	)
+
+	calibrator = get_calibrator(
+		EvolutionaryMethod,
+		EvolutionaryMethodModel,
+		sir_model,
+		sir_parameter_spec,
+		"spotpy",
+		outdir,
+		sir_model.output_labels,
+		calibration_kwargs,
+	)
+
+	with pytest.raises(AttributeError) as exc_info:
+		calibrator.specify().execute().analyze()
+	assert "module 'spotpy.likelihoods' has no attribute" in str(exc_info.value)
+
+
+def test_spotpy_unsupported_algorithm(
+	sir_model: ExampleModelContainer,
+	sir_parameter_spec: ParameterSpecification,
+	outdir: str,
+) -> None:
+	observed_data = sir_model.observed_data
+
+	calibration_kwargs = dict(
+		n_samples=250,
+		method="__functional_test__",
+		objective="rmse",
+		calibration_func_kwargs=dict(t=observed_data.day),
+		method_kwargs=dict(nChains=4, nCr=3, delta=1),
+	)
+
+	calibrator = get_calibrator(
+		EvolutionaryMethod,
+		EvolutionaryMethodModel,
+		sir_model,
+		sir_parameter_spec,
+		"spotpy",
+		outdir,
+		sir_model.output_labels,
+		calibration_kwargs,
+	)
+
+	with pytest.raises(ValueError) as exc_info:
+		calibrator.specify().execute().analyze()
+	assert "Unsupported evolutionary algorithm" in str(exc_info.value)
+
+
+def test_spotpy_dream(
+	sir_model: ExampleModelContainer,
+	sir_parameter_spec: ParameterSpecification,
+	outdir: str,
+) -> None:
+	observed_data = sir_model.observed_data
+
+	calibration_kwargs = dict(
+		n_samples=100,
+		method="dream",
+		objective="gaussianLikelihoodMeasErrorOut",
+		calibration_func_kwargs=dict(t=observed_data.day),
+		method_kwargs=dict(nChains=4, nCr=3, delta=1),
+	)
+
+	calibrator = get_calibrator(
+		EvolutionaryMethod,
+		EvolutionaryMethodModel,
+		sir_model,
+		sir_parameter_spec,
+		"spotpy",
+		outdir,
+		sir_model.output_labels,
+		calibration_kwargs,
+	)
+
+	calibrator.specify().execute().analyze()
+	assert is_close(sir_model, calibrator)
 
 
 # def test_spotpy_abc(
