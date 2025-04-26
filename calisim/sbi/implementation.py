@@ -4,19 +4,26 @@ Implements the supported simulation-based inference methods.
 
 """
 
+import importlib
 from collections.abc import Callable
 
 from pydantic import Field
 
 from ..base import CalibrationMethodBase, CalibrationWorkflowBase
 from ..data_model import CalibrationModel
-from .lampe_wrapper import LAMPESimulationBasedInference
-from .sbi_wrapper import SBISimulationBasedInference
 
 TASK = "simulation_based_inference"
-IMPLEMENTATIONS: dict[str, type[CalibrationWorkflowBase]] = dict(
-	lampe=LAMPESimulationBasedInference, sbi=SBISimulationBasedInference
-)
+IMPLEMENTATIONS: dict[str, type[CalibrationWorkflowBase]] = dict()
+
+if importlib.util.find_spec("lampe") is not None:
+	from .lampe_wrapper import LAMPESimulationBasedInference
+
+	IMPLEMENTATIONS["lampe"] = LAMPESimulationBasedInference
+
+if importlib.util.find_spec("sbi") is not None:
+	from .sbi_wrapper import SBISimulationBasedInference
+
+	IMPLEMENTATIONS["sbi"] = SBISimulationBasedInference
 
 
 def get_implementations() -> dict[str, type[CalibrationWorkflowBase]]:

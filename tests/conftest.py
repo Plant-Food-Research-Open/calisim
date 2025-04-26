@@ -55,7 +55,7 @@ def pytest_collection_modifyitems(
 	"""
 	if config.getoption("--torch"):
 		return
-	skip_torch = pytest.mark.skip(reason="Need --torch option to run")
+	skip_torch = pytest.mark.skip(reason="Requires --torch option to run test")
 	for item in items:
 		if "torch" in item.keywords:
 			item.add_marker(skip_torch)

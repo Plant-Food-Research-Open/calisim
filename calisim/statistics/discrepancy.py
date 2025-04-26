@@ -428,6 +428,7 @@ class MultivariateNormalLogLikelihood(DistanceMetricBase):
 		observed: np.ndarray,
 		simulated: np.ndarray,
 		cov_matrix: np.ndarray | None = None,
+		jitter: float = 1e-7,
 	) -> float | np.ndarray:
 		"""Calculate the distance between observed and simulated data.
 
@@ -436,12 +437,13 @@ class MultivariateNormalLogLikelihood(DistanceMetricBase):
 		    simulated (np.ndarray): The simulated data.
 			cov_matrix (np.ndarray | None, optional): The covariance
 				matrix. Defaults to None.
+			jitter (float) Jitter to stabilise the inversion of
+				the covariance matrix.
 		"""
 		if cov_matrix is None:
 			residuals = observed - simulated
 			cov_matrix = np.cov(residuals, rowvar=False, ddof=1)
-			epsilon = 1e-7
-			cov_matrix = cov_matrix + epsilon * np.eye(cov_matrix.shape[0])
+			cov_matrix = cov_matrix + jitter * np.eye(cov_matrix.shape[0])
 
 		log_likelihoods = [
 			multivariate_normal.logpdf(obs, mean=pred, cov=cov_matrix)
