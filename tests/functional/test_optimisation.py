@@ -5,6 +5,8 @@ A battery of tests to validate the optimisation calibration procedures.
 
 """
 
+import pytest
+
 from calisim.base import ExampleModelContainer
 from calisim.data_model import ParameterSpecification
 from calisim.optimisation import OptimisationMethod, OptimisationMethodModel
@@ -115,6 +117,7 @@ def test_openturns(
 	assert is_close(sir_model, calibrator)
 
 
+@pytest.mark.torch
 def test_botorch(
 	sir_model: ExampleModelContainer,
 	sir_parameter_spec: ParameterSpecification,

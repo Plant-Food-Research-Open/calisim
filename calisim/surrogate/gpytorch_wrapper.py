@@ -95,7 +95,10 @@ class GPyTorchSurrogateModel(SurrogateBase):
 				df, self.emulator, names, self.specification.test_size, outfile
 			)
 
-		output_label = self.specification.output_labels[0]  # type: ignore[index]
+		output_labels = self.specification.output_labels
+		if output_labels is None:
+			output_labels = ["output"]
+		output_label = output_labels[0]
 		if len(self.Y_shape) == 1:
 			df[f"simulated_{output_label}"] = Y
 			fig, axes = plt.subplots(

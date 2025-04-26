@@ -86,7 +86,10 @@ class SklearnSurrogateModel(SurrogateBase):
 	def analyze(self) -> None:
 		"""Analyze the results of the simulation calibration procedure."""
 		task, time_now, experiment_name, outdir = self.prepare_analyze()
-		output_label = self.specification.output_labels[0]  # type: ignore[index]
+		output_labels = self.specification.output_labels
+		if output_labels is None:
+			output_labels = ["output"]
+		output_label = output_labels[0]
 
 		names = self.names.copy()
 		if self.X.shape[1] > len(names):

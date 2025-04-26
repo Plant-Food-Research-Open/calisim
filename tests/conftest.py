@@ -24,6 +24,43 @@ from calisim.example_models import SirOdeModel
 from calisim.statistics import DistanceMetricBase, GaussianLogLikelihood, L2Norm
 
 
+def pytest_addoption(parser: pytest.Parser) -> None:
+	"""Add options to the PyTest command parser.
+
+	Args:
+	    parser (pytest.Parser): The command parser.
+	"""
+	parser.addoption(
+		"--torch", action="store_true", default=False, help="Run PyTorch tests"
+	)
+
+
+def pytest_configure(config: pytest.Config) -> None:
+	"""Add value the PyTest configuration.
+
+	Args:
+	    config (pytest.Config): The PyTest configuration.
+	"""
+	config.addinivalue_line("markers", "torch: Run PyTorch tests")
+
+
+def pytest_collection_modifyitems(
+	config: pytest.Config, items: list[pytest.Item]
+) -> None:
+	"""Modify the PyTest configuration item list.
+
+	Args:
+	    config (pytest.Config): The PyTest configuration.
+	    items (list[pytest.Item]): The item list.
+	"""
+	if config.getoption("--torch"):
+		return
+	skip_torch = pytest.mark.skip(reason="Need --torch option to run")
+	for item in items:
+		if "torch" in item.keywords:
+			item.add_marker(skip_torch)
+
+
 @pytest.fixture
 def sir_model() -> ExampleModelContainer:
 	"""Get the SIR model.
@@ -162,7 +199,9 @@ def get_calibration_func(
 		for k in parameters:
 			simulation_parameters[k] = parameters[k]
 
-		simulated_data = model.simulate(simulation_parameters)[output_labels].values
+		simulated_data = model.simulate(simulation_parameters)[
+			output_labels
+		].values.flatten()
 
 		if metric is None:
 			return simulated_data
@@ -208,7 +247,7 @@ def get_calibrator(
 	specification = spec_type(
 		experiment_name=f"{engine}_functional_test",
 		parameter_spec=parameter_spec,
-		observed_data=observed_data[output_labels].values,
+		observed_data=observed_data[output_labels].values.flatten(),
 		outdir=outdir,
 		verbose=True,
 		batched=False,

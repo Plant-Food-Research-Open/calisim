@@ -5,6 +5,7 @@ omit =
     */Temp/*
     */usr/local/lib*
     *tests/*
+    calisim/experimental/*
 
 [report]
 skip_empty = true
@@ -14,3 +15,4 @@ omit =
     */Temp/*
     */usr/local/lib*
     *tests/*
+    calisim/experimental/*
