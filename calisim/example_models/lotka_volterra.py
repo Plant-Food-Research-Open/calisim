@@ -19,7 +19,15 @@ class LotkaVolterraModel(ExampleModelBase):
 	def __init__(self) -> None:
 		"""LotkaVolterraModel constructor."""
 		super().__init__()
-
+		self.GROUND_TRUTH = dict(
+			alpha=0.52,
+			beta=0.024,
+			h0=34.0,
+			l0=5.9,
+			t=np.arange(1900.0, 1921.0, 1),
+			gamma=0.84,
+			delta=0.026,
+		)
 		self.OUTPUT_LABELS = ["lynx", "hare"]
 
 	def get_observed_data(self) -> np.ndarray | pd.DataFrame:

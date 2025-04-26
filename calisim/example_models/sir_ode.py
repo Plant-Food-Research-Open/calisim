@@ -13,11 +13,11 @@ from ..base import ExampleModelBase
 # Refer to: https://scipython.com/book2/chapter-8-scipy/additional-examples/the-sir-epidemic-model/
 
 
-class SirOdeModel(ExampleModelBase):
+class SirOdesModel(ExampleModelBase):
 	"""SIR ODE model."""
 
 	def __init__(self) -> None:
-		"""SirOdeModel constructor."""
+		"""SirOdesModel constructor."""
 		super().__init__()
 
 		self.GROUND_TRUTH = dict(

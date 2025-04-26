@@ -20,7 +20,7 @@ from calisim.data_model import (
 	ParameterDataType,
 	ParameterSpecification,
 )
-from calisim.example_models import SirOdeModel
+from calisim.example_models import SirOdesModel
 from calisim.statistics import DistanceMetricBase, GaussianLogLikelihood, L2Norm
 
 
@@ -66,9 +66,9 @@ def sir_model() -> ExampleModelContainer:
 	"""Get the SIR model.
 
 	Returns:
-	    SirOdeModel: The SIR model.
+	    SirOdesModel: The SIR model.
 	"""
-	model = SirOdeModel()
+	model = SirOdesModel()
 	container = ExampleModelContainer(model)
 	return container
 
