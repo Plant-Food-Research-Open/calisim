@@ -1,6 +1,14 @@
 Changelog
 =========
 
+[0.6.0] - 2025/04/27
+--------------------
+
+Added
+^^^^^
+
+* Added unit and functional tests for calisim modules.
+
 [0.5.0] - 2025/04/25
 --------------------
 
