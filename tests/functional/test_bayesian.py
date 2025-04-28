@@ -1,7 +1,7 @@
 """
-Functional tests for the ABC module.
+Functional tests for the Bayesian module.
 
-A battery of tests to validate the ABC calibration procedures.
+A battery of tests to validate the Bayesian calibration procedures.
 
 """
 
