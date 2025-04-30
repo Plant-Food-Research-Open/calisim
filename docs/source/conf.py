@@ -6,7 +6,7 @@ import calisim
 sys.path.insert(0, os.path.abspath("../.."))
 
 project = "calisim"
-copyright = "2025, James Bristow"
+copyright = "2025, The New Zealand Institute for Plant and Food Research Limited"
 author = "James Bristow"
 release = calisim.__version__
 
