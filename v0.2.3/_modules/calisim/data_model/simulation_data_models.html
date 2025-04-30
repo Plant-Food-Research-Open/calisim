@@ -1,0 +1,341 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>calisim.data_model.simulation_data_models &mdash; calisim 0.1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/autodoc_pydantic.css" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=01f34227"></script>
+      <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            calisim
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/basics/installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/basics/quickstart.html">Quickstart</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api_reference/index.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../changelogs/changelog.html">Changelog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../licenses/license.html">License</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">calisim</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">calisim.data_model.simulation_data_models</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for calisim.data_model.simulation_data_models</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Contains Pydantic data models for the simulation</span>
+
+<span class="sd">Several Pydantic data models are defined for various</span>
+<span class="sd">simulation calibration procedures.</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">enum</span> <span class="kn">import</span> <span class="n">Enum</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">from</span> <span class="nn">pydantic</span> <span class="kn">import</span> <span class="n">BaseModel</span> <span class="k">as</span> <span class="n">PydanticBaseModel</span>
+<span class="kn">from</span> <span class="nn">pydantic</span> <span class="kn">import</span> <span class="n">Field</span>
+
+
+<div class="viewcode-block" id="BaseModel">
+<a class="viewcode-back" href="../../../api_reference/data_model.html#calisim.data_model.simulation_data_models.BaseModel">[docs]</a>
+<span class="k">class</span> <span class="nc">BaseModel</span><span class="p">(</span><span class="n">PydanticBaseModel</span><span class="p">):</span>
+<span class="w">	</span><span class="sd">&quot;&quot;&quot;Base Pydantic data model.</span>
+
+<span class="sd">	Args:</span>
+<span class="sd">	    PydanticBaseModel (PydanticBaseModel): The Pydantic Base model class.</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="BaseModel.Config">
+<a class="viewcode-back" href="../../../api_reference/data_model.html#calisim.data_model.simulation_data_models.BaseModel.Config">[docs]</a>
+	<span class="k">class</span> <span class="nc">Config</span><span class="p">:</span>
+		<span class="n">arbitrary_types_allowed</span> <span class="o">=</span> <span class="kc">True</span>
+		<span class="n">protected_namespaces</span> <span class="o">=</span> <span class="p">()</span></div>
+</div>
+
+
+<div class="viewcode-block" id="ParameterDataType">
+<a class="viewcode-back" href="../../../api_reference/data_model.html#calisim.data_model.simulation_data_models.ParameterDataType">[docs]</a>
+<span class="k">class</span> <span class="nc">ParameterDataType</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+	<span class="n">DISCRETE</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;discrete&quot;</span>
+	<span class="n">CONTINUOUS</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;continuous&quot;</span></div>
+
+
+
+<div class="viewcode-block" id="ParameterModel">
+<a class="viewcode-back" href="../../../api_reference/data_model.html#calisim.data_model.simulation_data_models.ParameterModel">[docs]</a>
+<span class="k">class</span> <span class="nc">ParameterModel</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="w">	</span><span class="sd">&quot;&quot;&quot;The simulation parameter data model.</span>
+
+<span class="sd">	Args:</span>
+<span class="sd">	    BaseModel (BaseModel): The Pydantic Base model class.</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+
+	<span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;The parameter name&quot;</span><span class="p">)</span>
+	<span class="n">parameter_values</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+		<span class="n">description</span><span class="o">=</span><span class="s2">&quot;The list of parameter values.&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span>
+	<span class="p">)</span>
+	<span class="n">parameter_tags</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+		<span class="n">description</span><span class="o">=</span><span class="s2">&quot;A collection of metadata tags.&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span>
+	<span class="p">)</span>
+	<span class="n">data_type</span><span class="p">:</span> <span class="n">ParameterDataType</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+		<span class="n">description</span><span class="o">=</span><span class="s2">&quot;The parameter data type&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="n">ParameterDataType</span><span class="o">.</span><span class="n">CONTINUOUS</span>
+	<span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="DistributionModel">
+<a class="viewcode-back" href="../../../api_reference/data_model.html#calisim.data_model.simulation_data_models.DistributionModel">[docs]</a>
+<span class="k">class</span> <span class="nc">DistributionModel</span><span class="p">(</span><span class="n">ParameterModel</span><span class="p">):</span>
+<span class="w">	</span><span class="sd">&quot;&quot;&quot;The probability distribution data model.</span>
+
+<span class="sd">	Args:</span>
+<span class="sd">	    ParameterModel (ParameterModel): The simulation parameter data model.</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+
+	<span class="n">distribution_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+		<span class="n">description</span><span class="o">=</span><span class="s2">&quot;The distribution name&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s2">&quot;uniform&quot;</span>
+	<span class="p">)</span>
+	<span class="n">distribution_args</span><span class="p">:</span> <span class="nb">list</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+		<span class="n">description</span><span class="o">=</span><span class="s2">&quot;The distribution arguments&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span>
+	<span class="p">)</span>
+	<span class="n">distribution_kwargs</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+		<span class="n">description</span><span class="o">=</span><span class="s2">&quot;The distribution named arguments&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span>
+	<span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="ParameterSpecification">
+<a class="viewcode-back" href="../../../api_reference/data_model.html#calisim.data_model.simulation_data_models.ParameterSpecification">[docs]</a>
+<span class="k">class</span> <span class="nc">ParameterSpecification</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="w">	</span><span class="sd">&quot;&quot;&quot;The collection of parameters.</span>
+
+<span class="sd">	Args:</span>
+<span class="sd">	    BaseModel (BaseModel): The Pydantic Base model class.</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+
+	<span class="n">parameters</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">DistributionModel</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+		<span class="n">description</span><span class="o">=</span><span class="s2">&quot;The parameter specification list&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span>
+	<span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="CalibrationModel">
+<a class="viewcode-back" href="../../../api_reference/data_model.html#calisim.data_model.simulation_data_models.CalibrationModel">[docs]</a>
+<span class="k">class</span> <span class="nc">CalibrationModel</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="w">	</span><span class="sd">&quot;&quot;&quot;The calibration data model.</span>
+
+<span class="sd">	Args:</span>
+<span class="sd">	    BaseModel (BaseModel): The Pydantic Base model class.</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+
+	<span class="n">parameter_spec</span><span class="p">:</span> <span class="n">ParameterSpecification</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+		<span class="n">description</span><span class="o">=</span><span class="s2">&quot;The parameter specification&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span>
+	<span class="p">)</span>
+	<span class="n">experiment_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+		<span class="n">description</span><span class="o">=</span><span class="s2">&quot;The modelling experiment name&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s2">&quot;default&quot;</span>
+	<span class="p">)</span>
+	<span class="n">outdir</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+		<span class="n">description</span><span class="o">=</span><span class="s2">&quot;The output directory for modelling results&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span>
+	<span class="p">)</span>
+	<span class="n">method</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;The calibration method or algorithm&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+	<span class="n">method_kwargs</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+		<span class="n">description</span><span class="o">=</span><span class="s2">&quot;The calibration method named arguments&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span>
+	<span class="p">)</span>
+	<span class="n">calibration_func_kwargs</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+		<span class="n">description</span><span class="o">=</span><span class="s2">&quot;The calibration function named arguments&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span>
+	<span class="p">)</span>
+	<span class="n">pass_calibration_workflow</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+		<span class="n">description</span><span class="o">=</span><span class="s2">&quot;Pass the calibration workflow into the calibration function&quot;</span><span class="p">,</span>
+		<span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+	<span class="p">)</span>
+	<span class="n">analyze_kwargs</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+		<span class="n">description</span><span class="o">=</span><span class="s2">&quot;The analyze step named arguments&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span>
+	<span class="p">)</span>
+	<span class="n">X</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">|</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span> <span class="o">|</span> <span class="nb">list</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+		<span class="n">description</span><span class="o">=</span><span class="s2">&quot;The simulation input data&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span>
+	<span class="p">)</span>
+	<span class="n">Y</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">|</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span> <span class="o">|</span> <span class="nb">list</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+		<span class="n">description</span><span class="o">=</span><span class="s2">&quot;The simulation output data&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span>
+	<span class="p">)</span>
+	<span class="n">test_size</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+		<span class="n">description</span><span class="o">=</span><span class="s2">&quot;The size of the testing dataset.&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mf">0.0</span>
+	<span class="p">)</span>
+	<span class="n">n_out</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;Number of simulation outputs&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+	<span class="n">observed_data</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">|</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span> <span class="o">|</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+		<span class="n">description</span><span class="o">=</span><span class="s2">&quot;The empirical or observed data&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span>
+	<span class="p">)</span>
+	<span class="n">n_samples</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;The number of samples to take&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+	<span class="n">n_chains</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;The number of Markov chains&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+	<span class="n">n_init</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;The number of initial samples or steps&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+	<span class="n">n_iterations</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+		<span class="n">description</span><span class="o">=</span><span class="s2">&quot;The number of iterations for sequential calibrators&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">1</span>
+	<span class="p">)</span>
+	<span class="n">lr</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+		<span class="n">description</span><span class="o">=</span><span class="s2">&quot;The learning rate of the model&quot;</span><span class="p">,</span>
+		<span class="n">default</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span>
+	<span class="p">)</span>
+	<span class="n">random_seed</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+		<span class="n">description</span><span class="o">=</span><span class="s2">&quot;The random seed for replicability&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span>
+	<span class="p">)</span>
+	<span class="n">n_jobs</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;The number of jobs to run in parallel&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+	<span class="n">walltime</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;The maximum calibration walltime&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+	<span class="n">output_labels</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+		<span class="n">description</span><span class="o">=</span><span class="s2">&quot;The list of simulation output names&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span>
+	<span class="p">)</span>
+	<span class="n">groups</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+		<span class="n">description</span><span class="o">=</span><span class="s2">&quot;The list of parameter groups&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span>
+	<span class="p">)</span>
+	<span class="n">parallel_backend</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+		<span class="n">description</span><span class="o">=</span><span class="s2">&quot;The backend engine to run parallel jobs&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s2">&quot;&quot;</span>
+	<span class="p">)</span>
+	<span class="n">batched</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;Whether to batch the simulations&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+	<span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+		<span class="n">description</span><span class="o">=</span><span class="s2">&quot;Whether to print calibration messages&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">False</span>
+	<span class="p">)</span>
+	<span class="n">figsize</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+		<span class="n">description</span><span class="o">=</span><span class="s2">&quot;The figure size for visualisations&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">12</span><span class="p">)</span>
+	<span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="ParameterEstimateModel">
+<a class="viewcode-back" href="../../../api_reference/data_model.html#calisim.data_model.simulation_data_models.ParameterEstimateModel">[docs]</a>
+<span class="k">class</span> <span class="nc">ParameterEstimateModel</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="w">	</span><span class="sd">&quot;&quot;&quot;The simulation parameter estimate data model.</span>
+
+<span class="sd">	Args:</span>
+<span class="sd">	    BaseModel (BaseModel): The Pydantic Base model class.</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+
+	<span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;The parameter name.&quot;</span><span class="p">)</span>
+	<span class="n">estimate</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+		<span class="n">description</span><span class="o">=</span><span class="s2">&quot;The estimated parameter value; a point estimate&quot;</span>
+	<span class="p">)</span>
+	<span class="n">uncertainty</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+		<span class="n">description</span><span class="o">=</span><span class="s2">&quot;The uncertainty of the parameter estimate&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span>
+	<span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="ParameterEstimatesModel">
+<a class="viewcode-back" href="../../../api_reference/data_model.html#calisim.data_model.simulation_data_models.ParameterEstimatesModel">[docs]</a>
+<span class="k">class</span> <span class="nc">ParameterEstimatesModel</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="w">	</span><span class="sd">&quot;&quot;&quot;The simulation parameter estimates data model.</span>
+
+<span class="sd">	Args:</span>
+<span class="sd">	    BaseModel (BaseModel): The Pydantic Base model class.</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+
+	<span class="n">estimates</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">ParameterEstimateModel</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+		<span class="n">description</span><span class="o">=</span><span class="s2">&quot;The set of parameter estimates&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span>
+	<span class="p">)</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, James Bristow.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  
+<div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+        <span class="fa fa-book"> Other Versions</span>
+        v0.2.3
+        <span class="fa fa-caret-down"></span>
+    </span>
+    <div class="rst-other-versions">
+        <dl>
+            <dt>Tags</dt>
+            <dd><a href="../../../../pfr-internal-v0.1.0/index.html">pfr-internal-v0.1.0</a></dd>
+            <dd><a href="../../../../pfr-internal-v02.0/index.html">pfr-internal-v02.0</a></dd>
+            <dd><a href="../../../../v0.1.0/index.html">v0.1.0</a></dd>
+            <dd><a href="../../../../v0.2.0/index.html">v0.2.0</a></dd>
+            <dd><a href="../../../../v0.2.1/index.html">v0.2.1</a></dd>
+            <dd><a href="../../../../v0.2.2/index.html">v0.2.2</a></dd>
+            <dd><a href="simulation_data_models.html">v0.2.3</a></dd>
+            <dd><a href="../../../../v0.3.0/index.html">v0.3.0</a></dd>
+            <dd><a href="../../../../v0.3.1/index.html">v0.3.1</a></dd>
+            <dd><a href="../../../../v0.4.0/index.html">v0.4.0</a></dd>
+            <dd><a href="../../../../v0.5.0/index.html">v0.5.0</a></dd>
+            <dd><a href="../../../../v0.6.0/index.html">v0.6.0</a></dd>
+        </dl>
+    </div>
+</div><script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
