@@ -95,7 +95,7 @@ class OpenTurnsOptimisation(OpenTurnsBase):
 
 		result = self.study.getResult()
 		graph = result.drawOptimalValueHistory()
-		view = viewer.View(graph)
+		view = viewer.View(graph, figure_kw={"figsize": self.specification.figsize})
 		if outdir is not None:
 			outfile = self.join(
 				outdir,
@@ -105,7 +105,7 @@ class OpenTurnsOptimisation(OpenTurnsBase):
 			view.save(outfile)
 
 		graph = result.drawErrorHistory()
-		view = viewer.View(graph)
+		view = viewer.View(graph, figure_kw={"figsize": self.specification.figsize})
 		if outdir is not None:
 			outfile = self.join(
 				outdir, f"{time_now}-{task}-{experiment_name}_plot_error_history.png"

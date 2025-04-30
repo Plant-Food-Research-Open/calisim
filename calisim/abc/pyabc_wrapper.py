@@ -108,8 +108,9 @@ class PyABCApproximateBayesianComputation(CalibrationWorkflowBase):
 
 			return summary_stats
 
-		if self.specification.n_jobs > 1:
-			sampler = pyabc.MulticoreEvalParallelSampler
+		n_jobs = self.specification.n_jobs
+		if n_jobs > 1:
+			sampler = pyabc.MulticoreEvalParallelSampler(n_procs=n_jobs)
 		else:
 			sampler = pyabc.SingleCoreSampler(check_max_eval=True)
 
@@ -158,7 +159,7 @@ class PyABCApproximateBayesianComputation(CalibrationWorkflowBase):
 			pyabc.visualization.plot_acceptance_rates_trajectory,
 			pyabc.visualization.plot_kde_matrix_highlevel,
 		]:
-			abc_plot = plot_func(self.history)
+			plot_func(self.history)
 			if outdir is not None:
 				outfile = self.join(
 					outdir,
@@ -169,7 +170,8 @@ class PyABCApproximateBayesianComputation(CalibrationWorkflowBase):
 				plt.savefig(outfile)
 				plt.close()
 			else:
-				abc_plot.show()
+				plt.show()
+				plt.close()
 
 		if outdir is None:
 			return

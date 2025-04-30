@@ -53,6 +53,7 @@ class OpenTurnsBase(CalibrationWorkflowBase):
 
 		distribution_collection = ot.DistributionCollection(parameters)
 		self.parameters = ot.JointDistribution(distribution_collection)
+		self.parameters.setDescription(self.names)
 
 	def get_ot_func_wrapper(self, func_sample: Callable) -> Callable:
 		"""Get an OpenTurns wrapper for Python functions.

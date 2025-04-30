@@ -94,7 +94,7 @@ class OpenTurnsReliabilityAnalysis(OpenTurnsBase):
 
 		result = self.sampler.getResult()
 		graph = result.drawImportanceFactors()
-		view = viewer.View(graph)
+		view = viewer.View(graph, figure_kw={"figsize": self.specification.figsize})
 		if outdir is not None:
 			outfile = self.join(
 				outdir,
@@ -105,7 +105,7 @@ class OpenTurnsReliabilityAnalysis(OpenTurnsBase):
 
 		graph = self.sampler.drawProbabilityConvergence()
 		graph.setLogScale(ot.GraphImplementation.LOGX)
-		view = viewer.View(graph)
+		view = viewer.View(graph, figure_kw={"figsize": self.specification.figsize})
 		if outdir is not None:
 			outfile = self.join(
 				outdir,

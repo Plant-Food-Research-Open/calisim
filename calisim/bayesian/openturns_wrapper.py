@@ -118,7 +118,7 @@ class OpenTurnsBayesianCalibration(OpenTurnsBase):
 			graph.setTitle(parameter_name)
 			graph.setLegends(["Posterior", "Prior"])
 			grid.setGraph(parameter_index, 0, graph)
-		view = viewer.View(grid)
+		view = viewer.View(grid, figure_kw={"figsize": self.specification.figsize})
 		if outdir is not None:
 			outfile = self.join(
 				outdir, f"{time_now}-{task}-{experiment_name}_plot_posterior.png"
