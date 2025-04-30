@@ -7,6 +7,7 @@ ______________________________________________________________________
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
 [![pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit)](https://github.com/pre-commit/pre-commit)
+[![security: bandit](https://img.shields.io/badge/security-bandit-yellow.svg)](https://github.com/PyCQA/bandit)
 [![Coverage](https://raw.githubusercontent.com/Plant-Food-Research-Open/calisim/refs/heads/gh-pages/badges/coverage.svg)](https://github.com/Plant-Food-Research-Open/calisim)
 [![Lint](https://github.com/Plant-Food-Research-Open/calisim/actions/workflows/lint.yaml/badge.svg?branch=main)](https://github.com/Plant-Food-Research-Open/calisim/actions/workflows/lint.yaml)
 [![Test](https://github.com/Plant-Food-Research-Open/calisim/actions/workflows/test.yaml/badge.svg?branch=main)](https://github.com/Plant-Food-Research-Open/calisim/actions/workflows/test.yaml)
