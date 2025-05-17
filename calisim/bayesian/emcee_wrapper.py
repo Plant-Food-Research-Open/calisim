@@ -6,6 +6,8 @@ the emcee library.
 
 """
 
+from multiprocessing import Pool
+
 import corner
 import emcee
 import matplotlib.pyplot as plt
@@ -14,6 +16,28 @@ import pandas as pd
 
 from ..base import CalibrationWorkflowBase
 from ..data_model import ParameterEstimateModel
+
+
+def target_function(X: np.ndarray, self: CalibrationWorkflowBase) -> np.ndarray:
+	bayesian_calibration_kwargs = self.get_calibration_func_kwargs()
+	lower_bounds, upper_bounds = self.bounds
+	for i, x in enumerate(X):
+		if x < lower_bounds[i] or x > upper_bounds[i]:
+			return -np.inf
+
+	X = np.array([X])
+	Y = self.calibration_func_wrapper(
+		X,
+		self,
+		self.specification.observed_data,
+		self.names,
+		self.data_types,
+		bayesian_calibration_kwargs,
+	)
+	if len(Y.shape) == 1:
+		Y = np.expand_dims(Y, axis=1)
+
+	return Y
 
 
 class EmceeBayesianCalibration(CalibrationWorkflowBase):
@@ -63,29 +87,6 @@ class EmceeBayesianCalibration(CalibrationWorkflowBase):
 
 	def execute(self) -> None:
 		"""Execute the simulation calibration procedure."""
-		bayesian_calibration_kwargs = self.get_calibration_func_kwargs()
-
-		def target_function(X: np.ndarray) -> np.ndarray:
-			lower_bounds, upper_bounds = self.bounds
-
-			for i, x in enumerate(X):
-				if x < lower_bounds[i] or x > upper_bounds[i]:
-					return -np.inf
-
-			X = np.array([X])
-			Y = self.calibration_func_wrapper(
-				X,
-				self,
-				self.specification.observed_data,
-				self.names,
-				self.data_types,
-				bayesian_calibration_kwargs,
-			)
-			if len(Y.shape) == 1:
-				Y = np.expand_dims(Y, axis=1)
-
-			return Y
-
 		n_walkers, n_dim = self.parameters.shape
 
 		supported_moves = dict(
@@ -113,15 +114,36 @@ class EmceeBayesianCalibration(CalibrationWorkflowBase):
 					)
 				moves.append((move, weight))
 
-		self.sampler = emcee.EnsembleSampler(
-			n_walkers, n_dim, target_function, moves=moves, vectorize=False
-		)
-
+		n_jobs = self.specification.n_jobs
 		n_iterations = self.specification.n_iterations
 		verbose = self.specification.verbose
-		self.sampler.run_mcmc(
-			self.parameters, n_iterations, tune=True, progress=verbose
-		)
+
+		if n_jobs > 1:
+			with Pool(n_jobs) as pool:
+				self.sampler = emcee.EnsembleSampler(
+					n_walkers,
+					n_dim,
+					target_function,
+					args=[self],
+					moves=moves,
+					pool=pool,
+					vectorize=False,
+				)
+				self.sampler.run_mcmc(
+					self.parameters, n_iterations, tune=True, progress=verbose
+				)
+		else:
+			self.sampler = emcee.EnsembleSampler(
+				n_walkers,
+				n_dim,
+				target_function,
+				args=[self],
+				moves=moves,
+				vectorize=False,
+			)
+			self.sampler.run_mcmc(
+				self.parameters, n_iterations, tune=True, progress=verbose
+			)
 
 	def analyze(self) -> None:
 		"""Analyze the results of the simulation calibration procedure."""

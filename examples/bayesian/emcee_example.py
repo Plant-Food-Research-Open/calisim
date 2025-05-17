@@ -60,6 +60,7 @@ specification = BayesianCalibrationMethodModel(
 	n_iterations=100,
 	n_samples=32,
 	# moves=dict(DEMove=0.8, DESnookerMove=0.2),
+	n_jobs=1,
 	log_density=False,
 	output_labels=["Lynx"],
 	verbose=True,
