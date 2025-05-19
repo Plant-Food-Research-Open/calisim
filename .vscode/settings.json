@@ -1,5 +1,12 @@
 {
     "editor.formatOnSave": false,
+    "[yaml]": {
+        "editor.autoIndent": "keep",
+        "editor.formatOnSave": true,
+        "editor.tabSize": 2,
+        "prettier.tabWidth": 2,
+        "editor.defaultFormatter": "redhat.vscode-yaml"
+    },
     "[python]": {
         "editor.defaultFormatter": "ms-python.black-formatter",
         "python.linting.lintOnSave": true,
