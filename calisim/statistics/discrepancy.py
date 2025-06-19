@@ -242,15 +242,22 @@ class MeanSquaredError(DistanceMetricBase):
 	"""The mean squared error distance."""
 
 	def calculate(
-		self, observed: np.ndarray, simulated: np.ndarray
+		self,
+		observed: np.ndarray,
+		simulated: np.ndarray,
+		multioutput: str = "uniform_average",
 	) -> float | np.ndarray:
 		"""Calculate the distance between observed and simulated data.
 
 		Args:
 		    observed (np.ndarray): The observed data.
 		    simulated (np.ndarray): The simulated data.
+			multioutput (str, optional): Defines aggregating of multiple output values.
+				Defaults to 'uniform_average'.
 		"""
-		distance = metrics.mean_squared_error(observed, simulated)
+		distance = metrics.mean_squared_error(
+			observed, simulated, multioutput=multioutput
+		)
 		return distance
 
 
@@ -258,15 +265,22 @@ class MeanAbsoluteError(DistanceMetricBase):
 	"""The mean absolute error distance."""
 
 	def calculate(
-		self, observed: np.ndarray, simulated: np.ndarray
+		self,
+		observed: np.ndarray,
+		simulated: np.ndarray,
+		multioutput: str = "uniform_average",
 	) -> float | np.ndarray:
 		"""Calculate the distance between observed and simulated data.
 
 		Args:
 		    observed (np.ndarray): The observed data.
 		    simulated (np.ndarray): The simulated data.
+			multioutput (str, optional): Defines aggregating of multiple output values.
+				Defaults to 'uniform_average'.
 		"""
-		distance = metrics.mean_absolute_error(observed, simulated)
+		distance = metrics.mean_absolute_error(
+			observed, simulated, multioutput=multioutput
+		)
 		return distance
 
 
@@ -274,15 +288,22 @@ class RootMeanSquaredError(DistanceMetricBase):
 	"""The root mean squared error distance."""
 
 	def calculate(
-		self, observed: np.ndarray, simulated: np.ndarray
+		self,
+		observed: np.ndarray,
+		simulated: np.ndarray,
+		multioutput: str = "uniform_average",
 	) -> float | np.ndarray:
 		"""Calculate the distance between observed and simulated data.
 
 		Args:
 		    observed (np.ndarray): The observed data.
 		    simulated (np.ndarray): The simulated data.
+			multioutput (str, optional): Defines aggregating of multiple output values.
+				Defaults to 'uniform_average'.
 		"""
-		distance = metrics.root_mean_squared_error(observed, simulated)
+		distance = metrics.root_mean_squared_error(
+			observed, simulated, multioutput=multioutput
+		)
 		return distance
 
 
@@ -290,15 +311,22 @@ class MeanPinballLoss(DistanceMetricBase):
 	"""The mean pinball loss distance."""
 
 	def calculate(
-		self, observed: np.ndarray, simulated: np.ndarray
+		self,
+		observed: np.ndarray,
+		simulated: np.ndarray,
+		multioutput: str = "uniform_average",
 	) -> float | np.ndarray:
 		"""Calculate the distance between observed and simulated data.
 
 		Args:
 		    observed (np.ndarray): The observed data.
 		    simulated (np.ndarray): The simulated data.
+			multioutput (str, optional): Defines aggregating of multiple output values.
+				Defaults to 'uniform_average'.
 		"""
-		distance = metrics.mean_pinball_loss(observed, simulated)
+		distance = metrics.mean_pinball_loss(
+			observed, simulated, multioutput=multioutput
+		)
 		return distance
 
 
@@ -306,15 +334,22 @@ class MeanAbsolutePercentageError(DistanceMetricBase):
 	"""The mean absolute percentage error distance."""
 
 	def calculate(
-		self, observed: np.ndarray, simulated: np.ndarray
+		self,
+		observed: np.ndarray,
+		simulated: np.ndarray,
+		multioutput: str = "uniform_average",
 	) -> float | np.ndarray:
 		"""Calculate the distance between observed and simulated data.
 
 		Args:
 		    observed (np.ndarray): The observed data.
 		    simulated (np.ndarray): The simulated data.
+			multioutput (str, optional): Defines aggregating of multiple output values.
+				Defaults to 'uniform_average'.
 		"""
-		distance = metrics.mean_absolute_percentage_error(observed, simulated)
+		distance = metrics.mean_absolute_percentage_error(
+			observed, simulated, multioutput=multioutput
+		)
 		return distance
 
 
@@ -322,15 +357,22 @@ class MedianAbsoluteError(DistanceMetricBase):
 	"""The median absolute error distance."""
 
 	def calculate(
-		self, observed: np.ndarray, simulated: np.ndarray
+		self,
+		observed: np.ndarray,
+		simulated: np.ndarray,
+		multioutput: str = "uniform_average",
 	) -> float | np.ndarray:
 		"""Calculate the distance between observed and simulated data.
 
 		Args:
 		    observed (np.ndarray): The observed data.
 		    simulated (np.ndarray): The simulated data.
+			multioutput (str, optional): Defines aggregating of multiple output values.
+				Defaults to 'uniform_average'.
 		"""
-		distance = metrics.median_absolute_error(observed, simulated)
+		distance = metrics.median_absolute_error(
+			observed, simulated, multioutput=multioutput
+		)
 		return distance
 
 
