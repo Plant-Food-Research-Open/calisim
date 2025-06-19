@@ -401,15 +401,22 @@
 <div class="viewcode-block" id="MeanSquaredError.calculate">
 <a class="viewcode-back" href="../../../api_reference/statistics.html#calisim.statistics.discrepancy.MeanSquaredError.calculate">[docs]</a>
 	<span class="k">def</span> <span class="nf">calculate</span><span class="p">(</span>
-		<span class="bp">self</span><span class="p">,</span> <span class="n">observed</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">simulated</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span>
+		<span class="bp">self</span><span class="p">,</span>
+		<span class="n">observed</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+		<span class="n">simulated</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+		<span class="n">multioutput</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;uniform_average&quot;</span><span class="p">,</span>
 	<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 <span class="w">		</span><span class="sd">&quot;&quot;&quot;Calculate the distance between observed and simulated data.</span>
 
 <span class="sd">		Args:</span>
 <span class="sd">		    observed (np.ndarray): The observed data.</span>
 <span class="sd">		    simulated (np.ndarray): The simulated data.</span>
+<span class="sd">			multioutput (str, optional): Defines aggregating of multiple output values.</span>
+<span class="sd">				Defaults to &#39;uniform_average&#39;.</span>
 <span class="sd">		&quot;&quot;&quot;</span>
-		<span class="n">distance</span> <span class="o">=</span> <span class="n">metrics</span><span class="o">.</span><span class="n">mean_squared_error</span><span class="p">(</span><span class="n">observed</span><span class="p">,</span> <span class="n">simulated</span><span class="p">)</span>
+		<span class="n">distance</span> <span class="o">=</span> <span class="n">metrics</span><span class="o">.</span><span class="n">mean_squared_error</span><span class="p">(</span>
+			<span class="n">observed</span><span class="p">,</span> <span class="n">simulated</span><span class="p">,</span> <span class="n">multioutput</span><span class="o">=</span><span class="n">multioutput</span>
+		<span class="p">)</span>
 		<span class="k">return</span> <span class="n">distance</span></div>
 </div>
 
@@ -423,15 +430,22 @@
 <div class="viewcode-block" id="MeanAbsoluteError.calculate">
 <a class="viewcode-back" href="../../../api_reference/statistics.html#calisim.statistics.discrepancy.MeanAbsoluteError.calculate">[docs]</a>
 	<span class="k">def</span> <span class="nf">calculate</span><span class="p">(</span>
-		<span class="bp">self</span><span class="p">,</span> <span class="n">observed</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">simulated</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span>
+		<span class="bp">self</span><span class="p">,</span>
+		<span class="n">observed</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+		<span class="n">simulated</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+		<span class="n">multioutput</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;uniform_average&quot;</span><span class="p">,</span>
 	<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 <span class="w">		</span><span class="sd">&quot;&quot;&quot;Calculate the distance between observed and simulated data.</span>
 
 <span class="sd">		Args:</span>
 <span class="sd">		    observed (np.ndarray): The observed data.</span>
 <span class="sd">		    simulated (np.ndarray): The simulated data.</span>
+<span class="sd">			multioutput (str, optional): Defines aggregating of multiple output values.</span>
+<span class="sd">				Defaults to &#39;uniform_average&#39;.</span>
 <span class="sd">		&quot;&quot;&quot;</span>
-		<span class="n">distance</span> <span class="o">=</span> <span class="n">metrics</span><span class="o">.</span><span class="n">mean_absolute_error</span><span class="p">(</span><span class="n">observed</span><span class="p">,</span> <span class="n">simulated</span><span class="p">)</span>
+		<span class="n">distance</span> <span class="o">=</span> <span class="n">metrics</span><span class="o">.</span><span class="n">mean_absolute_error</span><span class="p">(</span>
+			<span class="n">observed</span><span class="p">,</span> <span class="n">simulated</span><span class="p">,</span> <span class="n">multioutput</span><span class="o">=</span><span class="n">multioutput</span>
+		<span class="p">)</span>
 		<span class="k">return</span> <span class="n">distance</span></div>
 </div>
 
@@ -445,15 +459,22 @@
 <div class="viewcode-block" id="RootMeanSquaredError.calculate">
 <a class="viewcode-back" href="../../../api_reference/statistics.html#calisim.statistics.discrepancy.RootMeanSquaredError.calculate">[docs]</a>
 	<span class="k">def</span> <span class="nf">calculate</span><span class="p">(</span>
-		<span class="bp">self</span><span class="p">,</span> <span class="n">observed</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">simulated</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span>
+		<span class="bp">self</span><span class="p">,</span>
+		<span class="n">observed</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+		<span class="n">simulated</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+		<span class="n">multioutput</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;uniform_average&quot;</span><span class="p">,</span>
 	<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 <span class="w">		</span><span class="sd">&quot;&quot;&quot;Calculate the distance between observed and simulated data.</span>
 
 <span class="sd">		Args:</span>
 <span class="sd">		    observed (np.ndarray): The observed data.</span>
 <span class="sd">		    simulated (np.ndarray): The simulated data.</span>
+<span class="sd">			multioutput (str, optional): Defines aggregating of multiple output values.</span>
+<span class="sd">				Defaults to &#39;uniform_average&#39;.</span>
 <span class="sd">		&quot;&quot;&quot;</span>
-		<span class="n">distance</span> <span class="o">=</span> <span class="n">metrics</span><span class="o">.</span><span class="n">root_mean_squared_error</span><span class="p">(</span><span class="n">observed</span><span class="p">,</span> <span class="n">simulated</span><span class="p">)</span>
+		<span class="n">distance</span> <span class="o">=</span> <span class="n">metrics</span><span class="o">.</span><span class="n">root_mean_squared_error</span><span class="p">(</span>
+			<span class="n">observed</span><span class="p">,</span> <span class="n">simulated</span><span class="p">,</span> <span class="n">multioutput</span><span class="o">=</span><span class="n">multioutput</span>
+		<span class="p">)</span>
 		<span class="k">return</span> <span class="n">distance</span></div>
 </div>
 
@@ -467,15 +488,22 @@
 <div class="viewcode-block" id="MeanPinballLoss.calculate">
 <a class="viewcode-back" href="../../../api_reference/statistics.html#calisim.statistics.discrepancy.MeanPinballLoss.calculate">[docs]</a>
 	<span class="k">def</span> <span class="nf">calculate</span><span class="p">(</span>
-		<span class="bp">self</span><span class="p">,</span> <span class="n">observed</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">simulated</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span>
+		<span class="bp">self</span><span class="p">,</span>
+		<span class="n">observed</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+		<span class="n">simulated</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+		<span class="n">multioutput</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;uniform_average&quot;</span><span class="p">,</span>
 	<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 <span class="w">		</span><span class="sd">&quot;&quot;&quot;Calculate the distance between observed and simulated data.</span>
 
 <span class="sd">		Args:</span>
 <span class="sd">		    observed (np.ndarray): The observed data.</span>
 <span class="sd">		    simulated (np.ndarray): The simulated data.</span>
+<span class="sd">			multioutput (str, optional): Defines aggregating of multiple output values.</span>
+<span class="sd">				Defaults to &#39;uniform_average&#39;.</span>
 <span class="sd">		&quot;&quot;&quot;</span>
-		<span class="n">distance</span> <span class="o">=</span> <span class="n">metrics</span><span class="o">.</span><span class="n">mean_pinball_loss</span><span class="p">(</span><span class="n">observed</span><span class="p">,</span> <span class="n">simulated</span><span class="p">)</span>
+		<span class="n">distance</span> <span class="o">=</span> <span class="n">metrics</span><span class="o">.</span><span class="n">mean_pinball_loss</span><span class="p">(</span>
+			<span class="n">observed</span><span class="p">,</span> <span class="n">simulated</span><span class="p">,</span> <span class="n">multioutput</span><span class="o">=</span><span class="n">multioutput</span>
+		<span class="p">)</span>
 		<span class="k">return</span> <span class="n">distance</span></div>
 </div>
 
@@ -489,15 +517,22 @@
 <div class="viewcode-block" id="MeanAbsolutePercentageError.calculate">
 <a class="viewcode-back" href="../../../api_reference/statistics.html#calisim.statistics.discrepancy.MeanAbsolutePercentageError.calculate">[docs]</a>
 	<span class="k">def</span> <span class="nf">calculate</span><span class="p">(</span>
-		<span class="bp">self</span><span class="p">,</span> <span class="n">observed</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">simulated</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span>
+		<span class="bp">self</span><span class="p">,</span>
+		<span class="n">observed</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+		<span class="n">simulated</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+		<span class="n">multioutput</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;uniform_average&quot;</span><span class="p">,</span>
 	<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 <span class="w">		</span><span class="sd">&quot;&quot;&quot;Calculate the distance between observed and simulated data.</span>
 
 <span class="sd">		Args:</span>
 <span class="sd">		    observed (np.ndarray): The observed data.</span>
 <span class="sd">		    simulated (np.ndarray): The simulated data.</span>
+<span class="sd">			multioutput (str, optional): Defines aggregating of multiple output values.</span>
+<span class="sd">				Defaults to &#39;uniform_average&#39;.</span>
 <span class="sd">		&quot;&quot;&quot;</span>
-		<span class="n">distance</span> <span class="o">=</span> <span class="n">metrics</span><span class="o">.</span><span class="n">mean_absolute_percentage_error</span><span class="p">(</span><span class="n">observed</span><span class="p">,</span> <span class="n">simulated</span><span class="p">)</span>
+		<span class="n">distance</span> <span class="o">=</span> <span class="n">metrics</span><span class="o">.</span><span class="n">mean_absolute_percentage_error</span><span class="p">(</span>
+			<span class="n">observed</span><span class="p">,</span> <span class="n">simulated</span><span class="p">,</span> <span class="n">multioutput</span><span class="o">=</span><span class="n">multioutput</span>
+		<span class="p">)</span>
 		<span class="k">return</span> <span class="n">distance</span></div>
 </div>
 
@@ -511,15 +546,22 @@
 <div class="viewcode-block" id="MedianAbsoluteError.calculate">
 <a class="viewcode-back" href="../../../api_reference/statistics.html#calisim.statistics.discrepancy.MedianAbsoluteError.calculate">[docs]</a>
 	<span class="k">def</span> <span class="nf">calculate</span><span class="p">(</span>
-		<span class="bp">self</span><span class="p">,</span> <span class="n">observed</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">simulated</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span>
+		<span class="bp">self</span><span class="p">,</span>
+		<span class="n">observed</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+		<span class="n">simulated</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+		<span class="n">multioutput</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;uniform_average&quot;</span><span class="p">,</span>
 	<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 <span class="w">		</span><span class="sd">&quot;&quot;&quot;Calculate the distance between observed and simulated data.</span>
 
 <span class="sd">		Args:</span>
 <span class="sd">		    observed (np.ndarray): The observed data.</span>
 <span class="sd">		    simulated (np.ndarray): The simulated data.</span>
+<span class="sd">			multioutput (str, optional): Defines aggregating of multiple output values.</span>
+<span class="sd">				Defaults to &#39;uniform_average&#39;.</span>
 <span class="sd">		&quot;&quot;&quot;</span>
-		<span class="n">distance</span> <span class="o">=</span> <span class="n">metrics</span><span class="o">.</span><span class="n">median_absolute_error</span><span class="p">(</span><span class="n">observed</span><span class="p">,</span> <span class="n">simulated</span><span class="p">)</span>
+		<span class="n">distance</span> <span class="o">=</span> <span class="n">metrics</span><span class="o">.</span><span class="n">median_absolute_error</span><span class="p">(</span>
+			<span class="n">observed</span><span class="p">,</span> <span class="n">simulated</span><span class="p">,</span> <span class="n">multioutput</span><span class="o">=</span><span class="n">multioutput</span>
+		<span class="p">)</span>
 		<span class="k">return</span> <span class="n">distance</span></div>
 </div>
 
@@ -705,6 +747,7 @@
             <dd><a href="../../../../pfr-internal-v0.1.0/index.html">pfr-internal-v0.1.0</a></dd>
             <dd><a href="../../../../pfr-internal-v0.2.0/index.html">pfr-internal-v0.2.0</a></dd>
             <dd><a href="../../../../pfr-internal-v0.3.0/index.html">pfr-internal-v0.3.0</a></dd>
+            <dd><a href="../../../../pfr-internal-v0.4.0/index.html">pfr-internal-v0.4.0</a></dd>
             <dd><a href="../../../../v0.1.0/index.html">v0.1.0</a></dd>
             <dd><a href="../../../../v0.2.0/index.html">v0.2.0</a></dd>
             <dd><a href="../../../../v0.2.1/index.html">v0.2.1</a></dd>
