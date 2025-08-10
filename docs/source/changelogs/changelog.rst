@@ -1,6 +1,14 @@
 Changelog
 =========
 
+[0.6.1] - 2025/08/10
+--------------------
+
+Fixed
+^^^^^
+
+* Fixing multiprocessing support for SALib.
+
 [0.6.0] - 2025/04/27
 --------------------
 
