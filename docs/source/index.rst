@@ -39,6 +39,8 @@ Contributions and Support
 
 Contributions are more than welcome. For general guidelines on how to contribute to this project, take a look at `CONTRIBUTING.md. <https://github.com/Plant-Food-Research-Open/calisim/blob/main/CONTRIBUTING.md>`_
 
+For our community code of conduct, please also view `CODE_OF_CONDUCT.md. <https://github.com/Plant-Food-Research-Open/calisim/blob/main/CODE_OF_CONDUCT.md>`_
+
 .. toctree::
    :maxdepth: 1
    :caption: Contents:
