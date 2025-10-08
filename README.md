@@ -193,6 +193,8 @@ Please refer to the following links:
 
 Contributions are more than welcome. For general guidelines on how to contribute to this project, take a look at [CONTRIBUTING.md](https://github.com/Plant-Food-Research-Open/calisim/tree/main/CONTRIBUTING.md).
 
+For our community code of conduct, please also view [CODE_OF_CONDUCT.md](https://github.com/Plant-Food-Research-Open/calisim/tree/main/CODE_OF_CONDUCT.md).
+
 # License
 
 calisim is published under the Apache License (see [LICENSE](https://github.com/Plant-Food-Research-Open/calisim/tree/main/LICENSE)).
