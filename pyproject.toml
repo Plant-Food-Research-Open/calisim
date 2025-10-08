@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "calisim"
-version = "0.6.1"
+version = "0.6.2"
 description = "A toolbox for the calibration and evaluation of simulation models."
 authors = [
     "James Bristow <James.Bristow@plantandfood.co.nz>",
@@ -102,6 +102,8 @@ jupyterlab = "^4.3.1"
 codespell = "^2.4.1"
 tomli = "^2.2.1"
 pytest-md-report = "^0.6.3"
+notebook = "^7.4.7"
+jupyterhub = "^5.4.0"
 
 [tool.poetry.group.experimental.dependencies]
 elfi = {git = "https://git@github.com/elfi-dev/elfi.git", rev = "a331349dd603f78a7ac444226fb3bd08d4e41fc0"}
