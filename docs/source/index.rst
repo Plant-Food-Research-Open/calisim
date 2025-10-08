@@ -13,6 +13,7 @@ calisim
 `Examples <https://github.com/Plant-Food-Research-Open/calisim/tree/main/examples>`_ |
 `Releases <https://github.com/Plant-Food-Research-Open/calisim/releases>`_ |
 `Docker <https://github.com/Plant-Food-Research-Open/calisim/pkgs/container/calisim>`_
+`Binder <https://mybinder.org/v2/gh/Plant-Food-Research-Open/calisim.git/HEAD>`_
 
 calisim is an open-source, low-code model calibration library that streamlines and standardises your workflows, while aiming to be as flexible and extensible as needed to support more complex use-cases. Using calisim will speed up your experiment cycle substantially and make you more productive.
 
