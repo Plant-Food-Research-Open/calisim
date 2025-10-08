@@ -34,6 +34,7 @@ ______________________________________________________________________
 - [Quickstart](#quickstart)
 - [Installation](#installation)
 - [Usage with Docker](#usage-with-docker)
+- [Usage with Binder](#usage-with-binder)
 - [Communication](#communication)
 - [Contributions and Support](#contributions-and-support)
 - [License](#license)
@@ -172,6 +173,10 @@ docker compose run --rm calisim python examples/optimisation/optuna_example.py
 # docker compose pull calisim_torch
 # docker compose run --rm calisim_torch python examples/optimisation/botorch_example.py
 ```
+
+# Usage with Binder
+
+You may wish to work with calisim using MyBinder. [You can do so by accessing the following link.](https://mybinder.org/v2/gh/Plant-Food-Research-Open/calisim.git/HEAD)
 
 # Communication
 

@@ -41,3 +41,8 @@ You may also want to execute calisim inside of a Docker container. You can do so
 
     # Run an example
     docker compose run --rm calisim python examples/optimisation/optuna_example.py
+
+Usage with Binder
+-----------------
+
+You may wish to work with calisim using MyBinder. `You can do so by accessing the following link. <https://mybinder.org/v2/gh/Plant-Food-Research-Open/calisim.git/HEAD>`_
