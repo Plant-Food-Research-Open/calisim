@@ -124,6 +124,20 @@ class OptunaOptimisation(CalibrationWorkflowBase):
 				else:
 					optimisation_plot.show()
 
+		if len(output_label) == 2:  # type: ignore[possibly-undefined]
+			optimisation_plot = optuna.visualization.plot_pareto_front(
+				self.study, target_names=output_labels
+			)
+			if outdir is not None:
+				outfile = self.join(
+					outdir,
+					f"{time_now}-{task}-{experiment_name}-plot-pareto-front.png",
+				)
+				self.append_artifact(outfile)
+				optimisation_plot.write_image(outfile)
+			else:
+				optimisation_plot.show()
+
 		trials_df: pd.DataFrame = self.study.trials_dataframe()
 		values = [value for value in trials_df.columns if value.startswith("value")]
 
