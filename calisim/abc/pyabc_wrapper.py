@@ -134,7 +134,10 @@ class PyABCApproximateBayesianComputation(CalibrationWorkflowBase):
 			sampler=sampler,
 		)
 
-		self.abc.new("sqlite://")
+		storage = self.specification.storage
+		if storage is None:
+			storage = "sqlite://"
+		self.abc.new(storage)
 
 		method_kwargs = self.specification.method_kwargs
 		if method_kwargs is None:
