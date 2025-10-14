@@ -43,6 +43,8 @@ class OptunaOptimisation(CalibrationWorkflowBase):
 			sampler=self.sampler,
 			study_name=self.specification.experiment_name,
 			directions=self.specification.directions,
+			storage=self.specification.storage,
+			load_if_exists=True,
 		)
 
 	def execute(self) -> None:

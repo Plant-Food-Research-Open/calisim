@@ -25,6 +25,7 @@ class BaseModel(PydanticBaseModel):
 		arbitrary_types_allowed = True
 		protected_namespaces = ()
 
+
 class ParameterDataType(Enum):
 	DISCRETE: str = "discrete"
 	CONTINUOUS: str = "continuous"
@@ -136,6 +137,10 @@ class CalibrationModel(BaseModel):
 		description="The random seed for replicability", default=None
 	)
 	n_jobs: int = Field(description="The number of jobs to run in parallel", default=1)
+	storage: str | None = Field(
+		description="The storage backend to persist the calibration results",
+		default=None,
+	)
 	walltime: int = Field(description="The maximum calibration walltime", default=1)
 	output_labels: list[str] | None = Field(
 		description="The list of simulation output names", default=None
