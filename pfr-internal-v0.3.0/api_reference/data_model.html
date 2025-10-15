@@ -371,6 +371,19 @@ simulation calibration procedures.</p>
 <span class="w">         </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;N Jobs&quot;</span><span class="p">,</span>
 <span class="w">         </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;integer&quot;</span>
 <span class="w">      </span><span class="p">},</span>
+<span class="w">      </span><span class="nt">&quot;storage&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">         </span><span class="nt">&quot;anyOf&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">            </span><span class="p">{</span>
+<span class="w">               </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;string&quot;</span>
+<span class="w">            </span><span class="p">},</span>
+<span class="w">            </span><span class="p">{</span>
+<span class="w">               </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;null&quot;</span>
+<span class="w">            </span><span class="p">}</span>
+<span class="w">         </span><span class="p">],</span>
+<span class="w">         </span><span class="nt">&quot;default&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">         </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;The storage backend to persist the calibration results&quot;</span><span class="p">,</span>
+<span class="w">         </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Storage&quot;</span>
+<span class="w">      </span><span class="p">},</span>
 <span class="w">      </span><span class="nt">&quot;walltime&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
 <span class="w">         </span><span class="nt">&quot;default&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
 <span class="w">         </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;The maximum calibration walltime&quot;</span><span class="p">,</span>
@@ -601,6 +614,7 @@ simulation calibration procedures.</p>
 <li><p><a class="reference internal" href="#calisim.data_model.simulation_data_models.CalibrationModel.parameter_spec" title="calisim.data_model.simulation_data_models.CalibrationModel.parameter_spec"><code class="xref py py-obj docutils literal notranslate"><span class="pre">parameter_spec</span> <span class="pre">(calisim.data_model.simulation_data_models.ParameterSpecification</span> <span class="pre">|</span> <span class="pre">None)</span></code></a></p></li>
 <li><p><a class="reference internal" href="#calisim.data_model.simulation_data_models.CalibrationModel.pass_calibration_workflow" title="calisim.data_model.simulation_data_models.CalibrationModel.pass_calibration_workflow"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pass_calibration_workflow</span> <span class="pre">(bool</span> <span class="pre">|</span> <span class="pre">str</span> <span class="pre">|</span> <span class="pre">None)</span></code></a></p></li>
 <li><p><a class="reference internal" href="#calisim.data_model.simulation_data_models.CalibrationModel.random_seed" title="calisim.data_model.simulation_data_models.CalibrationModel.random_seed"><code class="xref py py-obj docutils literal notranslate"><span class="pre">random_seed</span> <span class="pre">(int</span> <span class="pre">|</span> <span class="pre">None)</span></code></a></p></li>
+<li><p><a class="reference internal" href="#calisim.data_model.simulation_data_models.CalibrationModel.storage" title="calisim.data_model.simulation_data_models.CalibrationModel.storage"><code class="xref py py-obj docutils literal notranslate"><span class="pre">storage</span> <span class="pre">(str</span> <span class="pre">|</span> <span class="pre">None)</span></code></a></p></li>
 <li><p><a class="reference internal" href="#calisim.data_model.simulation_data_models.CalibrationModel.test_size" title="calisim.data_model.simulation_data_models.CalibrationModel.test_size"><code class="xref py py-obj docutils literal notranslate"><span class="pre">test_size</span> <span class="pre">(float</span> <span class="pre">|</span> <span class="pre">int)</span></code></a></p></li>
 <li><p><a class="reference internal" href="#calisim.data_model.simulation_data_models.CalibrationModel.verbose" title="calisim.data_model.simulation_data_models.CalibrationModel.verbose"><code class="xref py py-obj docutils literal notranslate"><span class="pre">verbose</span> <span class="pre">(bool)</span></code></a></p></li>
 <li><p><a class="reference internal" href="#calisim.data_model.simulation_data_models.CalibrationModel.walltime" title="calisim.data_model.simulation_data_models.CalibrationModel.walltime"><code class="xref py py-obj docutils literal notranslate"><span class="pre">walltime</span> <span class="pre">(int)</span></code></a></p></li>
@@ -749,6 +763,12 @@ simulation calibration procedures.</p>
 <dt class="sig sig-object py" id="calisim.data_model.simulation_data_models.CalibrationModel.random_seed">
 <em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">random_seed</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#calisim.data_model.simulation_data_models.CalibrationModel.random_seed" title="Link to this definition"></a></dt>
 <dd><p>The random seed for replicability</p>
+</dd></dl>
+
+<dl class="py attribute pydantic_field">
+<dt class="sig sig-object py" id="calisim.data_model.simulation_data_models.CalibrationModel.storage">
+<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">storage</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#calisim.data_model.simulation_data_models.CalibrationModel.storage" title="Link to this definition"></a></dt>
+<dd><p>The storage backend to persist the calibration results</p>
 </dd></dl>
 
 <dl class="py attribute pydantic_field">
@@ -1400,6 +1420,7 @@ simulation calibration procedures.</p>
             <dd><a href="../../pfr-internal-v0.2.0/api_reference/data_model.html">pfr-internal-v0.2.0</a></dd>
             <dd><a href="data_model.html">pfr-internal-v0.3.0</a></dd>
             <dd><a href="../../pfr-internal-v0.4.0/api_reference/data_model.html">pfr-internal-v0.4.0</a></dd>
+            <dd><a href="../../pfr-internal-v0.5.0/api_reference/data_model.html">pfr-internal-v0.5.0</a></dd>
             <dd><a href="../../v0.1.0/api_reference/data_model.html">v0.1.0</a></dd>
             <dd><a href="../../v0.2.0/api_reference/data_model.html">v0.2.0</a></dd>
             <dd><a href="../../v0.2.1/api_reference/data_model.html">v0.2.1</a></dd>
@@ -1410,6 +1431,8 @@ simulation calibration procedures.</p>
             <dd><a href="../../v0.4.0/api_reference/data_model.html">v0.4.0</a></dd>
             <dd><a href="../../v0.5.0/api_reference/data_model.html">v0.5.0</a></dd>
             <dd><a href="../../v0.6.0/api_reference/data_model.html">v0.6.0</a></dd>
+            <dd><a href="../../v0.6.1/api_reference/data_model.html">v0.6.1</a></dd>
+            <dd><a href="../../v0.6.2/api_reference/data_model.html">v0.6.2</a></dd>
         </dl>
     </div>
 </div><script>
