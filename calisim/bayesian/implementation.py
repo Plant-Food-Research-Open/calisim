@@ -10,12 +10,15 @@ from pydantic import Field
 
 from ..base import CalibrationMethodBase, CalibrationWorkflowBase
 from ..data_model import CalibrationModel
+from .dynesty_wrapper import DynestyBayesianCalibration
 from .emcee_wrapper import EmceeBayesianCalibration
 from .openturns_wrapper import OpenTurnsBayesianCalibration
 
 TASK = "bayesian_calibration"
 IMPLEMENTATIONS: dict[str, type[CalibrationWorkflowBase]] = dict(
-	openturns=OpenTurnsBayesianCalibration, emcee=EmceeBayesianCalibration
+	openturns=OpenTurnsBayesianCalibration,
+	emcee=EmceeBayesianCalibration,
+	dynesty=DynestyBayesianCalibration,
 )
 
 

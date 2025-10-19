@@ -73,3 +73,35 @@ def test_openturns(
 
 	calibrator.specify().execute().analyze()
 	assert is_close(sir_model, calibrator)
+
+
+def test_dynesty(
+	sir_model: ExampleModelContainer,
+	sir_parameter_spec: ParameterSpecification,
+	outdir: str,
+	gaussian_ll_metric: DistanceMetricBase,
+) -> None:
+	observed_data = sir_model.observed_data
+
+	calibration_kwargs = dict(
+		n_init=500,
+		n_samples=50000,
+		n_iterations=50000,
+		method="dynamic",
+		calibration_func_kwargs=dict(t=observed_data.day),
+	)
+
+	calibrator = get_calibrator(
+		BayesianCalibrationMethod,
+		BayesianCalibrationMethodModel,
+		sir_model,
+		sir_parameter_spec,
+		"dynesty",
+		outdir,
+		sir_model.output_labels,
+		calibration_kwargs,
+		gaussian_ll_metric,
+	)
+
+	calibrator.specify().execute().analyze()
+	assert is_close(sir_model, calibrator)

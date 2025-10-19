@@ -1516,6 +1516,25 @@ files = [
 ]
 
 [[package]]
+name = "dynesty"
+version = "3.0.0"
+description = "A dynamic nested sampling package for computing Bayesian posteriors and evidences."
+optional = false
+python-versions = ">=3.8"
+files = [
+    {file = "dynesty-3.0.0-py3-none-any.whl", hash = "sha256:4cdbbb39c61158f4d882445b064b742fcdc4d03ba9b2ba845801cd2ca6fcb761"},
+    {file = "dynesty-3.0.0.tar.gz", hash = "sha256:806c83b21904cf7df73c2478a9e0e8a2b7d811cd0d613109f3f810a7111d12b0"},
+]
+
+[package.dependencies]
+matplotlib = "*"
+numpy = ">=1.17.0"
+scipy = ">=1.4.0"
+
+[package.extras]
+dev = ["coveralls", "dill", "h5py", "ipyparallel", "jupyter", "numpydoc", "pylint", "pytest", "pytest-cov", "pytest-xdist", "sphinx", "sphinx-rtd-theme", "tqdm"]
+
+[[package]]
 name = "elfi"
 version = "0.8.7"
 description = "ELFI - Engine for Likelihood-free Inference"
@@ -7807,4 +7826,4 @@ torchx = ["torchx"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.10,<3.13"
-content-hash = "d789ee9c4407450e764a4e65ddde848f5d5a6af2422b3eccbce5035d963d80ca"
+content-hash = "0563d0ccfa0e28a28d6862e8b779aa1e6308f6c2dc1c6e8e9dbf8efd8b1d3293"

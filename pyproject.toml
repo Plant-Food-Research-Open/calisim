@@ -69,6 +69,7 @@ evotorch = {version = "^0.5.1", optional = true}
 hydra-core = {version = "^1.3.2", optional = true}
 torchx = {extras = ["aws-batch", "kubernetes", "ray"], version = "^0.7.0", optional = true}
 cmaes = "^0.11.1"
+dynesty = "^3.0.0"
 
 [tool.poetry.group.docs.dependencies]
 sphinx-rtd-theme = "^3.0.1"
@@ -162,3 +163,6 @@ skip = './docs/build,poetry.lock,./third_party'
 count = true
 quiet-level = 3
 ignore-words-list = 'ot,sies,SIES'
+
+[tool.bandit]
+skips = ["B101"]
