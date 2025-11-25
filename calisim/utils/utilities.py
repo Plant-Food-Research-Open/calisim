@@ -14,6 +14,7 @@ import numpy as np
 import pandas as pd
 import torch
 import torch.distributions as dist
+from joblib import Parallel, delayed
 
 from ..data_model import ParameterDataType
 
@@ -106,18 +107,30 @@ def calibration_func_wrapper(
 			parameters, simulation_ids, observed_data, **calibration_kwargs
 		)
 	else:
-		results = []
-		for i, parameter in enumerate(parameters):
-			simulation_id = simulation_ids[i]
-			result = workflow.call_calibration_func(
-				parameter,
-				simulation_id,
-				observed_data,
-				**calibration_kwargs,
+		n_jobs = workflow.specification.n_jobs
+		if n_jobs > 1:
+			results = Parallel(n_jobs=n_jobs)(
+				delayed(workflow.call_calibration_func)(
+					parameter,
+					simulation_ids[i],
+					observed_data,
+					**calibration_kwargs,
+				)
+				for i, parameter in enumerate(parameters)
 			)
-			if wrap_values and not isinstance(result, list):
-				result = [result]
-			results.append(result)
+		else:
+			results = []
+			for i, parameter in enumerate(parameters):
+				simulation_id = simulation_ids[i]
+				result = workflow.call_calibration_func(
+					parameter,
+					simulation_id,
+					observed_data,
+					**calibration_kwargs,
+				)
+				if wrap_values and not isinstance(result, list):
+					result = [result]
+				results.append(result)
 	results = np.array(results)
 	return results
 
