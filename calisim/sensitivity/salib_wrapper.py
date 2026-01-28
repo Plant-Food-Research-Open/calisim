@@ -69,15 +69,28 @@ class SALibSensitivityAnalysis(CalibrationWorkflowBase):
 
 		sensitivity_kwargs = self.get_calibration_func_kwargs()
 		sp_results = self.specification.Y
+		
+		n_jobs = self.specification.n_jobs
 		if sp_results is None:
-			self.sp.evaluate(
-				self.calibration_func_wrapper,
-				self,
-				self.specification.observed_data,
-				self.names,
-				self.data_types,
-				sensitivity_kwargs,
-			)
+			if n_jobs == 1:
+				self.sp.evaluate(
+					self.calibration_func_wrapper,
+					self,
+					self.specification.observed_data,
+					self.names,
+					self.data_types,
+					sensitivity_kwargs,
+				)
+			else:
+				self.sp.evaluate_parallel(
+					self.calibration_func_wrapper,
+					self,
+					self.specification.observed_data,
+					self.names,
+					self.data_types,
+					sensitivity_kwargs,
+					nprocs=n_jobs,
+				)
 		else:
 			self.sp.results = sp_results
 
