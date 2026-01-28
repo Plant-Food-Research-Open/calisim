@@ -71,6 +71,7 @@ class SALibSensitivityAnalysis(CalibrationWorkflowBase):
 		sp_results = self.specification.Y
 		
 		n_jobs = self.specification.n_jobs
+		self.specification.n_jobs = 1
 		if sp_results is None:
 			if n_jobs == 1:
 				self.sp.evaluate(
@@ -93,7 +94,8 @@ class SALibSensitivityAnalysis(CalibrationWorkflowBase):
 				)
 		else:
 			self.sp.results = sp_results
-
+		self.specification.n_jobs = n_jobs
+		
 		analyze_func = getattr(self.sp, f"analyze_{sampler_name}")
 		analyze_kwargs = self.specification.analyze_kwargs
 		if analyze_kwargs is None:
