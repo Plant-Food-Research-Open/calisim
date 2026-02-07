@@ -49,6 +49,7 @@ For our community code of conduct, please also view `CODE_OF_CONDUCT.md. <https:
    tutorials/basics/quickstart.rst
    api_reference/index.rst
    changelogs/changelog.rst
+   community/index.rst
    licenses/license.rst
 
 Indices and tables
