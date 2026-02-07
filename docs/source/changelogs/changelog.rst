@@ -1,6 +1,20 @@
 Changelog
 =========
 
+[0.6.3] - 2026/02/07
+--------------------
+
+Added
+^^^^^
+
+* Added dynesty sampler implementation.
+* Included storage parameter for calibration specification data model.
+
+Fixed
+^^^^^
+
+* Fix for `calisim.statistics.discrepancy.get_distance_metric_func()` module path.
+
 [0.6.2] - 2025/10/09
 --------------------
 
