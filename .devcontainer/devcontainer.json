@@ -1,0 +1,23 @@
+{
+    "dockerComposeFile": [
+        "../docker-compose.devcontainer.yaml"
+    ],
+    "service": "calisim_torch",
+    "workspaceFolder": "/workspace",
+    "remoteUser": "root",
+    "privileged": true,
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "docker.docker",
+                "ms-python.black-formatter",
+                "ms-python.debugpy",
+                "ms-python.python",
+                "ms-python.vscode-pylance"
+            ],
+            "settings": {
+                "python.terminal.activateEnvironment": false
+            }
+        }
+    }
+}

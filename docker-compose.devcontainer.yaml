@@ -1,0 +1,9 @@
+version: "3.9"
+
+services:
+  calisim_torch:
+    image: ghcr.io/plant-food-research-open/calisim-torch:${CALISIM_VERSION:-latest}
+    command: sleep infinity
+    volumes:
+      - .:/workspace
+    tty: true
