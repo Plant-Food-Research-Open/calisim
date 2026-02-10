@@ -611,6 +611,17 @@ class CalibrationWorkflowBase(ABC):
 		"""
 		return self.sampler
 
+	def sample_parameters(self, n_samples: int) -> np.ndarray:
+		"""Sample from the parameter space.
+
+		Args:
+			n_samples (int): The number of samples.
+
+		Returns:
+			np.ndarray: The sampled parameter values.
+		"""
+		raise NotImplementedError("Calibrator has not implemented sample_parameters()")
+
 
 class CalibrationMethodBase(CalibrationWorkflowBase):
 	"""The calibration method abstract class."""
@@ -762,3 +773,15 @@ class CalibrationMethodBase(CalibrationWorkflowBase):
 		"""
 		self._implementation_check("get_sampler")
 		return self.implementation.get_sampler()
+
+	def sample_parameters(self, n_samples: int) -> np.ndarray:
+		"""Sample from the parameter space.
+
+		Args:
+			n_samples (int): The number of samples.
+
+		Returns:
+			np.ndarray: The sampled parameter values.
+		"""
+		self._implementation_check("get_sampler")
+		return self.implementation.sample_parameters(n_samples)

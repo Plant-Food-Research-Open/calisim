@@ -135,6 +135,12 @@ build-backend = "poetry.core.masonry.api"
 [tool.ruff]
 target-version = "py310"
 line-length = 88
+exclude = [
+    "build/",
+    "dist/",
+    "venv/",
+    "docs/source",
+]
 
 [tool.ruff.format]
 docstring-code-format = true
@@ -159,7 +165,7 @@ extend-ignore = [
 ]
 
 [tool.codespell]
-skip = './docs/build,poetry.lock,./third_party'
+skip = './docs/build,poetry.lock,./third_party,docs/**.ipynb'
 count = true
 quiet-level = 3
 ignore-words-list = 'ot,sies,SIES'

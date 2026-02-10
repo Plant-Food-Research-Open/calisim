@@ -47,6 +47,7 @@ For our community code of conduct, please also view `CODE_OF_CONDUCT.md. <https:
 
    tutorials/basics/installation.rst
    tutorials/basics/quickstart.rst
+   tutorials/usage/index.rst
    api_reference/index.rst
    changelogs/changelog.rst
    community/index.rst

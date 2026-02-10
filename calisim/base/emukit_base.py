@@ -75,3 +75,16 @@ class EmukitBase(CalibrationWorkflowBase):
 		if Y is None:
 			Y = target_function(X)
 		return X, Y
+
+	def sample_parameters(self, n_samples: int) -> np.ndarray:
+		"""Get new parameter samples.
+
+		Args:
+		    n_samples (int): The number of samples.
+
+		Returns:
+		    np.ndarray: The parameter samples.
+		"""
+		design = RandomDesign(self.parameter_space)
+		X = design.get_samples(n_samples)
+		return X
