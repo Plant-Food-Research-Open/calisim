@@ -1,6 +1,15 @@
 Changelog
 =========
 
+[0.7.0] - 2026/02/11
+--------------------
+
+Added
+^^^^^
+
+* Included tutorials for optimisation, sensitivity analysis, Bayesian calibration, history matching, and surrogate modelling.
+* Specified devcontainer configuration.
+
 [0.6.3] - 2026/02/07
 --------------------
 
