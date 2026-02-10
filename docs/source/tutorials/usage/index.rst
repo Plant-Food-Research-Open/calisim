@@ -7,6 +7,7 @@ The following series of tutorials cover how one may perform calibration using va
     :maxdepth: 1
 
     sir_sensitivity_analysis.ipynb
+    sir_uncertainty_analysis.ipynb
     sir_optimisation.ipynb
     sir_history_matching.ipynb
     sir_approximate_bayesian_computation.ipynb
