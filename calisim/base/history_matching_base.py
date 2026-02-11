@@ -6,6 +6,7 @@ The defined base class for performing history matching.
 
 import numpy as np
 
+from ..data_model import ParameterDataType
 from .calibration_base import CalibrationWorkflowBase
 
 
@@ -37,5 +38,10 @@ class HistoryMatchingBase(CalibrationWorkflowBase):
 			samples = np.repeat(samples, n_replicates)
 			self.rng.shuffle(samples)
 			self.parameters[parameter_name] = samples
+
+			if spec.data_type == ParameterDataType.DISCRETE:
+				self.parameters[parameter_name] = np.round(
+					self.parameters[parameter_name]
+				)
 
 		self.specification.n_samples = ensemble_size * n_replicates
