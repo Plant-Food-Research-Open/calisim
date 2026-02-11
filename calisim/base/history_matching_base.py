@@ -4,6 +4,9 @@ The defined base class for performing history matching.
 
 """
 
+import numpy as np
+
+from ..data_model import ParameterDataType
 from .calibration_base import CalibrationWorkflowBase
 
 
@@ -34,3 +37,8 @@ class HistoryMatchingBase(CalibrationWorkflowBase):
 			self.parameters[parameter_name] = dist_instance(
 				*distribution_args, **distribution_kwargs
 			)
+
+			if spec.data_type == ParameterDataType.DISCRETE:
+				self.parameters[parameter_name] = np.round(
+					self.parameters[parameter_name]
+				)
