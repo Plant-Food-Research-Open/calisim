@@ -58,6 +58,8 @@ class OpenTurnsOptimisation(OpenTurnsBase):
 
 		if method == "kriging":
 			X, Y = self.get_X_Y(n_init, target_function)
+			self.X = X
+			self.Y = Y
 
 			method_kwargs = self.specification.method_kwargs
 			if method_kwargs is None:

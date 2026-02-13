@@ -102,6 +102,8 @@ class SkActiveMLActiveLearning(EmukitBase):
 		self.emulator = emulator
 		self.query_strategy = query_strategy
 		self.Y_true = Y_true
+		self.X = X
+		self.Y = Y
 
 	def analyze(self) -> None:
 		"""Analyze the results of the simulation calibration procedure."""

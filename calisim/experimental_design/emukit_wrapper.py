@@ -64,6 +64,8 @@ class EmukitExperimentalDesign(EmukitBase):
 
 		self.emulator = estimator
 		self.design_loop = design_loop
+		self.X = X
+		self.Y = Y
 
 	def analyze(self) -> None:
 		"""Analyze the results of the simulation calibration procedure."""

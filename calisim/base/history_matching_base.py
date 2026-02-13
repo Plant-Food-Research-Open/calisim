@@ -18,10 +18,14 @@ class HistoryMatchingBase(CalibrationWorkflowBase):
 		ensemble_size = self.specification.n_samples
 		n_replicates = self.specification.n_replicates
 		parameter_spec = self.specification.parameter_spec.parameters
+		self.names = []
+		self.data_types = []
 
 		self.parameters = {}
 		for spec in parameter_spec:
 			parameter_name = spec.name
+			self.names.append(parameter_name)
+
 			distribution_name = spec.distribution_name.replace(" ", "_").lower()
 
 			distribution_args = spec.distribution_args
@@ -39,7 +43,9 @@ class HistoryMatchingBase(CalibrationWorkflowBase):
 			self.rng.shuffle(samples)
 			self.parameters[parameter_name] = samples
 
-			if spec.data_type == ParameterDataType.DISCRETE:
+			data_type = spec.data_type
+			self.data_types.append(data_type)
+			if data_type == ParameterDataType.DISCRETE:
 				self.parameters[parameter_name] = np.round(
 					self.parameters[parameter_name]
 				)

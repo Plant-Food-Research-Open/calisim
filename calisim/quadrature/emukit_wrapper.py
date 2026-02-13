@@ -58,6 +58,8 @@ class EmukitQuadrature(EmukitBase):
 
 		self.emulator = emulator
 		self.quadrature_loop = quadrature_loop
+		self.X = X
+		self.Y = Y
 
 	def analyze(self) -> None:
 		"""Analyze the results of the simulation calibration procedure."""

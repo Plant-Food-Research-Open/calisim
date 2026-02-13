@@ -82,6 +82,9 @@ class OpenTurnsSensitivityAnalysis(OpenTurnsBase):
 		elif method == "chaos_ancova":
 			self.sp = ot.ANCOVA(self.emulator.result, X)
 
+		self.X = X
+		self.Y = Y
+
 	def analyze(self) -> None:
 		"""Analyze the results of the simulation calibration procedure."""
 		task, time_now, experiment_name, outdir = self.prepare_analyze()

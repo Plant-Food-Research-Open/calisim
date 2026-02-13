@@ -107,6 +107,9 @@ class SALibSensitivityAnalysis(CalibrationWorkflowBase):
 		analyze_kwargs["seed"] = self.specification.random_seed
 		analyze_func(**analyze_kwargs)
 
+		self.X = self.sp.samples
+		self.Y = self.sp.results
+
 	def analyze(self) -> None:
 		"""Analyze the results of the simulation calibration procedure."""
 		task, time_now, experiment_name, outdir = self.prepare_analyze()

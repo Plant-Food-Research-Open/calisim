@@ -78,6 +78,8 @@ class OpenTurnsUncertaintyAnalysis(OpenTurnsBase):
 
 		estimator.fit(X, Y)
 		self.emulator = estimator
+		self.X = X
+		self.Y = Y
 
 	def analyze(self) -> None:
 		"""Analyze the results of the simulation calibration procedure."""

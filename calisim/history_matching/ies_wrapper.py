@@ -49,25 +49,22 @@ class IESHistoryMatching(HistoryMatchingBase):
 		Returns:
 		    np.ndarray: The ensemble outputs.
 		"""
-		observed_data = self.specification.observed_data
+		X = []
+		for theta in parameters:
+			x = []
+			for k in theta:
+				x.append(theta[k])
+			X.append(x)
+
 		history_matching_kwargs = self.get_calibration_func_kwargs()
-
-		simulation_ids = [self.get_simulation_uuid() for _ in range(len(parameters))]
-
-		if self.specification.batched:
-			ensemble_outputs = self.call_calibration_func(
-				parameters, simulation_ids, observed_data, **history_matching_kwargs
-			)
-		else:
-			ensemble_outputs = []
-			for i, parameter in enumerate(parameters):
-				simulation_id = simulation_ids[i]
-				outputs = self.call_calibration_func(
-					parameter, simulation_id, observed_data, **history_matching_kwargs
-				)
-				ensemble_outputs.append(outputs)  # type: ignore[arg-type]
-
-		ensemble_outputs = np.array(ensemble_outputs).T
+		ensemble_outputs = self.calibration_func_wrapper(
+			X,
+			self,
+			self.specification.observed_data,
+			self.names,
+			self.data_types,
+			history_matching_kwargs,
+		).T
 		return ensemble_outputs
 
 	def execute(self) -> None:
@@ -140,8 +137,8 @@ class IESHistoryMatching(HistoryMatchingBase):
 				parameters = self.convert_parameters(X_i)
 				Y_i = self.run_simulation(parameters)
 
-		self.X_IES = X_i
-		self.Y_IES = Y_i
+		self.X = X_i
+		self.Y = Y_i
 
 	def analyze(self) -> None:
 		"""Analyze the results of the simulation calibration procedure."""
@@ -160,7 +157,7 @@ class IESHistoryMatching(HistoryMatchingBase):
 			axes[i].set_title(parameter_name)
 			axes[i].hist(self.parameters[parameter_name], label="Prior")
 			axes[i].hist(
-				self.X_IES[i, :],
+				self.X[i, :],
 				label=f"{smoother_name} ({n_iterations}) Posterior",
 				alpha=0.5,
 			)
@@ -173,7 +170,7 @@ class IESHistoryMatching(HistoryMatchingBase):
 			output_labels = ["output"]
 		output_label = output_labels[0]
 
-		X = np.arange(0, self.Y_IES.shape[0], 1)
+		X = np.arange(0, self.Y.shape[0], 1)
 		fig, axes = plt.subplots(nrows=2, figsize=self.specification.figsize)
 
 		observed_data = self.specification.observed_data
@@ -181,13 +178,13 @@ class IESHistoryMatching(HistoryMatchingBase):
 		axes[0].set_title(f"Observed {output_label}")
 
 		for i in range(ensemble_size):
-			axes[1].plot(X, self.Y_IES.T[i])
+			axes[1].plot(X, self.Y.T[i])
 		axes[1].set_title(f"Ensemble {output_label}")
 		self.present_fig(
 			fig, outdir, time_now, task, experiment_name, f"ensemble-{output_label}"
 		)
 
-		X_IES_df = pd.DataFrame(self.X_IES.T, columns=parameter_names)
+		X_IES_df = pd.DataFrame(self.X.T, columns=parameter_names)
 		for name in X_IES_df:
 			estimate = X_IES_df[name].mean()
 			uncertainty = X_IES_df[name].std()
@@ -203,7 +200,7 @@ class IESHistoryMatching(HistoryMatchingBase):
 		self.to_csv(X_IES_df, "posterior")
 
 		Y_IES_df = pd.DataFrame(
-			self.Y_IES.T,
-			columns=[f"{output_label}_{i + 1}" for i in range(self.Y_IES.shape[0])],
+			self.Y.T,
+			columns=[f"{output_label}_{i + 1}" for i in range(self.Y.shape[0])],
 		)
 		self.to_csv(Y_IES_df, f"ensemble-{output_label}")
