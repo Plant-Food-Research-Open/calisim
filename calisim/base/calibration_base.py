@@ -81,6 +81,8 @@ class CalibrationWorkflowBase(ABC):
 		self.specification = specification
 		self.artifacts: list[str] = []
 		self.parameter_estimates = ParameterEstimatesModel(estimates=[])
+		self.X = None
+		self.Y = None
 
 	@abstractmethod
 	def specify(self) -> None:
@@ -491,6 +493,30 @@ class CalibrationWorkflowBase(ABC):
 		"""
 		self.parameter_estimates.estimates.append(estimate)
 
+	def get_observed_data(self) -> np.ndarray | pd.DataFrame | None:
+		"""Get the observed data for calibration.
+
+		Returns:
+			np.ndarray | pd.DataFrame | None: The observed data for calibration.
+		"""
+		return self.specification.observed_data
+
+	def get_X(self) -> np.ndarray | pd.DataFrame | None:
+		"""Get the parameter values.
+
+		Returns:
+			np.ndarray | pd.DataFrame | None: The parameter values.
+		"""
+		return self.X
+
+	def get_Y(self) -> np.ndarray | pd.DataFrame | None:
+		"""Get the simulated data.
+
+		Returns:
+			np.ndarray | pd.DataFrame | None: The simulated data.
+		"""
+		return self.Y
+
 
 class CalibrationMethodBase(CalibrationWorkflowBase):
 	"""The calibration method abstract class."""
@@ -624,3 +650,30 @@ class CalibrationMethodBase(CalibrationWorkflowBase):
 		"""
 		self._implementation_check("get_parameter_estimates")
 		return self.implementation.get_parameter_estimates()
+
+	def get_observed_data(self) -> np.ndarray | pd.DataFrame | None:
+		"""Get the observed data for calibration.
+
+		Returns:
+			np.ndarray | pd.DataFrame | None: The observed data for calibration.
+		"""
+		self._implementation_check("get_observed_data")
+		return self.implementation.get_observed_data()
+
+	def get_X(self) -> np.ndarray | pd.DataFrame | None:
+		"""Get the parameter values.
+
+		Returns:
+			np.ndarray | pd.DataFrame | None: The parameter values.
+		"""
+		self._implementation_check("get_X")
+		return self.implementation.get_X()
+
+	def get_Y(self) -> np.ndarray | pd.DataFrame | None:
+		"""Get the simulated data.
+
+		Returns:
+			np.ndarray | pd.DataFrame | None: The simulated data.
+		"""
+		self._implementation_check("get_Y")
+		return self.implementation.get_Y()

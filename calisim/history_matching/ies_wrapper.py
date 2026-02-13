@@ -137,8 +137,8 @@ class IESHistoryMatching(HistoryMatchingBase):
 				parameters = self.convert_parameters(X_i)
 				Y_i = self.run_simulation(parameters)
 
-		self.X_IES = X_i
-		self.Y_IES = Y_i
+		self.X = X_i
+		self.Y = Y_i  # type: ignore[assignment]
 
 	def analyze(self) -> None:
 		"""Analyze the results of the simulation calibration procedure."""
@@ -154,7 +154,7 @@ class IESHistoryMatching(HistoryMatchingBase):
 			axes[i].set_title(parameter_name)
 			axes[i].hist(self.parameters[parameter_name], label="Prior")
 			axes[i].hist(
-				self.X_IES[i, :],
+				self.X[i, :],  # type: ignore[index]
 				label=f"{smoother_name} ({n_iterations}) Posterior",
 				alpha=0.5,
 			)
@@ -166,7 +166,7 @@ class IESHistoryMatching(HistoryMatchingBase):
 		if output_labels is None:
 			output_labels = ["Default"]
 		output_label = output_labels[0]
-		X = np.arange(0, self.Y_IES.shape[0], 1)
+		X = np.arange(0, self.Y.shape[0], 1)
 		fig, axes = plt.subplots(nrows=2, figsize=self.specification.figsize)
 
 		observed_data = self.specification.observed_data
@@ -174,7 +174,7 @@ class IESHistoryMatching(HistoryMatchingBase):
 		axes[0].set_title(f"Observed {output_label}")
 
 		for i in range(ensemble_size):
-			axes[1].plot(X, self.Y_IES.T[i])
+			axes[1].plot(X, self.Y.T[i])
 		axes[1].set_title(f"Ensemble {output_label}")
 		self.present_fig(
 			fig, outdir, time_now, task, experiment_name, f"ensemble_{output_label}"
@@ -183,7 +183,7 @@ class IESHistoryMatching(HistoryMatchingBase):
 		if outdir is None:
 			return
 
-		X_IES_df = pd.DataFrame(self.X_IES.T, columns=parameter_names)
+		X_IES_df = pd.DataFrame(self.X.T, columns=parameter_names)
 		outfile = self.join(
 			outdir, f"{time_now}-{task}-{experiment_name}_posterior.csv"
 		)
@@ -191,8 +191,8 @@ class IESHistoryMatching(HistoryMatchingBase):
 		X_IES_df.to_csv(outfile, index=False)
 
 		Y_IES_df = pd.DataFrame(
-			self.Y_IES.T,
-			columns=[f"{output_label}_{i + 1}" for i in range(self.Y_IES.shape[0])],
+			self.Y.T,
+			columns=[f"{output_label}_{i + 1}" for i in range(self.Y.shape[0])],
 		)
 		outfile = self.join(
 			outdir, f"{time_now}-{task}-{experiment_name}_ensemble_{output_label}.csv"
