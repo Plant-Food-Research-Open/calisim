@@ -162,7 +162,10 @@ class IESHistoryMatching(HistoryMatchingBase):
 		self.present_fig(fig, outdir, time_now, task, experiment_name, "plot_slice")
 
 		ensemble_size = self.specification.n_samples
-		output_label = self.specification.output_labels[0]  # type: ignore[index]
+		output_labels = self.specification.output_labels
+		if output_labels is None:
+			output_labels = ["Default"]
+		output_label = output_labels[0]
 		X = np.arange(0, self.Y_IES.shape[0], 1)
 		fig, axes = plt.subplots(nrows=2, figsize=self.specification.figsize)
 
