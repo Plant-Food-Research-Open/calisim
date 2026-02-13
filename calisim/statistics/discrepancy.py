@@ -386,7 +386,7 @@ def get_distance_metric_func(distance_metric: str) -> Callable:
 	    Callable: The distance metric function.
 	"""
 	distance_metric = distance_metric.replace("_", " ").title().replace(" ", "")
-	module = "calisim.statistics.distance_metrics"
+	module = "calisim.statistics.discrepancy"
 	func: Callable = locate(f"{module}.{distance_metric}")  # type: ignore[assignment]
 	return func
 
