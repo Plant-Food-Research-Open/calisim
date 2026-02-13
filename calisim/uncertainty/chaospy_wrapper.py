@@ -135,6 +135,8 @@ class ChaospyUncertaintyAnalysis(CalibrationWorkflowBase):
 			self.krige(X)
 
 		self.emulator = model_approx
+		self.X = X
+		self.Y = Y
 
 	def analyze(self) -> None:
 		"""Analyze the results of the simulation calibration procedure."""

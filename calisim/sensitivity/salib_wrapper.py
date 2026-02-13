@@ -69,7 +69,7 @@ class SALibSensitivityAnalysis(CalibrationWorkflowBase):
 
 		sensitivity_kwargs = self.get_calibration_func_kwargs()
 		sp_results = self.specification.Y
-		
+
 		n_jobs = self.specification.n_jobs
 		self.specification.n_jobs = 1
 		if sp_results is None:
@@ -95,13 +95,16 @@ class SALibSensitivityAnalysis(CalibrationWorkflowBase):
 		else:
 			self.sp.results = sp_results
 		self.specification.n_jobs = n_jobs
-		
+
 		analyze_func = getattr(self.sp, f"analyze_{sampler_name}")
 		analyze_kwargs = self.specification.analyze_kwargs
 		if analyze_kwargs is None:
 			analyze_kwargs = {}
 		analyze_kwargs["seed"] = self.specification.random_seed
 		analyze_func(**analyze_kwargs)
+
+		self.X = self.sp.samples
+		self.Y = self.sp.results
 
 	def analyze(self) -> None:
 		"""Analyze the results of the simulation calibration procedure."""
