@@ -49,25 +49,22 @@ class IESHistoryMatching(HistoryMatchingBase):
 		Returns:
 		    np.ndarray: The ensemble outputs.
 		"""
-		observed_data = self.specification.observed_data
+		X = []
+		for theta in parameters:
+			x = []
+			for k in theta:
+				x.append(theta[k])
+			X.append(x)
+
 		history_matching_kwargs = self.get_calibration_func_kwargs()
-
-		simulation_ids = [self.get_simulation_uuid() for _ in range(len(parameters))]
-
-		if self.specification.batched:
-			ensemble_outputs = self.call_calibration_func(
-				parameters, simulation_ids, observed_data, **history_matching_kwargs
-			)
-		else:
-			ensemble_outputs = []
-			for i, parameter in enumerate(parameters):
-				simulation_id = simulation_ids[i]
-				outputs = self.call_calibration_func(
-					parameter, simulation_id, observed_data, **history_matching_kwargs
-				)
-				ensemble_outputs.append(outputs)  # type: ignore[arg-type]
-
-		ensemble_outputs = np.array(ensemble_outputs).T
+		ensemble_outputs = self.calibration_func_wrapper(
+			X,
+			self,
+			self.specification.observed_data,
+			self.names,
+			self.data_types,
+			history_matching_kwargs,
+		).T
 		return ensemble_outputs
 
 	def execute(self) -> None:
