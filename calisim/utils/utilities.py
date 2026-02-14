@@ -98,6 +98,7 @@ def calibration_func_wrapper(
 		parameters.append(parameter_set)
 
 	simulation_ids = [get_simulation_uuid() for _ in range(len(parameters))]
+	workflow.simulation_ids = simulation_ids
 
 	if workflow.specification.batched:
 		results = workflow.call_calibration_func(
