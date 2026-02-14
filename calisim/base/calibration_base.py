@@ -517,7 +517,14 @@ class CalibrationWorkflowBase(ABC):
 		"""
 		return self.Y
 
+	def get_simulation_ids(self) -> list[str] | None:
+		"""Get the simulation IDs.
 
+		Returns:
+			list[str] | None: The simulation IDs.
+		"""
+		return self.simulation_ids
+		
 class CalibrationMethodBase(CalibrationWorkflowBase):
 	"""The calibration method abstract class."""
 
@@ -677,3 +684,12 @@ class CalibrationMethodBase(CalibrationWorkflowBase):
 		"""
 		self._implementation_check("get_Y")
 		return self.implementation.get_Y()
+
+	def get_simulation_ids(self) -> list[str] | None:
+		"""Get the simulation IDs.
+
+		Returns:
+			list[str] | None: The simulation IDs.
+		"""
+		self._implementation_check("get_simulation_ids")
+		return self.implementation.get_simulation_ids()
