@@ -9,6 +9,7 @@ import os.path as osp
 from abc import ABC, abstractmethod
 from collections.abc import Callable
 from functools import wraps
+from typing import Any
 
 import numpy as np
 import pandas as pd
@@ -83,6 +84,7 @@ class CalibrationWorkflowBase(ABC):
 		self.parameter_estimates = ParameterEstimatesModel(estimates=[])
 		self.X = None
 		self.Y = None
+		self.parameters: Any | None = None
 
 	@abstractmethod
 	def specify(self) -> None:
@@ -524,7 +526,16 @@ class CalibrationWorkflowBase(ABC):
 			list[str] | None: The simulation IDs.
 		"""
 		return self.simulation_ids
-		
+
+	def get_parameters(self) -> Any | None:
+		"""Get the simulation parameters.
+
+		Returns:
+			Any | None: The simulation parameters.
+		"""
+		return self.parameters
+
+
 class CalibrationMethodBase(CalibrationWorkflowBase):
 	"""The calibration method abstract class."""
 
@@ -693,3 +704,12 @@ class CalibrationMethodBase(CalibrationWorkflowBase):
 		"""
 		self._implementation_check("get_simulation_ids")
 		return self.implementation.get_simulation_ids()
+
+	def get_parameters(self) -> Any | None:
+		"""Get the simulation parameters.
+
+		Returns:
+			Any | None: The simulation parameters.
+		"""
+		self._implementation_check("get_parameters")
+		return self.implementation.get_parameters()
