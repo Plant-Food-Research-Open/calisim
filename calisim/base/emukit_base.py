@@ -45,7 +45,7 @@ class EmukitBase(CalibrationWorkflowBase):
 				)
 			parameters.append(parameter)
 
-		self.parameter_space = ParameterSpace(parameters)
+		self.parameters = ParameterSpace(parameters)
 
 	def get_X_Y(
 		self, n_init: int, target_function: Callable
@@ -61,7 +61,7 @@ class EmukitBase(CalibrationWorkflowBase):
 		Returns:
 			tuple[np.ndarray, np.ndarray]: The X and Y matrices.
 		"""
-		design = RandomDesign(self.parameter_space)
+		design = RandomDesign(self.parameters)
 		X = self.specification.X
 		if X is None:
 			X = design.get_samples(n_init)
@@ -85,6 +85,6 @@ class EmukitBase(CalibrationWorkflowBase):
 		Returns:
 		    np.ndarray: The parameter samples.
 		"""
-		design = RandomDesign(self.parameter_space)
+		design = RandomDesign(self.parameters)
 		X = design.get_samples(n_samples)
 		return X

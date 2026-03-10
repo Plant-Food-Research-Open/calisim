@@ -90,6 +90,7 @@ class CalibrationWorkflowBase(ABC):
 		random_seed = self.specification.random_seed
 		self.rng = np.random.default_rng(random_seed)
 		self.simulation_ids: list[str] | None = []
+		self.parameters: Any | None = None
 
 	@abstractmethod
 	def specify(self) -> None:
@@ -655,6 +656,14 @@ class CalibrationWorkflowBase(ABC):
 		"""
 		return self.simulation_ids
 
+	def get_parameters(self) -> Any | None:
+		"""Get the simulation parameters.
+
+		Returns:
+			Any | None: The simulation parameters.
+		"""
+		return self.parameters
+
 
 class CalibrationMethodBase(CalibrationWorkflowBase):
 	"""The calibration method abstract class."""
@@ -854,3 +863,12 @@ class CalibrationMethodBase(CalibrationWorkflowBase):
 		"""
 		self._implementation_check("get_simulation_ids")
 		return self.implementation.get_simulation_ids()
+
+	def get_parameters(self) -> Any | None:
+		"""Get the simulation parameters.
+
+		Returns:
+			Any | None: The simulation parameters.
+		"""
+		self._implementation_check("get_parameters")
+		return self.implementation.get_parameters()

@@ -109,7 +109,7 @@ class SkActiveMLActiveLearning(EmukitBase):
 		"""Analyze the results of the simulation calibration procedure."""
 		task, time_now, experiment_name, outdir = self.prepare_analyze()
 
-		design = RandomDesign(self.parameter_space)
+		design = RandomDesign(self.parameters)
 		n_samples = self.specification.n_samples
 		X_sample = design.get_samples(n_samples)
 		if self.Y_shape > 1:
