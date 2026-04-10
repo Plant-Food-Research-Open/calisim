@@ -30,6 +30,7 @@ class ParameterDataType(Enum):
 	DISCRETE: str = "discrete"
 	CONTINUOUS: str = "continuous"
 	CATEGORICAL: str = "categorical"
+	CONSTANT: str = "constant"
 
 
 class ParameterModel(BaseModel):
@@ -81,6 +82,9 @@ class ParameterSpecification(BaseModel):
 
 	parameters: list[DistributionModel] | None = Field(
 		description="The parameter specification list", default=None
+	)
+	constants: dict[str, Any] | None = Field(
+		description="The constant parameter values", default=None
 	)
 
 

@@ -86,8 +86,15 @@ def calibration_func_wrapper(
 	import numpy as np
 
 	parameters = []
+	constants = {}
+	if (
+		workflow.specification.parameter_spec is not None
+		and workflow.specification.parameter_spec.constants is not None
+	):
+		constants = workflow.specification.parameter_spec.constants
+
 	for theta in X:
-		parameter_set = {}
+		parameter_set = constants.copy()
 		for i, parameter_value in enumerate(theta):
 			parameter_name = parameter_names[i]
 			data_type = data_types[i]
