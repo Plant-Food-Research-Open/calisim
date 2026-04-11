@@ -6,6 +6,7 @@ the PyABC library.
 
 """
 
+from collections.abc import Callable
 from datetime import timedelta
 
 import numpy as np
@@ -117,11 +118,13 @@ class PyABCApproximateBayesianComputation(CalibrationWorkflowBase):
 		else:
 			sampler = pyabc.SingleCoreSampler(check_max_eval=True)
 
+		def _make_distance(
+			output_label: str,
+		) -> Callable[[dict[str, float], dict[str, float]], float]:
+			return lambda simulated, _: simulated[output_label]
+
 		distance_func = pyabc.AggregatedDistance(
-			[
-				lambda simulated, _: simulated[output_label]
-				for output_label in output_labels
-			]
+			[_make_distance(label) for label in output_labels]
 		)
 
 		self.abc = pyabc.ABCSMC(

@@ -5,7 +5,7 @@ from .implementation import (
 )
 
 __all__ = [
-	HistoryMatchingMethod,
-	HistoryMatchingMethodModel,
-	get_implementations,
+	"HistoryMatchingMethod",
+	"HistoryMatchingMethodModel",
+	"get_implementations",
 ]

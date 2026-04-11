@@ -84,7 +84,6 @@ class OpenTurnsUncertaintyAnalysis(OpenTurnsBase):
 	def analyze(self) -> None:
 		"""Analyze the results of the simulation calibration procedure."""
 		task, time_now, experiment_name, outdir = self.prepare_analyze()
-		solver_name = self.specification.solver
 		input_dim = self.parameters.getDimension()
 
 		solver_name = self.specification.solver

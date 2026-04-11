@@ -5,7 +5,7 @@ from .implementation import (
 )
 
 __all__ = [
-	StateEstimationMethod,
-	StateEstimationMethodModel,
-	get_implementations,
+	"StateEstimationMethod",
+	"StateEstimationMethodModel",
+	"get_implementations",
 ]

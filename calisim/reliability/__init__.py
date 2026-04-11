@@ -5,7 +5,7 @@ from .implementation import (
 )
 
 __all__ = [
-	ReliabilityAnalysisMethod,
-	ReliabilityAnalysisMethodModel,
-	get_implementations,
+	"ReliabilityAnalysisMethod",
+	"ReliabilityAnalysisMethodModel",
+	"get_implementations",
 ]

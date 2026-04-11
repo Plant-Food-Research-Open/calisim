@@ -5,7 +5,7 @@ from .implementation import (
 )
 
 __all__ = [
-	EvolutionaryMethod,
-	EvolutionaryMethodModel,
-	get_implementations,
+	"EvolutionaryMethod",
+	"EvolutionaryMethodModel",
+	"get_implementations",
 ]

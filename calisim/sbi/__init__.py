@@ -5,7 +5,7 @@ from .implementation import (
 )
 
 __all__ = [
-	SimulationBasedInferenceMethod,
-	SimulationBasedInferenceMethodModel,
-	get_implementations,
+	"SimulationBasedInferenceMethod",
+	"SimulationBasedInferenceMethodModel",
+	"get_implementations",
 ]

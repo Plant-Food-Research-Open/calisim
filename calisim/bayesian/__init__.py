@@ -5,7 +5,7 @@ from .implementation import (
 )
 
 __all__ = [
-	BayesianCalibrationMethod,
-	BayesianCalibrationMethodModel,
-	get_implementations,
+	"BayesianCalibrationMethod",
+	"BayesianCalibrationMethodModel",
+	"get_implementations",
 ]

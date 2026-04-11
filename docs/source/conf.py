@@ -37,7 +37,7 @@ master_doc = "index"
 today_fmt = "%d/%m/%y"
 
 smv_branch_whitelist = "main"
-smv_remote_whitelist: str | None = None
+# smv_remote_whitelist: str | None = None
 smv_released_pattern = r"^refs/tags/.*$"
 
 autodoc_pydantic_model_show_json = False

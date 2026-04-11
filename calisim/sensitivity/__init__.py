@@ -5,7 +5,7 @@ from .implementation import (
 )
 
 __all__ = [
-	SensitivityAnalysisMethod,
-	SensitivityAnalysisMethodModel,
-	get_implementations,
+	"SensitivityAnalysisMethod",
+	"SensitivityAnalysisMethodModel",
+	"get_implementations",
 ]

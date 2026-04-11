@@ -5,7 +5,7 @@ from .implementation import (
 )
 
 __all__ = [
-	QuadratureMethod,
-	QuadratureMethodModel,
-	get_implementations,
+	"QuadratureMethod",
+	"QuadratureMethodModel",
+	"get_implementations",
 ]

@@ -4,9 +4,9 @@ from .emukit_estimator import EmukitEstimator
 from .openturns_estimator import FunctionalChaosEstimator, KrigingEstimator
 
 __all__ = [
-	EmukitEstimator,
-	FunctionalChaosEstimator,
-	KrigingEstimator,
+	"EmukitEstimator",
+	"FunctionalChaosEstimator",
+	"KrigingEstimator",
 ]
 
 if importlib.util.find_spec("gpytorch") is not None:

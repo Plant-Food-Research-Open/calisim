@@ -5,7 +5,7 @@ from .implementation import (
 )
 
 __all__ = [
-	ApproximateBayesianComputationMethod,
-	ApproximateBayesianComputationMethodModel,
-	get_implementations,
+	"ApproximateBayesianComputationMethod",
+	"ApproximateBayesianComputationMethodModel",
+	"get_implementations",
 ]

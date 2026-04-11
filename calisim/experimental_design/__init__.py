@@ -5,7 +5,7 @@ from .implementation import (
 )
 
 __all__ = [
-	ExperimentalDesignMethod,
-	ExperimentalDesignMethodModel,
-	get_implementations,
+	"ExperimentalDesignMethod",
+	"ExperimentalDesignMethodModel",
+	"get_implementations",
 ]

@@ -5,7 +5,7 @@ from .implementation import (
 )
 
 __all__ = [
-	LikelihoodFreeMethod,
-	LikelihoodFreeMethodModel,
-	get_implementations,
+	"LikelihoodFreeMethod",
+	"LikelihoodFreeMethodModel",
+	"get_implementations",
 ]

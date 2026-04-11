@@ -5,7 +5,7 @@ from .implementation import (
 )
 
 __all__ = [
-	ActiveLearningMethod,
-	ActiveLearningMethodModel,
-	get_implementations,
+	"ActiveLearningMethod",
+	"ActiveLearningMethodModel",
+	"get_implementations",
 ]

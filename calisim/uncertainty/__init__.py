@@ -5,7 +5,7 @@ from .implementation import (
 )
 
 __all__ = [
-	UncertaintyAnalysisMethod,
-	UncertaintyAnalysisMethodModel,
-	get_implementations,
+	"UncertaintyAnalysisMethod",
+	"UncertaintyAnalysisMethodModel",
+	"get_implementations",
 ]

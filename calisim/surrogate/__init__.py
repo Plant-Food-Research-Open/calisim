@@ -5,7 +5,7 @@ from .implementation import (
 )
 
 __all__ = [
-	SurrogateModelMethod,
-	SurrogateModelMethodModel,
-	get_implementations,
+	"SurrogateModelMethod",
+	"SurrogateModelMethodModel",
+	"get_implementations",
 ]
