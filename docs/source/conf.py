@@ -34,7 +34,7 @@ html_static_path = ["_static"]
 
 master_doc = "index"
 
-today_fmt = "%d/%m/%y"
+today_fmt = "%d/%m/%Y"
 
 smv_branch_whitelist = "main"
 # smv_remote_whitelist: str | None = None
