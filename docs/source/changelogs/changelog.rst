@@ -1,6 +1,29 @@
 Changelog
 =========
 
+[0.8.0] - 2026/04/11
+--------------------
+
+Added
+^^^^^
+
+* Adding getters for X, Y, parameters, and simulation ID properties.
+* Including tutorial on uncertainty analysis.
+* Adding conventional pre-commit.
+
+Changed
+^^^^^^^
+
+* Removed `hydra` and `torchx` dependencies.
+* Updating dependencies with security vulnerabilities.
+
+Fixed
+^^^^^
+
+* Fix for aptitude installation on GitHub Actions.
+* Renamed '_all__' to '__all__' in __init__.py files.
+* Using double quotes for all `__all__` elements.
+
 [0.7.0] - 2026/02/11
 --------------------
 
