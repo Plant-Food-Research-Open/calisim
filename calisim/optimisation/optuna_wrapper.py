@@ -80,6 +80,9 @@ class OptunaOptimisation(CalibrationWorkflowBase):
 
 		objective_kwargs = self.get_calibration_func_kwargs()
 
+		if not self.specification.verbose:
+			optuna.logging.set_verbosity(optuna.logging.WARNING)
+
 		self.study.optimize(
 			lambda trial: objective(
 				trial,

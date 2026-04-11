@@ -12,3 +12,4 @@ The following series of tutorials cover how one may perform calibration using va
     sir_history_matching.ipynb
     sir_approximate_bayesian_computation.ipynb
     sir_surrogate_model.ipynb
+    advanced/hydra_config.ipynb

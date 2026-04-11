@@ -1,0 +1,26 @@
+_target_: calisim.optimisation.OptimisationMethod
+_partial_: true
+engine: emukit
+specification:
+    _target_: calisim.optimisation.OptimisationMethodModel
+    experiment_name: emukit_optimisation
+    parameter_spec:
+        parameters:
+            - name: alpha
+              distribution_name: uniform
+              distribution_args: [0.45, 0.55]
+              data_type: continuous
+            - name: beta
+              distribution_name: uniform
+              distribution_args: [0.02, 0.03]
+              data_type: continuous
+    directions: [ minimize ]
+    output_labels: [ Lynx ]
+    acquisition_func: ei
+    n_iterations: 25
+    n_init: 20
+    n_samples: 100
+    n_out: 1
+    verbose: false
+    method_kwargs:
+        noise_var: 0.001

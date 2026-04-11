@@ -69,6 +69,7 @@ evotorch = {version = "^0.5.1", optional = true}
 cmaes = "^0.11.1"
 dynesty = "^3.0.0"
 ray = "^2.54.1"
+hydra-core = {version = "^1.3.2", optional = true}
 
 [tool.poetry.group.docs.dependencies]
 sphinx-rtd-theme = "^3.0.1"
@@ -124,6 +125,7 @@ torch = [
     "skorch",
     "evotorch"
 ]
+hydra = ["hydra-core"]
 
 [build-system]
 requires = ["poetry-core"]

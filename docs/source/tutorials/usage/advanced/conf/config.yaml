@@ -1,0 +1,5 @@
+defaults:
+  - _self_
+  - calibration: lotka_optimisation
+  - model: lotka_volterra
+  - metric: mse

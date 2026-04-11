@@ -5,6 +5,7 @@ API Reference
     :maxdepth: 1
 
     base.rst
+    config.rst
     data_model.rst
     example_models.rst
     estimators.rst
