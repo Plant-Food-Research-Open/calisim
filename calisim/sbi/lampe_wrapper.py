@@ -132,7 +132,7 @@ class LAMPESimulationBasedInference(SimulationBasedInferenceBase):
 	def specify(self) -> None:
 		"""Specify the parameters of the model calibration procedure."""
 		super().specify()
-		self.parameters: PriorCollection = PriorCollection(self.parameters)  # type: ignore[assignment]
+		self.parameters: PriorCollection = PriorCollection(self.parameters)  # type: ignore[arg-type]
 
 	def execute(self) -> None:
 		"""Execute the simulation calibration procedure."""

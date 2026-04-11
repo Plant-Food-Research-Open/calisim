@@ -63,5 +63,4 @@ repos:
       - id: conventional-pre-commit
         stages: [commit-msg]
         args:
-          - --strict
           - --verbose

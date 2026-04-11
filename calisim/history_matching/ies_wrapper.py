@@ -76,7 +76,7 @@ class IESHistoryMatching(HistoryMatchingBase):
 			for i in range(ensemble_size):
 				parameter_set = {}
 				for k in self.parameters:
-					parameter_set[k] = self.parameters[k][i]
+					parameter_set[k] = self.parameters[k][i]  # type: ignore[index]
 				parameters.append(parameter_set)
 
 		ensemble_outputs = self.specification.Y
@@ -155,7 +155,7 @@ class IESHistoryMatching(HistoryMatchingBase):
 
 		for i, parameter_name in enumerate(parameter_names):
 			axes[i].set_title(parameter_name)
-			axes[i].hist(self.parameters[parameter_name], label="Prior")
+			axes[i].hist(self.parameters[parameter_name], label="Prior")  # type: ignore[index]
 			axes[i].hist(
 				self.X[i, :],
 				label=f"{smoother_name} ({n_iterations}) Posterior",

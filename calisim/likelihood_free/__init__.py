@@ -4,7 +4,7 @@ from .implementation import (
 	get_implementations,
 )
 
-_all__ = [
+__all__ = [
 	LikelihoodFreeMethod,
 	LikelihoodFreeMethodModel,
 	get_implementations,

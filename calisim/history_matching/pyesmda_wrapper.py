@@ -103,7 +103,7 @@ class PyESMDAHistoryMatching(HistoryMatchingBase):
 
 		m_init = self.specification.X
 		if m_init is None:
-			m_init = [self.parameters[k] for k in self.parameters]
+			m_init = [self.parameters[k] for k in self.parameters]  # type: ignore[index]
 			m_init = np.array(m_init).T
 
 		if smoother_name == "esmda":
@@ -152,7 +152,7 @@ class PyESMDAHistoryMatching(HistoryMatchingBase):
 
 		for i, parameter_name in enumerate(parameter_names):
 			axes[i].set_title(parameter_name)
-			axes[i].hist(self.parameters[parameter_name], label="Prior")
+			axes[i].hist(self.parameters[parameter_name], label="Prior")  # type: ignore[index]
 			mu = means[i]
 			sigma = stds[i]
 			parameter_samples[parameter_name] = self.rng.normal(

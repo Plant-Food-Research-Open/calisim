@@ -4,4 +4,4 @@ from .implementation import (
 	get_implementations,
 )
 
-_all__ = [OptimisationMethod, OptimisationMethodModel, get_implementations]
+__all__ = [OptimisationMethod, OptimisationMethodModel, get_implementations]
