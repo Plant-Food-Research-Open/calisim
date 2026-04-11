@@ -65,13 +65,3 @@ repos:
         args:
           - --strict
           - --verbose
-          - --force-scope
-          - feat
-          - fix
-          - chore
-          - test
-          - docs
-          - ci
-          - build
-          - style
-          - refactor

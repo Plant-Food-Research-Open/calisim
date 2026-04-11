@@ -1,0 +1,57 @@
+name: Welcome New Users
+
+on:
+  issues:
+    types: [opened]
+  pull_request_target:
+    types: [opened, closed]
+
+permissions:
+  pull-requests: write
+  issues: write
+
+jobs:
+  welcome-issue:
+    if: github.event_name == 'issues'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: wow-actions/welcome@v1.3.1
+        with:
+          FIRST_ISSUE_REACTIONS: "+1, hooray, rocket, heart"
+          FIRST_ISSUE: |
+            👋 @{{ author }}
+
+            Welcome to the Calisim community!
+
+            Thanks for opening your first issue here! Be sure to follow the issue template or please update it accordingly.
+          STAR_MESSAGE: |
+            🌟 ~~~~~~~~~ 🌟
+
+            If you like Calisim, please ⭐ star ⭐ our repo to support it! It really helps the project to gain momentum and credibility.
+
+  welcome-pr-opened:
+    if: github.event_name == 'pull_request_target' && github.event.action == 'opened'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: wow-actions/welcome@v1.3.1
+        with:
+          FIRST_PR_REACTIONS: "+1, hooray, rocket, heart"
+          FIRST_PR: |
+            👋 @{{ author }}
+
+            Welcome to the Calisim community!
+
+            Thanks for opening your first pull request here! Be sure to follow the pull request template or please update it accordingly.
+
+  welcome-pr-merged:
+    if: github.event_name == 'pull_request_target' && github.event.action == 'closed' && github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    steps:
+      - uses: wow-actions/welcome@v1.3.1
+        with:
+          FIRST_PR_MERGED: |
+            🎉 @{{ author }}
+
+            You are now a Calisim community contributor! Thanks for merging your first pull request! We are delighted and very proud of you!
+
+            If you like Calisim, please ⭐ star ⭐ our repo to support it! It really helps the project to gain momentum and credibility. Kudos and please keep going, we need you.
