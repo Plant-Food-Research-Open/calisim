@@ -91,6 +91,7 @@ class CalibrationWorkflowBase(ABC):
 		self.rng = np.random.default_rng(random_seed)
 		self.simulation_ids: list[str] | None = []
 		self.parameters: Any | None = None
+		self.constants: dict[str, float | int | str | Any | None] = {}
 
 	@abstractmethod
 	def specify(self) -> None:
@@ -664,6 +665,14 @@ class CalibrationWorkflowBase(ABC):
 		"""
 		return self.parameters
 
+	def get_constants(self) -> dict[str, float | int | str | Any | None] | None:
+		"""Get the simulation constants.
+
+		Returns:
+			dict[str, float | int | str | Any | None] | None: The simulation constants.
+		"""
+		return self.constants
+
 
 class CalibrationMethodBase(CalibrationWorkflowBase):
 	"""The calibration method abstract class."""
@@ -872,3 +881,12 @@ class CalibrationMethodBase(CalibrationWorkflowBase):
 		"""
 		self._implementation_check("get_parameters")
 		return self.implementation.get_parameters()
+
+	def get_constants(self) -> dict[str, float | int | str | Any | None] | None:
+		"""Get the simulation constants.
+
+		Returns:
+			dict[str, float | int | str | Any | None] | None: The simulation constants.
+		"""
+		self._implementation_check("get_constants")
+		return self.implementation.get_constants()

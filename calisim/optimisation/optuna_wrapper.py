@@ -61,14 +61,21 @@ class OptunaOptimisation(CalibrationWorkflowBase):
 			parameters = {}
 			for spec in parameter_spec:
 				parameter_name = spec.name
-				lower_bound, upper_bound = self.get_parameter_bounds(spec)
 				data_type = spec.data_type
 
 				if data_type == ParameterDataType.CONTINUOUS:
+					lower_bound, upper_bound = self.get_parameter_bounds(spec)
 					parameters[parameter_name] = trial.suggest_float(
 						parameter_name, lower_bound, upper_bound
 					)
+				elif data_type == ParameterDataType.CONSTANT:
+					parameters[parameter_name] = spec.parameter_value
+				elif data_type == ParameterDataType.CATEGORICAL:
+					parameters[parameter_name] = trial.suggest_categorical(
+						parameter_name, spec.parameter_values
+					)
 				else:
+					lower_bound, upper_bound = self.get_parameter_bounds(spec)
 					parameters[parameter_name] = trial.suggest_int(
 						parameter_name, lower_bound, upper_bound
 					)

@@ -10,6 +10,7 @@ from matplotlib import pyplot as plt
 from SALib import ProblemSpec
 
 from ..base import CalibrationWorkflowBase
+from ..data_model import ParameterDataType
 
 
 class SALibSensitivityAnalysis(CalibrationWorkflowBase):
@@ -25,9 +26,14 @@ class SALibSensitivityAnalysis(CalibrationWorkflowBase):
 		parameter_spec = self.specification.parameter_spec.parameters
 		for spec in parameter_spec:
 			parameter_name = spec.name
-			self.names.append(parameter_name)
-
 			data_type = spec.data_type
+
+			if data_type == ParameterDataType.CONSTANT:
+				parameter_value = spec.parameter_value
+				self.constants[parameter_name] = parameter_value
+				continue
+
+			self.names.append(parameter_name)
 			self.data_types.append(data_type)
 
 			dists.append("unif")

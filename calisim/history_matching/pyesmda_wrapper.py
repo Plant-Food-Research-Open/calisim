@@ -42,11 +42,14 @@ def forward_model(
 	Returns:
 		np.ndarray: The ensemble results.
 	"""
+	constants = workflow.get_constants()
 	parameters = []
 	for i in range(m_ensemble.shape[0]):
 		parameter_set = {}
 		for k in parameter_spec:
 			parameter_set[k] = parameter_spec[k][i]
+		for k, v in constants.items():
+			parameter_set[k] = v
 		parameters.append(parameter_set)
 
 	if history_matching_kwargs is None:

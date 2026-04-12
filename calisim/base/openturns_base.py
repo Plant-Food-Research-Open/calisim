@@ -9,6 +9,7 @@ from collections.abc import Callable
 import numpy as np
 import openturns as ot
 
+from ..data_model import ParameterDataType
 from .calibration_base import CalibrationWorkflowBase
 
 
@@ -25,16 +26,20 @@ class OpenTurnsBase(CalibrationWorkflowBase):
 		parameter_spec = self.specification.parameter_spec.parameters
 		for spec in parameter_spec:
 			parameter_name = spec.name
+			data_type = spec.data_type
+			if data_type == ParameterDataType.CONSTANT:
+				parameter_value = spec.parameter_value
+				self.constants[parameter_name] = parameter_value
+				continue
+
 			self.names.append(parameter_name)
+			self.data_types.append(data_type)
 
 			bounds = self.get_parameter_bounds(spec)
 			lower_bound, upper_bound = bounds
 			lower_bounds, upper_bounds = self.bounds
 			lower_bounds.append(lower_bound)
 			upper_bounds.append(upper_bound)
-
-			data_type = spec.data_type
-			self.data_types.append(data_type)
 
 			distribution_name = (
 				spec.distribution_name.replace("_", " ").title().replace(" ", "")

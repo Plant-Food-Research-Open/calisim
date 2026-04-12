@@ -7,6 +7,7 @@ The defined base class for surrogate modelling.
 import chaospy
 import numpy as np
 
+from ..data_model import ParameterDataType
 from .calibration_base import CalibrationWorkflowBase
 
 
@@ -38,9 +39,14 @@ class SurrogateBase(CalibrationWorkflowBase):
 		parameter_spec = self.specification.parameter_spec.parameters
 		for spec in parameter_spec:
 			parameter_name = spec.name
-			self.names.append(parameter_name)
-
 			data_type = spec.data_type
+
+			if data_type == ParameterDataType.CONSTANT:
+				parameter_value = spec.parameter_value
+				self.constants[parameter_name] = parameter_value
+				continue
+
+			self.names.append(parameter_name)
 			self.data_types.append(data_type)
 
 			distribution_name = (

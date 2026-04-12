@@ -65,12 +65,18 @@ class DynestyBayesianCalibration(CalibrationWorkflowBase):
 		parameter_spec = self.specification.parameter_spec.parameters
 		for spec in parameter_spec:
 			parameter_name = spec.name
-			self.names.append(parameter_name)
+			data_type = spec.data_type
+
+			if data_type == ParameterDataType.CONSTANT:
+				parameter_value = spec.parameter_value
+				self.constants[parameter_name] = parameter_value
+				continue
+			elif data_type == ParameterDataType.CATEGORICAL:
+				pass
 
 			bounds = self.get_parameter_bounds(spec)
+			self.names.append(parameter_name)
 			self.bounds.append(bounds)
-
-			data_type = spec.data_type
 			self.data_types.append(data_type)
 
 	def execute(self) -> None:

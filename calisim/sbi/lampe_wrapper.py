@@ -71,6 +71,10 @@ class LAMPESimulationBasedInference(SimulationBasedInferenceBase):
 		"""
 		param_values = []
 		for i, spec in enumerate(parameter_spec):  # type: ignore[arg-type]
+			data_type = spec.data_type
+			if data_type == ParameterDataType.CONSTANT:
+				continue
+
 			x = theta[i]
 			distribution_name = spec.distribution_name
 			if (
@@ -108,6 +112,10 @@ class LAMPESimulationBasedInference(SimulationBasedInferenceBase):
 		for sample in samples:
 			norm_param_values = []
 			for i, spec in enumerate(parameter_spec):  # type: ignore[arg-type]
+				data_type = spec.data_type
+				if data_type == ParameterDataType.CONSTANT:
+					continue
+
 				x = sample[i]
 				distribution_name = spec.distribution_name
 				if (

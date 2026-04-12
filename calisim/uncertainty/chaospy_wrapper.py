@@ -13,6 +13,7 @@ import sklearn.linear_model as lm
 from matplotlib import pyplot as plt
 
 from ..base import CalibrationWorkflowBase
+from ..data_model import ParameterDataType
 
 
 class ChaospyUncertaintyAnalysis(CalibrationWorkflowBase):
@@ -27,9 +28,14 @@ class ChaospyUncertaintyAnalysis(CalibrationWorkflowBase):
 		parameter_spec = self.specification.parameter_spec.parameters
 		for spec in parameter_spec:
 			parameter_name = spec.name
-			self.names.append(parameter_name)
-
 			data_type = spec.data_type
+
+			if data_type == ParameterDataType.CONSTANT:
+				parameter_value = spec.parameter_value
+				self.constants[parameter_name] = parameter_value
+				continue
+
+			self.names.append(parameter_name)
 			self.data_types.append(data_type)
 
 			distribution_name = (

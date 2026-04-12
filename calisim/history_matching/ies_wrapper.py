@@ -13,7 +13,7 @@ from iterative_ensemble_smoother.utils import steplength_exponential
 from matplotlib import pyplot as plt
 
 from ..base import HistoryMatchingBase
-from ..data_model import ParameterEstimateModel
+from ..data_model import ParameterDataType, ParameterEstimateModel
 
 
 class IESHistoryMatching(HistoryMatchingBase):
@@ -35,7 +35,9 @@ class IESHistoryMatching(HistoryMatchingBase):
 			parameter_set = {}
 			for j, spec in enumerate(parameter_spec):  # type: ignore[arg-type]
 				parameter_name = spec.name
-				parameter_set[parameter_name] = X[j][i]
+				data_type = spec.data_type
+				if data_type != ParameterDataType.CONSTANT:
+					parameter_set[parameter_name] = X[j][i]
 			parameters.append(parameter_set)
 		return parameters
 

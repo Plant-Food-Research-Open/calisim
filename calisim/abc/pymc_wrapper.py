@@ -14,7 +14,7 @@ import pymc as pm
 from matplotlib import pyplot as plt
 
 from ..base import CalibrationWorkflowBase
-from ..data_model import ParameterEstimateModel
+from ..data_model import ParameterDataType, ParameterEstimateModel
 
 
 class PyMCApproximateBayesianComputation(CalibrationWorkflowBase):
@@ -28,6 +28,15 @@ class PyMCApproximateBayesianComputation(CalibrationWorkflowBase):
 		with pm.Model() as self.model:
 			for spec in parameter_spec:
 				parameter_name = spec.name
+
+				data_type = spec.data_type
+				if data_type == ParameterDataType.CONSTANT:
+					parameter_value = spec.parameter_value
+					self.constants[parameter_name] = parameter_value
+					continue
+				elif data_type == ParameterDataType.CATEGORICAL:
+					pass
+
 				self.names.append(parameter_name)
 
 				distribution_name = (
@@ -61,6 +70,8 @@ class PyMCApproximateBayesianComputation(CalibrationWorkflowBase):
 			parameters = {}
 			for i, name in enumerate(self.names):
 				parameters[name] = parameter_values[i].item()
+			for k, v in self.constants.items():
+				parameters[k] = v
 
 			abc_kwargs = self.get_calibration_func_kwargs()
 			simulation_id = self.get_simulation_uuid()

@@ -24,9 +24,14 @@ class SimulationBasedInferenceBase(CalibrationWorkflowBase):
 		parameter_spec = self.specification.parameter_spec.parameters
 		for spec in parameter_spec:
 			name = spec.name
-			self.names.append(name)
-
 			data_type = spec.data_type
+
+			if data_type == ParameterDataType.CONSTANT:
+				parameter_value = spec.parameter_value
+				self.constants[name] = parameter_value
+				continue
+
+			self.names.append(name)
 			self.data_types.append(data_type)
 
 			if data_type == ParameterDataType.DISCRETE:

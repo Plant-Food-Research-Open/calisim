@@ -63,6 +63,7 @@ class PygpcModel(AbstractModel):
 		parameter_name = self.parameter_names[0]
 		N = self.p[parameter_name].shape[0]
 
+		constants = self.workflow.get_constants()
 		parameters = []
 		for i in range(N):
 			parameter_set = {}
@@ -73,6 +74,8 @@ class PygpcModel(AbstractModel):
 					parameter_set[parameter_name] = parameter_value
 				else:
 					parameter_set[parameter_name] = int(parameter_value)
+			for k, v in constants.items():
+				parameter_set[k] = v  # type: ignore[assignment]
 			parameters.append(parameter_set)
 
 		simulation_ids = [
@@ -131,9 +134,14 @@ class PygpcUncertaintyAnalysis(CalibrationWorkflowBase):
 		parameter_spec = self.specification.parameter_spec.parameters
 		for spec in parameter_spec:
 			parameter_name = spec.name
-			names.append(parameter_name)
-
 			data_type = spec.data_type
+
+			if data_type == ParameterDataType.CONSTANT:
+				parameter_value = spec.parameter_value
+				self.constants[parameter_name] = parameter_value
+				continue
+
+			names.append(parameter_name)
 			data_types.append(data_type)
 
 			distribution_name = self.dist_name_processing(spec.distribution_name)

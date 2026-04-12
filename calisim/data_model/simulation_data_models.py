@@ -30,6 +30,7 @@ class ParameterDataType(Enum):
 	DISCRETE: str = "discrete"
 	CONTINUOUS: str = "continuous"
 	CATEGORICAL: str = "categorical"
+	CONSTANT: str = "constant"
 
 
 class ParameterModel(BaseModel):
@@ -40,7 +41,10 @@ class ParameterModel(BaseModel):
 	"""
 
 	name: str = Field(description="The parameter name")
-	parameter_values: list[float] | None = Field(
+	parameter_value: float | str | int | None = Field(
+		description="The parameter value.", default=None
+	)
+	parameter_values: list[float] | list[str] | list[int] | None = Field(
 		description="The list of parameter values.", default=None
 	)
 	parameter_tags: dict[str, str] | None = Field(

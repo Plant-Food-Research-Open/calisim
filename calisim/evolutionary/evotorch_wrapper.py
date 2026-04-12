@@ -35,18 +35,25 @@ class EvoTorchEvolutionary(CalibrationWorkflowBase):
 		parameter_spec = self.specification.parameter_spec.parameters
 		for spec in parameter_spec:
 			parameter_name = spec.name
-			self.names.append(parameter_name)
-
 			data_type = spec.data_type
-			self.data_types.append(data_type)
+
+			if data_type == ParameterDataType.CONSTANT:
+				parameter_value = spec.parameter_value
+				self.constants[parameter_name] = parameter_value
+				continue
 
 			bounds = self.get_parameter_bounds(spec)
-			self.bounds.append(bounds)
-
 			lower_bound, upper_bound = bounds
-			if data_type == ParameterDataType.DISCRETE:
+			if (
+				data_type == ParameterDataType.DISCRETE
+				or data_type == ParameterDataType.CATEGORICAL
+			):
 				lower_bound = np.floor(lower_bound).astype("int")
 				upper_bound = np.floor(upper_bound).astype("int")
+
+			self.names.append(parameter_name)
+			self.data_types.append(data_type)
+			self.bounds.append(bounds)
 			self.lower_bounds.append(lower_bound)
 			self.upper_bounds.append(upper_bound)
 

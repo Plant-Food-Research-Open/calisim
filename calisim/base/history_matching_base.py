@@ -24,7 +24,15 @@ class HistoryMatchingBase(CalibrationWorkflowBase):
 		self.parameters = {}
 		for spec in parameter_spec:
 			parameter_name = spec.name
+			data_type = spec.data_type
+
+			if data_type == ParameterDataType.CONSTANT:
+				parameter_value = spec.parameter_value
+				self.constants[parameter_name] = parameter_value
+				continue
+
 			self.names.append(parameter_name)
+			self.data_types.append(data_type)
 
 			distribution_name = spec.distribution_name.replace(" ", "_").lower()
 
@@ -43,9 +51,10 @@ class HistoryMatchingBase(CalibrationWorkflowBase):
 			self.rng.shuffle(samples)
 			self.parameters[parameter_name] = samples
 
-			data_type = spec.data_type
-			self.data_types.append(data_type)
-			if data_type == ParameterDataType.DISCRETE:
+			if (
+				data_type == ParameterDataType.DISCRETE
+				or data_type == ParameterDataType.CATEGORICAL
+			):
 				self.parameters[parameter_name] = np.round(
 					self.parameters[parameter_name]
 				)

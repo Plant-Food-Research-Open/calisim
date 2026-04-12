@@ -16,7 +16,7 @@ from spotpy.algorithms import NSGAII, abc, demcz, dream, fscabc, sceua
 from spotpy.parameter import Base, generate
 
 from ..base import CalibrationWorkflowBase
-from ..data_model import ParameterEstimateModel
+from ..data_model import ParameterDataType, ParameterEstimateModel
 
 
 class SPOTSetup:
@@ -52,8 +52,16 @@ class SPOTSetup:
 		parameter_spec = workflow.specification.parameter_spec.parameters
 		for spec in parameter_spec:
 			parameter_name = spec.name
-			parameter_names.append(parameter_name)
 			data_type = spec.data_type
+
+			if data_type == ParameterDataType.CONSTANT:
+				parameter_value = spec.parameter_value
+				workflow.constants[parameter_name] = parameter_value
+				continue
+			elif data_type == ParameterDataType.CATEGORICAL:
+				pass
+
+			parameter_names.append(parameter_name)
 			data_types.append(data_type)
 
 			distribution_name = (

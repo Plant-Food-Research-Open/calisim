@@ -27,23 +27,30 @@ class EmukitBase(CalibrationWorkflowBase):
 		parameter_spec = self.specification.parameter_spec.parameters
 		for spec in parameter_spec:
 			parameter_name = spec.name
-			self.names.append(parameter_name)
-
-			bounds = self.get_parameter_bounds(spec)
-			self.bounds.append(bounds)
-			lower_bound, upper_bound = bounds
-
 			data_type = spec.data_type
-			self.data_types.append(data_type)
 
 			if data_type == ParameterDataType.DISCRETE:
+				bounds = self.get_parameter_bounds(spec)
+				self.bounds.append(bounds)
+				lower_bound, upper_bound = bounds
 				discrete_domain = np.arange(lower_bound, upper_bound + 1)
 				parameter = DiscreteParameter(parameter_name, discrete_domain)
+			elif data_type == ParameterDataType.CONSTANT:
+				parameter_value = spec.parameter_value
+				self.constants[parameter_name] = parameter_value
+				continue
+			elif data_type == ParameterDataType.CATEGORICAL:
+				pass
 			else:
+				bounds = self.get_parameter_bounds(spec)
+				self.bounds.append(bounds)
+				lower_bound, upper_bound = bounds
 				parameter = ContinuousParameter(
 					parameter_name, lower_bound, upper_bound
 				)
-			parameters.append(parameter)
+			self.names.append(parameter_name)
+			self.data_types.append(data_type)
+			parameters.append(parameter)  # type: ignore[possibly-undefined]
 
 		self.parameters = ParameterSpace(parameters)
 

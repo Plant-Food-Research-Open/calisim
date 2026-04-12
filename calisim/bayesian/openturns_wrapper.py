@@ -12,7 +12,7 @@ import openturns.viewer as viewer
 import pandas as pd
 
 from ..base import OpenTurnsBase
-from ..data_model import ParameterEstimateModel
+from ..data_model import ParameterDataType, ParameterEstimateModel
 
 
 class OpenTurnsBayesianCalibration(OpenTurnsBase):
@@ -28,7 +28,14 @@ class OpenTurnsBayesianCalibration(OpenTurnsBase):
 		parameter_spec = self.specification.parameter_spec.parameters
 		for spec in parameter_spec:
 			parameter_name = spec.name
-			self.names.append(parameter_name)
+			data_type = spec.data_type
+
+			if data_type == ParameterDataType.CONSTANT:
+				parameter_value = spec.parameter_value
+				self.constants[parameter_name] = parameter_value
+				continue
+			elif data_type == ParameterDataType.CATEGORICAL:
+				pass
 
 			bounds = spec.distribution_bounds
 			lower_bound, upper_bound = bounds
@@ -36,7 +43,7 @@ class OpenTurnsBayesianCalibration(OpenTurnsBase):
 			lower_bounds.append(lower_bound)
 			upper_bounds.append(upper_bound)
 
-			data_type = spec.data_type
+			self.names.append(parameter_name)
 			self.data_types.append(data_type)
 
 			distribution_name = (

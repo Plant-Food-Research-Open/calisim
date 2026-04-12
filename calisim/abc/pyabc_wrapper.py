@@ -61,6 +61,11 @@ class PyABCApproximateBayesianComputation(CalibrationWorkflowBase):
 				transition_mapping[parameter_name] = pyabc.DiscreteJumpTransition(
 					domain=discrete_domain, p_stay=0.7
 				)
+			elif data_type == ParameterDataType.CONSTANT:
+				parameter_value = spec.parameter_value
+				self.constants[parameter_name] = parameter_value
+			elif data_type == ParameterDataType.CATEGORICAL:
+				pass
 			else:
 				distribution_name = self.dist_name_processing(spec.distribution_name)
 				distribution_args = spec.distribution_args
@@ -98,6 +103,10 @@ class PyABCApproximateBayesianComputation(CalibrationWorkflowBase):
 		def simulator_func(parameters: dict) -> dict:
 			observed_data = self.specification.observed_data
 			simulation_id = self.get_simulation_uuid()
+
+			parameters = parameters.copy()
+			for k, v in self.constants.items():
+				parameters[k] = v
 
 			results = self.call_calibration_func(
 				parameters, simulation_id, observed_data, **abc_kwargs

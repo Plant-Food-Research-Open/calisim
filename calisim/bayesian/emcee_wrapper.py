@@ -15,7 +15,7 @@ import numpy as np
 import pandas as pd
 
 from ..base import CalibrationWorkflowBase
-from ..data_model import ParameterEstimateModel
+from ..data_model import ParameterDataType, ParameterEstimateModel
 
 
 def target_function(X: np.ndarray, self: CalibrationWorkflowBase) -> np.ndarray:
@@ -56,16 +56,23 @@ class EmceeBayesianCalibration(CalibrationWorkflowBase):
 		self.parameters = []
 		for spec in parameter_spec:
 			parameter_name = spec.name
-			self.names.append(parameter_name)
-
 			data_type = spec.data_type
-			self.data_types.append(data_type)
+
+			if data_type == ParameterDataType.CONSTANT:
+				parameter_value = spec.parameter_value
+				self.constants[parameter_name] = parameter_value
+				continue
+			elif data_type == ParameterDataType.CATEGORICAL:
+				pass
 
 			bounds = spec.distribution_bounds
 			lower_bound, upper_bound = bounds
 			lower_bounds, upper_bounds = self.bounds
 			lower_bounds.append(lower_bound)
 			upper_bounds.append(upper_bound)
+
+			self.names.append(parameter_name)
+			self.data_types.append(data_type)
 
 			distribution_name = spec.distribution_name.replace(" ", "_").lower()
 

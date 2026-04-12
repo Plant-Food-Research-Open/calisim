@@ -85,6 +85,7 @@ def calibration_func_wrapper(
 	"""
 	import numpy as np
 
+	constants = workflow.get_constants()
 	parameters = []
 	for theta in X:
 		parameter_set = {}
@@ -95,6 +96,9 @@ def calibration_func_wrapper(
 				parameter_set[parameter_name] = parameter_value
 			else:
 				parameter_set[parameter_name] = int(parameter_value)
+		for k, v in constants.items():
+			parameter_set[k] = v
+
 		parameters.append(parameter_set)
 
 	simulation_ids = [get_simulation_uuid() for _ in range(len(parameters))]
