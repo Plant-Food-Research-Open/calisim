@@ -187,10 +187,23 @@ class HydraConfiguration:
 
 		try:
 			from omegaconf import OmegaConf
+			from omegaconf.errors import (
+				ConfigAttributeError,
+				InterpolationResolutionError,
+				MissingMandatoryValue,
+				OmegaConfBaseException,
+				ValidationError,
+			)
 
 			OmegaConf.to_container(cfg, resolve=True)
 			return True
-		except Exception:
+		except (
+			ValidationError,
+			ConfigAttributeError,
+			InterpolationResolutionError,
+			MissingMandatoryValue,
+			OmegaConfBaseException,
+		):
 			return False
 
 	@property
