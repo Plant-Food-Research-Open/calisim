@@ -10,7 +10,7 @@ services:
       args:
         BUILD_DATE: date -u +'%Y-%m-%dT%H:%M:%SZ'
         CALISIM_VERSION: ${CALISIM_VERSION:-latest}
-        CALISIM_EXTRAS: -E hydra
+        CALISIM_EXTRAS: -E hydra -E torchx
       tags:
         - ghcr.io/plant-food-research-open/calisim:latest
     volumes:
@@ -25,7 +25,7 @@ services:
       args:
         BUILD_DATE: date -u +'%Y-%m-%dT%H:%M:%SZ'
         CALISIM_VERSION: ${CALISIM_VERSION:-latest}
-        CALISIM_EXTRAS: -E torch -E hydra
+        CALISIM_EXTRAS: -E torch -E hydra -E torchx
       tags:
         - ghcr.io/plant-food-research-open/calisim-torch:latest
     volumes:

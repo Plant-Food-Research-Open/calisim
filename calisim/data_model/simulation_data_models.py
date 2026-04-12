@@ -196,3 +196,31 @@ class ParameterEstimatesModel(BaseModel):
 	estimates: list[ParameterEstimateModel] | None = Field(
 		description="The set of parameter estimates", default=None
 	)
+
+
+class OrchestrationModel(BaseModel):
+	"""The orchestration data model.
+
+	Args:
+	    BaseModel (BaseModel): The Pydantic Base model class.
+	"""
+
+	name: str = Field(description="The job name", default="default")
+	entrypoint: str = Field(description="The job entrypoint", default="sh")
+	cpu: int = Field(description="The number of CPUs", default=1)
+	gpu: int = Field(description="The number of GPUs", default=0)
+	memMB: int = Field(description="The amount of memory in MB", default=100)
+	scheduler: str = Field(
+		description="The orchestration scheduler", default="local_cwd"
+	)
+	auto_set_cuda_visible_devices: bool = Field(
+		description="Set the CUDA_VISIBLE_DEVICES variable", default=True
+	)
+	partition: str = Field(description="The job partition", default="fast")
+	time: str = Field(description="The job walltime", default="00:00:59")
+	image: str = Field(description="The job Docker image", default="")
+	num_replicas: int = Field(description="The number of job replicas", default=1)
+	wait_interval: int = Field(
+		description="The interval for job status updates (seconds)", default=10
+	)
+	log_dir: str | None = Field(description="The log directory", default=None)

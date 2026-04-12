@@ -1,6 +1,7 @@
 from .simulation_data_models import (
 	CalibrationModel,
 	DistributionModel,
+	OrchestrationModel,
 	ParameterDataType,
 	ParameterEstimateModel,
 	ParameterEstimatesModel,
@@ -16,4 +17,5 @@ __all__ = [
 	"ParameterSpecification",
 	"ParameterEstimateModel",
 	"ParameterEstimatesModel",
+	"OrchestrationModel",
 ]

@@ -1534,6 +1534,44 @@ urllib3 = ">=1.26.5"
 zict = ">=3.0.0"
 
 [[package]]
+name = "docker"
+version = "7.1.0"
+description = "A Python library for the Docker Engine API."
+optional = true
+python-versions = ">=3.8"
+files = [
+    {file = "docker-7.1.0-py3-none-any.whl", hash = "sha256:c96b93b7f0a746f9e77d325bcfb87422a3d8bd4f03136ae8a85b37f1898d5fc0"},
+    {file = "docker-7.1.0.tar.gz", hash = "sha256:ad8c70e6e3f8926cb8a92619b832b4ea5299e2831c14284663184e200546fa6c"},
+]
+
+[package.dependencies]
+pywin32 = {version = ">=304", markers = "sys_platform == \"win32\""}
+requests = ">=2.26.0"
+urllib3 = ">=1.26.0"
+
+[package.extras]
+dev = ["coverage (==7.2.7)", "pytest (==7.4.2)", "pytest-cov (==4.1.0)", "pytest-timeout (==2.1.0)", "ruff (==0.1.8)"]
+docs = ["myst-parser (==0.18.0)", "sphinx (==5.1.1)"]
+ssh = ["paramiko (>=2.4.3)"]
+websockets = ["websocket-client (>=1.3.0)"]
+
+[[package]]
+name = "docstring-parser"
+version = "0.17.0"
+description = "Parse Python docstrings in reST, Google and Numpydoc format"
+optional = true
+python-versions = ">=3.8"
+files = [
+    {file = "docstring_parser-0.17.0-py3-none-any.whl", hash = "sha256:cf2569abd23dce8099b300f9b4fa8191e9582dda731fd533daf54c4551658708"},
+    {file = "docstring_parser-0.17.0.tar.gz", hash = "sha256:583de4a309722b3315439bb31d64ba3eebada841f2e2cee23b99df001434c912"},
+]
+
+[package.extras]
+dev = ["pre-commit (>=2.16.0)", "pydoctor (>=25.4.0)", "pytest"]
+docs = ["pydoctor (>=25.4.0)"]
+test = ["pytest"]
+
+[[package]]
 name = "docutils"
 version = "0.21.2"
 description = "Docutils -- Python Documentation Utilities"
@@ -7212,6 +7250,36 @@ optree = ["optree (>=0.13.0)"]
 pyyaml = ["pyyaml"]
 
 [[package]]
+name = "torchx"
+version = "0.8.0.dev0"
+description = "TorchX SDK and Components"
+optional = true
+python-versions = ">=3.10"
+files = []
+develop = false
+
+[package.dependencies]
+docker = "*"
+docstring-parser = ">=0.8.1"
+filelock = "*"
+fsspec = ">=2023.10.0"
+pyyaml = "*"
+tabulate = "*"
+typing-extensions = "*"
+
+[package.extras]
+aws-batch = ["boto3"]
+dev = ["aiobotocore", "ax-platform[mysql]", "boto3", "captum", "hydra-core", "ipython", "kubernetes (>=11)", "lintrunner", "lintrunner-adapters", "mlflow-skinny", "moto (>=5)", "pip", "pyre-check", "pytest", "pytest-cov", "pytorch-lightning", "s3fs", "sagemaker-train", "tensorboard", "torch", "torch-model-archiver", "torchmetrics", "torchserve", "torchtext", "torchvision", "ts"]
+docs = ["ipykernel", "ipython_genutils", "jinja2 (>=3.1.4)", "jupytext", "matplotlib", "nbsphinx", "papermill", "sphinx (>=5.0,<6.0)", "sphinx-gallery (<1)", "sphinxcontrib.katex"]
+kubernetes = ["kubernetes (>=11)"]
+
+[package.source]
+type = "git"
+url = "https://git@github.com/meta-pytorch/torchx.git"
+reference = "c41a375b3a02d9643d7472f18c85a7ca9d0c8a46"
+resolved_reference = "c41a375b3a02d9643d7472f18c85a7ca9d0c8a46"
+
+[[package]]
 name = "tornado"
 version = "6.5.5"
 description = "Tornado is a Python web framework and asynchronous networking library, originally developed at FriendFeed."
@@ -7645,8 +7713,9 @@ dev = ["pre-commit", "pytest", "ruff"]
 [extras]
 hydra = ["hydra-core"]
 torch = ["ax-platform", "botorch", "evotorch", "gpytorch", "lampe", "nflows", "pyro-api", "pyro-ppl", "sbi", "skorch", "tensorboard", "torch", "zuko"]
+torchx = ["torchx"]
 
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.10,<3.13"
-content-hash = "ef6adde6dabe76cf730a3abf398771fc969830283e3bcf711c2398729d99c940"
+content-hash = "947b7f2403bf9bdb92cbe6637d897860cd5201a3d0dbac5d3b0199f5e32ad1f0"

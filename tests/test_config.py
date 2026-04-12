@@ -49,6 +49,7 @@ def test_hydra_merge() -> None:
 	)
 
 	merged_cfg = hydra_config.merge(first_cfg, second_cfg)
+	assert merged_cfg is not None
 	assert isinstance(merged_cfg["metric"], RootMeanSquaredError)
 
 
@@ -57,6 +58,8 @@ def test_hydra_overrides() -> None:
 	merged_cfg = hydra_config.apply_overrides(
 		cfg, overrides=["metric._target_=calisim.statistics.RootMeanSquaredError"]
 	)
+
+	assert merged_cfg is not None
 	metric_instance = hydra_config.instantiate(merged_cfg["metric"])
 	assert isinstance(metric_instance, RootMeanSquaredError)
 
@@ -70,6 +73,11 @@ def test_hydra_pretty() -> None:
 def test_hydra_valid() -> None:
 	cfg, hydra_config = get_hydra_config()
 	assert hydra_config.validate(cfg)
+
+
+def test_hydra_available() -> None:
+	_, hydra_config = get_hydra_config()
+	assert hydra_config.available
 
 
 def test_hydra_optimisation() -> None:

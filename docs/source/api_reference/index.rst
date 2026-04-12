@@ -16,6 +16,7 @@ API Reference
     experimental_design.rst
     history_matching.rst
     optimisation.rst
+    orchestration.rst
     quadrature.rst
     reliability.rst
     sbi.rst

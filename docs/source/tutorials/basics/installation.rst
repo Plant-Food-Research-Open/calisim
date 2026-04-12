@@ -17,8 +17,11 @@ calisim's default installation will not include all optional dependencies. You m
     # Install Hydra extras
     pip install calisim[hydra]
 
+    # Install TorchX extras
+    pip install calisim[torchx]
+
     # Install multiple extras
-    pip install calisim[torch,hydra]
+    pip install calisim[torch,hydra,torchx]
 
 Usage with Docker
 -----------------

@@ -39,7 +39,7 @@ class HydraConfiguration:
 
 		Args:
 		    config_name (str): The name of the configuration file.
-		    config_dir (str): The configuration directory file path
+		    config_dir (str): The configuration directory file path.
 		    job_name (str, optional): The name of the Hydra job. Defaults to "app".
 		    overrides (list[str] | None, optional): Overrides for the configuration.
 				Defaults to None.
@@ -52,6 +52,9 @@ class HydraConfiguration:
 
 		current_path = os.getcwd()
 		full_dir = os.path.join(current_path, config_dir)
+
+		if overrides is None:
+			overrides = []
 
 		with self._initialize_config_dir(
 			version_base=None,
@@ -87,7 +90,7 @@ class HydraConfiguration:
 
 		Args:
 		    config_name (str): The name of the configuration file.
-		    config_dir (str): The configuration directory file path
+		    config_dir (str): The configuration directory file path.
 		    job_name (str, optional): The name of the Hydra job. Defaults to "app".
 		    overrides (list[str] | None, optional): Overrides for the configuration.
 				Defaults to None.
@@ -142,7 +145,7 @@ class HydraConfiguration:
 		self,
 		cfg: DictConfig,
 		overrides: list[str],
-	) -> DictConfig:
+	) -> DictConfig | None:
 		"""Override the contents of the configuration.
 
 		Args:
@@ -150,7 +153,7 @@ class HydraConfiguration:
 		    overrides (list[str]): Overrides for the configuration.
 
 		Returns:
-		    DictConfig: The overridden configuration.
+		    DictConfig | None: The overridden configuration.
 		"""
 		if not self._available or cfg is None:
 			return cfg
@@ -190,23 +193,10 @@ class HydraConfiguration:
 
 		try:
 			from omegaconf import OmegaConf
-			from omegaconf.errors import (
-				ConfigAttributeError,
-				InterpolationResolutionError,
-				MissingMandatoryValue,
-				OmegaConfBaseException,
-				ValidationError,
-			)
 
 			OmegaConf.to_container(cfg, resolve=True)
 			return True
-		except (
-			ValidationError,
-			ConfigAttributeError,
-			InterpolationResolutionError,
-			MissingMandatoryValue,
-			OmegaConfBaseException,
-		):
+		except Exception:
 			return False
 
 	@property

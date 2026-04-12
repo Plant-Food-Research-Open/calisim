@@ -47,7 +47,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          poetry install --no-interaction -E torch -E hydra
+          poetry install --no-interaction -E torch -E hydra -E torchx
 
       - name: Test code
         if: github.event_name == 'push'
