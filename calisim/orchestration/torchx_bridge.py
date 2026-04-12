@@ -28,8 +28,6 @@ def get_def(orchestration: OrchestrationModel, args: list[str]) -> specs.AppDef:
 	entrypoint = orchestration.entrypoint
 
 	args = [str(arg) for arg in args]
-	# if entrypoint == "sh" or entrypoint == "/bin/bash" and args[0] != "-c":
-	# 	args = ["-c"] + args
 
 	return specs.AppDef(
 		name=orchestration.name,
