@@ -16,7 +16,9 @@ from calisim.statistics import RootMeanSquaredError
 from .conftest import get_calibration_func, is_close
 
 
-def get_hydra_config(overrides: list[str] | None = None) -> DictConfig:
+def get_hydra_config(
+	overrides: list[str] | None = None,
+) -> tuple[DictConfig, HydraConfiguration]:
 	"""Get the Hydra configuration.
 
 	Args:
@@ -24,7 +26,8 @@ def get_hydra_config(overrides: list[str] | None = None) -> DictConfig:
 			configuration. Defaults to None.
 
 	Returns:
-	    DictConfig: The Hydra configuration.
+	    tuple[DictConfig, HydraConfiguration]: The loaded Hydra configuration
+	    and the Hydra configuration helper instance.
 	"""
 	hydra_config = HydraConfiguration()
 	cfg = hydra_config.get_configuration(
