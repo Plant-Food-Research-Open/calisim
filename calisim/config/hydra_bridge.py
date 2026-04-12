@@ -125,6 +125,9 @@ class HydraConfiguration:
 	def merge(self, *configs: DictConfig) -> DictConfig | None:
 		"""Merge a list of configuration objects into one.
 
+		Args:
+		    configs (DictConfig): A variable number of configuration objects to merge.
+
 		Returns:
 		    DictConfig | None: The merged configuration object.
 		"""
