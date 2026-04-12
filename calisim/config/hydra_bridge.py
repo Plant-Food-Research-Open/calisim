@@ -1,6 +1,6 @@
 """Contains utilities for managing Hydra-based calibration configurations.
 
-This module defines utility functions for managing and configuration
+This module defines utility functions for managing and configuring
 calibration workflows via Hydra.
 
 """
@@ -125,6 +125,9 @@ class HydraConfiguration:
 	def merge(self, *configs: DictConfig) -> DictConfig | None:
 		"""Merge a list of configuration objects into one.
 
+		Args:
+		    configs (DictConfig): A variable number of configuration objects to merge.
+
 		Returns:
 		    DictConfig | None: The merged configuration object.
 		"""
@@ -187,10 +190,23 @@ class HydraConfiguration:
 
 		try:
 			from omegaconf import OmegaConf
+			from omegaconf.errors import (
+				ConfigAttributeError,
+				InterpolationResolutionError,
+				MissingMandatoryValue,
+				OmegaConfBaseException,
+				ValidationError,
+			)
 
 			OmegaConf.to_container(cfg, resolve=True)
 			return True
-		except Exception:
+		except (
+			ValidationError,
+			ConfigAttributeError,
+			InterpolationResolutionError,
+			MissingMandatoryValue,
+			OmegaConfBaseException,
+		):
 			return False
 
 	@property
