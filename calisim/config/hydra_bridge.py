@@ -1,6 +1,6 @@
 """Contains utilities for managing Hydra-based calibration configurations.
 
-This module defines utility functions for managing and configuration
+This module defines utility functions for managing and configuring
 calibration workflows via Hydra.
 
 """
