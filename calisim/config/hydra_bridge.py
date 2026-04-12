@@ -122,7 +122,7 @@ class HydraConfiguration:
 
 		return OmegaConf.to_container(cfg, resolve=True)
 
-	def merge(self, *configs: list[DictConfig]) -> DictConfig | None:
+	def merge(self, *configs: DictConfig) -> DictConfig | None:
 		"""Merge a list of configuration objects into one.
 
 		Returns:
