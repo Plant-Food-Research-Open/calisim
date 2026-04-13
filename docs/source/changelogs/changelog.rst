@@ -1,6 +1,22 @@
 Changelog
 =========
 
+[0.9.0] - 2026/04/13
+--------------------
+
+Added
+^^^^^
+
+* Adding support for categorical parameters.
+* Adding support for constant parameters.
+* Adding `Hydra` wrapper class.
+* Adding `TorchX` wrapper class.
+
+Fixed
+^^^^^
+
+* Fixed broken functional test for dynesty wrapper for Bayesian inference.
+
 [0.8.0] - 2026/04/11
 --------------------
 
