@@ -26,7 +26,10 @@ def prior_transform(utheta: list[float], self: CalibrationWorkflowBase) -> list[
 		lower_bound, upper_bound = bounds
 		x = lower_bound + (upper_bound - lower_bound) * x
 		data_type = self.data_types[i]
-		if data_type == ParameterDataType.DISCRETE:
+		if (
+			data_type == ParameterDataType.DISCRETE
+			or data_type == ParameterDataType.CATEGORICAL
+		):
 			x = int(x)
 		transformed_theta.append(x)
 	return transformed_theta
@@ -72,9 +75,10 @@ class DynestyBayesianCalibration(CalibrationWorkflowBase):
 				self.constants[parameter_name] = parameter_value
 				continue
 			elif data_type == ParameterDataType.CATEGORICAL:
-				pass
+				bounds = self.set_categorical_parameter(spec)
+			else:
+				bounds = self.get_parameter_bounds(spec)  # type: ignore[assignment]
 
-			bounds = self.get_parameter_bounds(spec)
 			self.names.append(parameter_name)
 			self.bounds.append(bounds)
 			self.data_types.append(data_type)

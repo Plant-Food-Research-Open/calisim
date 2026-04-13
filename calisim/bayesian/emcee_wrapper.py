@@ -63,31 +63,31 @@ class EmceeBayesianCalibration(CalibrationWorkflowBase):
 				self.constants[parameter_name] = parameter_value
 				continue
 			elif data_type == ParameterDataType.CATEGORICAL:
-				pass
+				bounds = self.set_categorical_parameter(spec)
+				lower_bound, upper_bound = bounds
+				samples = self.rng.choice(list(range(upper_bound)), size=n_walkers)
+			else:
+				bounds = spec.distribution_bounds  # type: ignore[assignment]
+				lower_bound, upper_bound = bounds
 
-			bounds = spec.distribution_bounds
-			lower_bound, upper_bound = bounds
+				distribution_name = spec.distribution_name.replace(" ", "_").lower()
+				distribution_args = spec.distribution_args
+				if distribution_args is None:
+					distribution_args = []
+				distribution_kwargs = spec.distribution_kwargs
+				if distribution_kwargs is None:
+					distribution_kwargs = {}
+
+				dist_instance = getattr(self.rng, distribution_name)
+				samples = dist_instance(
+					*distribution_args, **distribution_kwargs, size=n_walkers
+				)
+
 			lower_bounds, upper_bounds = self.bounds
 			lower_bounds.append(lower_bound)
 			upper_bounds.append(upper_bound)
-
 			self.names.append(parameter_name)
 			self.data_types.append(data_type)
-
-			distribution_name = spec.distribution_name.replace(" ", "_").lower()
-
-			distribution_args = spec.distribution_args
-			if distribution_args is None:
-				distribution_args = []
-
-			distribution_kwargs = spec.distribution_kwargs
-			if distribution_kwargs is None:
-				distribution_kwargs = {}
-
-			dist_instance = getattr(self.rng, distribution_name)
-			samples = dist_instance(
-				*distribution_args, **distribution_kwargs, size=n_walkers
-			)
 			self.parameters.append(samples)
 
 		self.parameters = np.array(self.parameters).T

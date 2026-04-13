@@ -22,7 +22,7 @@ class OpenTurnsBayesianCalibration(OpenTurnsBase):
 		"""Specify the parameters of the model calibration procedure."""
 		self.names = []
 		self.data_types = []
-		self.bounds: tuple[list[float], list[float]] = ([], [])
+		self.bounds: tuple[list[float | int], list[float | int]] = ([], [])
 		parameters = []
 
 		parameter_spec = self.specification.parameter_spec.parameters
@@ -35,31 +35,34 @@ class OpenTurnsBayesianCalibration(OpenTurnsBase):
 				self.constants[parameter_name] = parameter_value
 				continue
 			elif data_type == ParameterDataType.CATEGORICAL:
-				pass
+				bounds = self.set_categorical_parameter(spec)
+				lower_bound, upper_bound = bounds
+				points = [[point] for point in range(upper_bound)]
+				parameter = ot.UserDefined(points)
+			else:
+				bounds = spec.distribution_bounds  # type: ignore[assignment]
+				lower_bound, upper_bound = bounds
+				distribution_name = (
+					spec.distribution_name.replace("_", " ").title().replace(" ", "")
+				)
 
-			bounds = spec.distribution_bounds
-			lower_bound, upper_bound = bounds
+				distribution_args = spec.distribution_args
+				if distribution_args is None:
+					distribution_args = []
+
+				distribution_kwargs = spec.distribution_kwargs
+				if distribution_kwargs is None:
+					distribution_kwargs = {}
+
+				dist_instance = getattr(ot, distribution_name)
+				parameter = dist_instance(*distribution_args, **distribution_kwargs)
+
 			lower_bounds, upper_bounds = self.bounds
 			lower_bounds.append(lower_bound)
 			upper_bounds.append(upper_bound)
 
 			self.names.append(parameter_name)
 			self.data_types.append(data_type)
-
-			distribution_name = (
-				spec.distribution_name.replace("_", " ").title().replace(" ", "")
-			)
-
-			distribution_args = spec.distribution_args
-			if distribution_args is None:
-				distribution_args = []
-
-			distribution_kwargs = spec.distribution_kwargs
-			if distribution_kwargs is None:
-				distribution_kwargs = {}
-
-			dist_instance = getattr(ot, distribution_name)
-			parameter = dist_instance(*distribution_args, **distribution_kwargs)
 			parameters.append(parameter)
 
 		distribution_collection = ot.DistributionCollection(parameters)

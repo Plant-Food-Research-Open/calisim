@@ -43,12 +43,19 @@ class BoTorchOptimisation(CalibrationWorkflowBase):
 			self.names.append(parameter_name)
 			self.data_types.append(data_type)
 
-			if data_type == ParameterDataType.DISCRETE:
+			if (
+				data_type == ParameterDataType.DISCRETE
+				or data_type == ParameterDataType.CATEGORICAL
+			):
 				value_type = "int"
 			else:
 				value_type = "float"
 
-			bounds = self.get_parameter_bounds(spec)
+			if data_type == ParameterDataType.CATEGORICAL:
+				lower_bound, upper_bound = self.set_categorical_parameter(spec)
+				bounds = (lower_bound, upper_bound - 1)
+			else:
+				bounds = self.get_parameter_bounds(spec)  # type: ignore[assignment]
 
 			parameter = dict(
 				name=parameter_name,

@@ -93,6 +93,8 @@ class CalibrationWorkflowBase(ABC):
 		self.parameters: Any | None = None
 		self.constants: dict[str, float | int | str | Any | None] = {}
 
+		self._categoricals: dict[str, list[str]] = {}
+
 	@abstractmethod
 	def specify(self) -> None:
 		"""Specify the parameters of the model calibration procedure.
@@ -672,6 +674,61 @@ class CalibrationWorkflowBase(ABC):
 			dict[str, float | int | str | Any | None] | None: The simulation constants.
 		"""
 		return self.constants
+
+	def get_categorical_parameter(self, parameter_name: str, index: int) -> str | None:
+		"""Get a categorical parameter value by its name and index.
+
+		Args:
+			parameter_name (str): The parameter name.
+			index (int): The category index.
+
+		Returns:
+			str | None: The categorical parameter value.
+		"""
+		parameter_values = self._categoricals.get(parameter_name)
+		if parameter_values is None:
+			return None
+
+		try:
+			parameter_value = parameter_values[index]
+		except IndexError:
+			parameter_value = None
+		return parameter_value
+
+	def assign_categorical_parameter_values(
+		self, parameters: dict[str, Any]
+	) -> dict[str, Any]:
+		"""Assign categorical parameter values from an index value.
+
+		Args:
+			parameters (dict[str, Any]): The dictionary of parameter values.
+
+		Returns:
+			dict[str, Any]: The parameter values with assigned categorical values.
+		"""
+		for k in self._categoricals:
+			index = parameters.get(k)
+			if index is None:
+				continue
+			parameters[k] = self.get_categorical_parameter(k, index)
+		return parameters
+
+	def set_categorical_parameter(self, spec: DistributionModel) -> tuple[int, int]:
+		"""Set and index a categorical parameter.
+
+		Args:
+			spec (DistributionModel): The parameter specification.
+
+		Returns:
+			tuple[int, int]: The categorical parameter bounds.
+		"""
+		parameter_name = spec.name
+		parameter_values = spec.distribution_args
+		self._categoricals[parameter_name] = parameter_values  # type: ignore[assignment]
+		if parameter_values is None:
+			return 0, 0
+		else:
+			return 0, len(parameter_values)
 
 
 class CalibrationMethodBase(CalibrationWorkflowBase):

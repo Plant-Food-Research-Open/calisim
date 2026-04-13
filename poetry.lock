@@ -7250,13 +7250,14 @@ optree = ["optree (>=0.13.0)"]
 pyyaml = ["pyyaml"]
 
 [[package]]
-name = "torchx"
-version = "0.8.0.dev0"
+name = "torchx-nightly"
+version = "2026.1.22"
 description = "TorchX SDK and Components"
 optional = true
-python-versions = ">=3.10"
-files = []
-develop = false
+python-versions = ">=3.7"
+files = [
+    {file = "torchx_nightly-2026.1.22-py3-none-any.whl", hash = "sha256:9a217faf38027e1b9db7aa7ba1374e56b572867fab35e4945c3f0f04250559f4"},
+]
 
 [package.dependencies]
 docker = "*"
@@ -7265,19 +7266,11 @@ filelock = "*"
 fsspec = ">=2023.10.0"
 pyyaml = "*"
 tabulate = "*"
-typing-extensions = "*"
 
 [package.extras]
 aws-batch = ["boto3"]
-dev = ["aiobotocore", "ax-platform[mysql]", "boto3", "captum", "hydra-core", "ipython", "kubernetes (>=11)", "lintrunner", "lintrunner-adapters", "mlflow-skinny", "moto (>=5)", "pip", "pyre-check", "pytest", "pytest-cov", "pytorch-lightning", "s3fs", "sagemaker-train", "tensorboard", "torch", "torch-model-archiver", "torchmetrics", "torchserve", "torchtext", "torchvision", "ts"]
-docs = ["ipykernel", "ipython_genutils", "jinja2 (>=3.1.4)", "jupytext", "matplotlib", "nbsphinx", "papermill", "sphinx (>=5.0,<6.0)", "sphinx-gallery (<1)", "sphinxcontrib.katex"]
+dev = ["aiobotocore (==2.20.0)", "ax-platform[mysql] (==0.2.3)", "boto3 (==1.36.0)", "captum (>=0.4.0)", "docker", "flake8 (==3.9.0)", "fsspec (==2024.3.1)", "hydra-core", "ipython", "kubernetes (==25.3.0)", "lintrunner", "lintrunner-adapters", "mlflow-skinny", "moto (>=5.0.8,<5.1.0)", "pyre-check", "pyre-extensions", "pytest", "pytest-cov", "pytorch-lightning (==2.5.0)", "s3fs (==2024.3.1)", "sagemaker (==2.237.3)", "tensorboard (==2.14.0)", "torch", "torch-model-archiver (>=0.4.2)", "torchmetrics (==1.6.3)", "torchserve (>=0.10.0)", "torchtext", "torchvision", "ts (==0.5.1)", "typing-extensions", "wheel"]
 kubernetes = ["kubernetes (>=11)"]
-
-[package.source]
-type = "git"
-url = "https://git@github.com/meta-pytorch/torchx.git"
-reference = "c41a375b3a02d9643d7472f18c85a7ca9d0c8a46"
-resolved_reference = "c41a375b3a02d9643d7472f18c85a7ca9d0c8a46"
 
 [[package]]
 name = "tornado"
@@ -7713,9 +7706,9 @@ dev = ["pre-commit", "pytest", "ruff"]
 [extras]
 hydra = ["hydra-core"]
 torch = ["ax-platform", "botorch", "evotorch", "gpytorch", "lampe", "nflows", "pyro-api", "pyro-ppl", "sbi", "skorch", "tensorboard", "torch", "zuko"]
-torchx = ["torchx"]
+torchx = ["torchx-nightly"]
 
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.10,<3.13"
-content-hash = "947b7f2403bf9bdb92cbe6637d897860cd5201a3d0dbac5d3b0199f5e32ad1f0"
+content-hash = "7ef6d7e112b27fe94f22b0d9cf4633afd9e9faedcd4f62f94f628b29c5e89fd9"

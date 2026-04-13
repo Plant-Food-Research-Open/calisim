@@ -27,33 +27,38 @@ class OpenTurnsBase(CalibrationWorkflowBase):
 		for spec in parameter_spec:
 			parameter_name = spec.name
 			data_type = spec.data_type
+
 			if data_type == ParameterDataType.CONSTANT:
 				parameter_value = spec.parameter_value
 				self.constants[parameter_name] = parameter_value
 				continue
+			elif data_type == ParameterDataType.CATEGORICAL:
+				bounds = self.set_categorical_parameter(spec)
+				lower_bound, upper_bound = bounds
+				points = [[point] for point in range(upper_bound)]
+				parameter = ot.UserDefined(points)
+			else:
+				bounds = self.get_parameter_bounds(spec)  # type: ignore[assignment]
+				lower_bound, upper_bound = bounds
+
+				distribution_name = (
+					spec.distribution_name.replace("_", " ").title().replace(" ", "")
+				)
+				distribution_args = spec.distribution_args
+				if distribution_args is None:
+					distribution_args = []
+
+				distribution_kwargs = spec.distribution_kwargs
+				if distribution_kwargs is None:
+					distribution_kwargs = {}
+				dist_instance = getattr(ot, distribution_name)
+				parameter = dist_instance(*distribution_args, **distribution_kwargs)
 
 			self.names.append(parameter_name)
 			self.data_types.append(data_type)
-
-			bounds = self.get_parameter_bounds(spec)
-			lower_bound, upper_bound = bounds
 			lower_bounds, upper_bounds = self.bounds
 			lower_bounds.append(lower_bound)
 			upper_bounds.append(upper_bound)
-
-			distribution_name = (
-				spec.distribution_name.replace("_", " ").title().replace(" ", "")
-			)
-			distribution_args = spec.distribution_args
-			if distribution_args is None:
-				distribution_args = []
-
-			distribution_kwargs = spec.distribution_kwargs
-			if distribution_kwargs is None:
-				distribution_kwargs = {}
-
-			dist_instance = getattr(ot, distribution_name)
-			parameter = dist_instance(*distribution_args, **distribution_kwargs)
 			parameters.append(parameter)
 
 		distribution_collection = ot.DistributionCollection(parameters)

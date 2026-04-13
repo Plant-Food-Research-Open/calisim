@@ -30,23 +30,27 @@ class HistoryMatchingBase(CalibrationWorkflowBase):
 				parameter_value = spec.parameter_value
 				self.constants[parameter_name] = parameter_value
 				continue
+			elif data_type == ParameterDataType.CATEGORICAL:
+				_, upper_bound = self.set_categorical_parameter(spec)
+				samples = self.rng.choice(list(range(upper_bound)), size=ensemble_size)
+			else:
+				distribution_name = spec.distribution_name.replace(" ", "_").lower()
+
+				distribution_args = spec.distribution_args
+				if distribution_args is None:
+					distribution_args = []
+
+				distribution_kwargs = spec.distribution_kwargs
+				if distribution_kwargs is None:
+					distribution_kwargs = {}
+				distribution_kwargs["size"] = ensemble_size
+
+				dist_instance = getattr(self.rng, distribution_name)
+				samples = dist_instance(*distribution_args, **distribution_kwargs)
 
 			self.names.append(parameter_name)
 			self.data_types.append(data_type)
 
-			distribution_name = spec.distribution_name.replace(" ", "_").lower()
-
-			distribution_args = spec.distribution_args
-			if distribution_args is None:
-				distribution_args = []
-
-			distribution_kwargs = spec.distribution_kwargs
-			if distribution_kwargs is None:
-				distribution_kwargs = {}
-			distribution_kwargs["size"] = ensemble_size
-
-			dist_instance = getattr(self.rng, distribution_name)
-			samples = dist_instance(*distribution_args, **distribution_kwargs)
 			samples = np.repeat(samples, n_replicates)
 			self.rng.shuffle(samples)
 			self.parameters[parameter_name] = samples

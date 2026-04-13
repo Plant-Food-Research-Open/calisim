@@ -96,6 +96,8 @@ def calibration_func_wrapper(
 				parameter_set[parameter_name] = parameter_value
 			else:
 				parameter_set[parameter_name] = int(parameter_value)
+
+		parameter_set = workflow.assign_categorical_parameter_values(parameter_set)
 		for k, v in constants.items():
 			parameter_set[k] = v
 

@@ -59,26 +59,29 @@ class SPOTSetup:
 				workflow.constants[parameter_name] = parameter_value
 				continue
 			elif data_type == ParameterDataType.CATEGORICAL:
-				pass
+				lower_bound, upper_bound = workflow.set_categorical_parameter(spec)
+				prior = spotpy.parameter.Uniform(
+					parameter_name, lower_bound, upper_bound
+				)
+			else:
+				distribution_name = (
+					spec.distribution_name.replace("_", " ").title().replace(" ", "")
+				)
+				distribution_class = getattr(spotpy.parameter, distribution_name)
+				distribution_args = spec.distribution_args
+				if distribution_args is None:
+					distribution_args = []
+
+				distribution_kwargs = spec.distribution_kwargs
+				if distribution_kwargs is None:
+					distribution_kwargs = {}
+
+				prior = distribution_class(
+					parameter_name, *distribution_args, **distribution_kwargs
+				)
 
 			parameter_names.append(parameter_name)
 			data_types.append(data_type)
-
-			distribution_name = (
-				spec.distribution_name.replace("_", " ").title().replace(" ", "")
-			)
-			distribution_class = getattr(spotpy.parameter, distribution_name)
-			distribution_args = spec.distribution_args
-			if distribution_args is None:
-				distribution_args = []
-
-			distribution_kwargs = spec.distribution_kwargs
-			if distribution_kwargs is None:
-				distribution_kwargs = {}
-
-			prior = distribution_class(
-				parameter_name, *distribution_args, **distribution_kwargs
-			)
 			priors.append(prior)
 
 		self.parameter_names = parameter_names

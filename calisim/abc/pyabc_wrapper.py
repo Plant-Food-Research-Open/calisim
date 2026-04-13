@@ -45,11 +45,18 @@ class PyABCApproximateBayesianComputation(CalibrationWorkflowBase):
 		for spec in parameter_spec:
 			parameter_name = spec.name
 			data_type = spec.data_type
-			if data_type == ParameterDataType.DISCRETE:
-				lower_bound, upper_bound = self.get_parameter_bounds(spec)
+			if (
+				data_type == ParameterDataType.DISCRETE
+				or data_type == ParameterDataType.CATEGORICAL
+			):
+				if data_type == ParameterDataType.DISCRETE:
+					lower_bound, upper_bound = self.get_parameter_bounds(spec)
+				else:
+					lower_bound, upper_bound = self.set_categorical_parameter(spec)
+
 				lower_bound = np.floor(lower_bound).astype("int")
 				upper_bound = np.floor(upper_bound).astype("int")
-				discrete_domain = np.arange(lower_bound, upper_bound + 1)
+				discrete_domain = np.arange(lower_bound, upper_bound)
 
 				distributions[parameter_name] = pyabc.RV(
 					"rv_discrete",
@@ -64,8 +71,6 @@ class PyABCApproximateBayesianComputation(CalibrationWorkflowBase):
 			elif data_type == ParameterDataType.CONSTANT:
 				parameter_value = spec.parameter_value
 				self.constants[parameter_name] = parameter_value
-			elif data_type == ParameterDataType.CATEGORICAL:
-				pass
 			else:
 				distribution_name = self.dist_name_processing(spec.distribution_name)
 				distribution_args = spec.distribution_args
@@ -105,6 +110,7 @@ class PyABCApproximateBayesianComputation(CalibrationWorkflowBase):
 			simulation_id = self.get_simulation_uuid()
 
 			parameters = parameters.copy()
+			parameters = self.assign_categorical_parameter_values(parameters)
 			for k, v in self.constants.items():
 				parameters[k] = v
 

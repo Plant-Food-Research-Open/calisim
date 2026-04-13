@@ -6,8 +6,6 @@ the pyESMDA library.
 
 """
 
-from collections.abc import Callable
-
 import numpy as np
 import pandas as pd
 from matplotlib import pyplot as plt
@@ -17,61 +15,26 @@ from ..base import HistoryMatchingBase
 from ..data_model import ParameterEstimateModel
 
 
-def forward_model(
-	m_ensemble: np.ndarray,
-	workflow: HistoryMatchingBase,
-	parameter_spec: dict,
-	calibration_func: Callable,
-	history_matching_kwargs: dict,
-	observed_data: pd.DataFrame | np.ndarray,
-	batched: bool = False,
-) -> np.ndarray:
+def forward_model(_: np.ndarray, workflow: HistoryMatchingBase) -> np.ndarray:
 	"""The forward model for the ensemble simulation.
 
 	Args:
 		m_ensemble (np.ndarray): The ensemble simulation parameters.
 		workflow (HistoryMatchingBase) The calibration workflow.
-		parameter_spec (dict): The parameter specification.
-		calibration_func (Callable): The history matching function.
-		history_matching_kwargs (dict): Named arguments for the
-			history matching function.
-		observed_data (pd.DataFrame | np.ndarray): The observed data.
-		batched (bool, optional): Whether to batch the history
-			matching function. Defaults to False.
 
 	Returns:
 		np.ndarray: The ensemble results.
 	"""
-	constants = workflow.get_constants()
-	parameters = []
-	for i in range(m_ensemble.shape[0]):
-		parameter_set = {}
-		for k in parameter_spec:
-			parameter_set[k] = parameter_spec[k][i]
-		for k, v in constants.items():
-			parameter_set[k] = v
-		parameters.append(parameter_set)
-
-	if history_matching_kwargs is None:
-		history_matching_kwargs = {}
-
-	simulation_ids = [
-		workflow.get_simulation_uuid() for _ in range(m_ensemble.shape[0])
-	]
-	if batched:
-		ensemble_outputs = calibration_func(
-			parameters, simulation_ids, observed_data, **history_matching_kwargs
-		)
-	else:
-		ensemble_outputs = []
-		for i, parameter in enumerate(parameters):
-			simulation_id = simulation_ids[i]
-			outputs = calibration_func(
-				parameter, simulation_id, observed_data, **history_matching_kwargs
-			)
-			ensemble_outputs.append(outputs)
-
-	ensemble_outputs = np.array(ensemble_outputs)
+	parameter_spec = workflow.parameters
+	X = pd.DataFrame(parameter_spec).values
+	ensemble_outputs = workflow.calibration_func_wrapper(
+		X,
+		workflow,
+		workflow.specification.observed_data,
+		workflow.names,
+		workflow.data_types,
+		workflow.get_calibration_func_kwargs(),
+	)
 	return ensemble_outputs
 
 
@@ -112,19 +75,11 @@ class PyESMDAHistoryMatching(HistoryMatchingBase):
 		if smoother_name == "esmda":
 			method_kwargs["n_assimilations"] = self.specification.n_iterations
 
-		history_matching_kwargs = self.get_calibration_func_kwargs()
 		self.solver = smoother_class(
 			obs=observed_data,
 			m_init=m_init,
 			forward_model=forward_model,
-			forward_model_kwargs=dict(
-				workflow=self,
-				parameter_spec=self.parameters,
-				calibration_func=self.call_calibration_func,
-				history_matching_kwargs=history_matching_kwargs,
-				observed_data=observed_data,
-				batched=self.specification.batched,
-			),
+			forward_model_kwargs=dict(workflow=self),
 			cov_obs=cov_obs,
 			random_state=self.specification.random_seed,
 			batch_size=n_jobs,

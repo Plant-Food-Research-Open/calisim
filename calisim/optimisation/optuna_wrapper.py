@@ -72,7 +72,7 @@ class OptunaOptimisation(CalibrationWorkflowBase):
 					parameters[parameter_name] = spec.parameter_value
 				elif data_type == ParameterDataType.CATEGORICAL:
 					parameters[parameter_name] = trial.suggest_categorical(
-						parameter_name, spec.parameter_values
+						parameter_name, spec.distribution_args
 					)
 				else:
 					lower_bound, upper_bound = self.get_parameter_bounds(spec)

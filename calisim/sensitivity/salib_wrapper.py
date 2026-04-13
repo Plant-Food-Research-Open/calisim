@@ -20,7 +20,7 @@ class SALibSensitivityAnalysis(CalibrationWorkflowBase):
 		"""Specify the parameters of the model calibration procedure."""
 		self.names = []
 		self.data_types = []
-		bounds = []
+		bounds: list[list[float | int]] = []
 		dists = []
 
 		parameter_spec = self.specification.parameter_spec.parameters
@@ -32,13 +32,14 @@ class SALibSensitivityAnalysis(CalibrationWorkflowBase):
 				parameter_value = spec.parameter_value
 				self.constants[parameter_name] = parameter_value
 				continue
+			elif data_type == ParameterDataType.CATEGORICAL:
+				lower_bound, upper_bound = self.set_categorical_parameter(spec)
+			else:
+				lower_bound, upper_bound = self.get_parameter_bounds(spec)  # type: ignore[assignment]
 
 			self.names.append(parameter_name)
 			self.data_types.append(data_type)
-
 			dists.append("unif")
-
-			lower_bound, upper_bound = self.get_parameter_bounds(spec)
 			bounds.append([lower_bound, upper_bound])
 
 		problem = {

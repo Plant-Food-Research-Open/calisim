@@ -41,8 +41,11 @@ class EvoTorchEvolutionary(CalibrationWorkflowBase):
 				parameter_value = spec.parameter_value
 				self.constants[parameter_name] = parameter_value
 				continue
+			elif data_type == ParameterDataType.CATEGORICAL:
+				bounds = self.set_categorical_parameter(spec)
+			else:
+				bounds = self.get_parameter_bounds(spec)  # type: ignore[assignment]
 
-			bounds = self.get_parameter_bounds(spec)
 			lower_bound, upper_bound = bounds
 			if (
 				data_type == ParameterDataType.DISCRETE

@@ -10,6 +10,7 @@ from collections import OrderedDict
 from collections.abc import Callable
 
 import numpy as np
+import pandas as pd
 import pygpc
 from matplotlib import pyplot as plt
 from pygpc.AbstractModel import AbstractModel
@@ -60,48 +61,16 @@ class PygpcModel(AbstractModel):
 		Returns:
 			np.ndarray: The simulation output data.
 		"""
-		parameter_name = self.parameter_names[0]
-		N = self.p[parameter_name].shape[0]
-
-		constants = self.workflow.get_constants()
-		parameters = []
-		for i in range(N):
-			parameter_set = {}
-			for j, parameter_name in enumerate(self.parameter_names):
-				parameter_value = self.p[parameter_name][i]
-				data_type = self.data_types[j]
-				if data_type == ParameterDataType.CONTINUOUS:  # type: ignore[comparison-overlap]
-					parameter_set[parameter_name] = parameter_value
-				else:
-					parameter_set[parameter_name] = int(parameter_value)
-			for k, v in constants.items():
-				parameter_set[k] = v  # type: ignore[assignment]
-			parameters.append(parameter_set)
-
-		simulation_ids = [
-			self.workflow.get_simulation_uuid() for _ in range(len(parameters))
-		]
-
-		if self.batched:
-			results = self.call_calibration_func(
-				parameters,
-				simulation_ids,
-				self.observed_data,
-				**self.uncertainty_kwargs,
-			)
-		else:
-			results = []
-			for i, parameter in enumerate(parameters):
-				simulation_id = simulation_ids[i]
-				result = self.call_calibration_func(
-					parameter,
-					simulation_id,
-					self.observed_data,
-					**self.uncertainty_kwargs,
-				)
-				results.append(result)  # type: ignore[arg-type]
-		results = np.array(results)
-
+		X = pd.DataFrame(self.p).values
+		workflow = self.workflow
+		results = workflow.calibration_func_wrapper(
+			X,
+			workflow,
+			workflow.specification.observed_data,
+			self.parameter_names,
+			self.data_types,  # type: ignore[arg-type]
+			workflow.get_calibration_func_kwargs(),
+		)
 		if len(results.shape) == 1:
 			results = results[:, np.newaxis]
 		return results
@@ -123,6 +92,8 @@ class PygpcUncertaintyAnalysis(CalibrationWorkflowBase):
 
 		if name == "Normal":
 			name = "Norm"
+		elif name == "Uniform":
+			name = "Beta"
 		return name
 
 	def specify(self) -> None:
@@ -140,24 +111,29 @@ class PygpcUncertaintyAnalysis(CalibrationWorkflowBase):
 				parameter_value = spec.parameter_value
 				self.constants[parameter_name] = parameter_value
 				continue
+			elif data_type == ParameterDataType.CATEGORICAL:
+				bounds = self.set_categorical_parameter(spec)
+				parameter = pygpc.Beta(pdf_shape=[1, 1], pdf_limits=bounds)
+			else:
+				distribution_name = self.dist_name_processing(spec.distribution_name)
+				distribution_args = spec.distribution_args
+				if distribution_args is None:
+					distribution_args = []
+
+				distribution_kwargs = spec.distribution_kwargs
+				if distribution_kwargs is None:
+					distribution_kwargs = {}
+				if spec.distribution_name == "uniform":
+					distribution_kwargs["pdf_shape"] = [1, 1]
+
+				if len(distribution_kwargs.keys()) == 0 and len(distribution_args) == 2:
+					distribution_args = [distribution_args]
+
+				dist_instance = getattr(pygpc, distribution_name)
+				parameter = dist_instance(*distribution_args, **distribution_kwargs)
 
 			names.append(parameter_name)
 			data_types.append(data_type)
-
-			distribution_name = self.dist_name_processing(spec.distribution_name)
-			distribution_args = spec.distribution_args
-			if distribution_args is None:
-				distribution_args = []
-
-			distribution_kwargs = spec.distribution_kwargs
-			if distribution_kwargs is None:
-				distribution_kwargs = {}
-
-			if len(distribution_kwargs.keys()) == 0 and len(distribution_args) == 2:
-				distribution_args = [distribution_args]
-
-			dist_instance = getattr(pygpc, distribution_name)
-			parameter = dist_instance(*distribution_args, **distribution_kwargs)
 			parameters[parameter_name] = parameter
 
 		self.parameters = parameters
@@ -267,7 +243,7 @@ class PygpcUncertaintyAnalysis(CalibrationWorkflowBase):
 			coeffs=self.coeffs,
 			random_vars=self.model.parameter_names,
 			fn_out=outfile,
-			n_grid=[n_samples, n_samples],
+			n_grid=[n_samples] * len(self.model.parameter_names),
 			n_cpu=self.session.n_cpu,
 		)
 		if outdir is None:

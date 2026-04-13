@@ -45,23 +45,26 @@ class SurrogateBase(CalibrationWorkflowBase):
 				parameter_value = spec.parameter_value
 				self.constants[parameter_name] = parameter_value
 				continue
+			elif data_type == ParameterDataType.CATEGORICAL:
+				lower_bound, upper_bound = self.set_categorical_parameter(spec)
+				parameter = chaospy.DiscreteUniform(lower_bound, upper_bound - 1)
+			else:
+				distribution_name = (
+					spec.distribution_name.replace("_", " ").title().replace(" ", "")
+				)
+				distribution_args = spec.distribution_args
+				if distribution_args is None:
+					distribution_args = []
+
+				distribution_kwargs = spec.distribution_kwargs
+				if distribution_kwargs is None:
+					distribution_kwargs = {}
+
+				dist_instance = getattr(chaospy, distribution_name)
+				parameter = dist_instance(*distribution_args, **distribution_kwargs)
 
 			self.names.append(parameter_name)
 			self.data_types.append(data_type)
-
-			distribution_name = (
-				spec.distribution_name.replace("_", " ").title().replace(" ", "")
-			)
-			distribution_args = spec.distribution_args
-			if distribution_args is None:
-				distribution_args = []
-
-			distribution_kwargs = spec.distribution_kwargs
-			if distribution_kwargs is None:
-				distribution_kwargs = {}
-
-			dist_instance = getattr(chaospy, distribution_name)
-			parameter = dist_instance(*distribution_args, **distribution_kwargs)
 			parameters.append(parameter)
 
 		self.parameters = chaospy.J(*parameters)

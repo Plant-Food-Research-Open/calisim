@@ -31,11 +31,15 @@ class SimulationBasedInferenceBase(CalibrationWorkflowBase):
 				self.constants[name] = parameter_value
 				continue
 
-			self.names.append(name)
-			self.data_types.append(data_type)
+			if (
+				data_type == ParameterDataType.DISCRETE
+				or data_type == ParameterDataType.CATEGORICAL
+			):
+				if data_type == ParameterDataType.DISCRETE:
+					lower_bound, upper_bound = self.get_parameter_bounds(spec)
+				else:
+					lower_bound, upper_bound = self.set_categorical_parameter(spec)
 
-			if data_type == ParameterDataType.DISCRETE:
-				lower_bound, upper_bound = self.get_parameter_bounds(spec)
 				lower_bound = np.floor(lower_bound).astype("int")
 				upper_bound = np.floor(upper_bound).astype("int")
 				replicates = np.floor(upper_bound - lower_bound).astype("int")
@@ -69,4 +73,6 @@ class SimulationBasedInferenceBase(CalibrationWorkflowBase):
 
 				prior = distribution_class(*distribution_args, **distribution_kwargs)
 
+			self.names.append(name)
+			self.data_types.append(data_type)
 			self.parameters.append(prior)

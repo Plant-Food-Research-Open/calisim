@@ -77,11 +77,16 @@ class LAMPESimulationBasedInference(SimulationBasedInferenceBase):
 
 			x = theta[i]
 			distribution_name = spec.distribution_name
+
 			if (
 				distribution_name == "uniform"
-				or spec.data_type == ParameterDataType.DISCRETE
+				or data_type == ParameterDataType.DISCRETE
+				or data_type == ParameterDataType.CATEGORICAL
 			):
-				lower_bound, upper_bound = self.get_parameter_bounds(spec)
+				if data_type == ParameterDataType.CATEGORICAL:
+					lower_bound, upper_bound = self.set_categorical_parameter(spec)
+				else:
+					lower_bound, upper_bound = self.get_parameter_bounds(spec)  # type: ignore[assignment]
 				param_value = 2 * (x - lower_bound) / (upper_bound - lower_bound) - 1
 			elif distribution_name == "normal":
 				mu, sd = self.get_parameter_bounds(spec)
@@ -120,9 +125,13 @@ class LAMPESimulationBasedInference(SimulationBasedInferenceBase):
 				distribution_name = spec.distribution_name
 				if (
 					distribution_name == "uniform"
-					or spec.data_type == ParameterDataType.DISCRETE
+					or data_type == ParameterDataType.DISCRETE
+					or data_type == ParameterDataType.CATEGORICAL
 				):
-					lower_bound, upper_bound = self.get_parameter_bounds(spec)
+					if data_type == ParameterDataType.CATEGORICAL:
+						lower_bound, upper_bound = self.set_categorical_parameter(spec)
+					else:
+						lower_bound, upper_bound = self.get_parameter_bounds(spec)  # type: ignore[assignment]
 					param_value = (x + 1) / 2 * (
 						upper_bound - lower_bound
 					) + lower_bound

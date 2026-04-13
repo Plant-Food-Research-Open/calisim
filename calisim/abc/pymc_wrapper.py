@@ -35,26 +35,30 @@ class PyMCApproximateBayesianComputation(CalibrationWorkflowBase):
 					self.constants[parameter_name] = parameter_value
 					continue
 				elif data_type == ParameterDataType.CATEGORICAL:
-					pass
+					_, upper_bound = self.set_categorical_parameter(spec)
+					p = np.ones(upper_bound) / upper_bound
+					prior = pm.Categorical(parameter_name, p=p)
+				else:
+					distribution_name = (
+						spec.distribution_name.replace("_", " ")
+						.title()
+						.replace(" ", "")
+					)
+
+					distribution_class = getattr(pm, distribution_name)
+					distribution_args = spec.distribution_args
+					if distribution_args is None:
+						distribution_args = []
+
+					distribution_kwargs = spec.distribution_kwargs
+					if distribution_kwargs is None:
+						distribution_kwargs = {}
+
+					prior = distribution_class(
+						parameter_name, *distribution_args, **distribution_kwargs
+					)
 
 				self.names.append(parameter_name)
-
-				distribution_name = (
-					spec.distribution_name.replace("_", " ").title().replace(" ", "")
-				)
-
-				distribution_class = getattr(pm, distribution_name)
-				distribution_args = spec.distribution_args
-				if distribution_args is None:
-					distribution_args = []
-
-				distribution_kwargs = spec.distribution_kwargs
-				if distribution_kwargs is None:
-					distribution_kwargs = {}
-
-				prior = distribution_class(
-					parameter_name, *distribution_args, **distribution_kwargs
-				)
 				priors.append(prior)
 			self.parameters = tuple(priors)
 
@@ -70,6 +74,7 @@ class PyMCApproximateBayesianComputation(CalibrationWorkflowBase):
 			parameters = {}
 			for i, name in enumerate(self.names):
 				parameters[name] = parameter_values[i].item()
+			parameters = self.assign_categorical_parameter_values(parameters)
 			for k, v in self.constants.items():
 				parameters[k] = v
 
