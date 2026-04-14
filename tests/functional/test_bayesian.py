@@ -16,6 +16,9 @@ from calisim.statistics import DistanceMetricBase
 from ..conftest import get_calibrator, is_close
 
 
+DYNASTY_TEST_OUTPUT_LABELS = ["dotS"]
+
+
 def test_emcee(
 	sir_model: ExampleModelContainer,
 	sir_parameter_spec: ParameterSpecification,
@@ -99,7 +102,7 @@ def test_dynesty(
 		sir_parameter_spec,
 		"dynesty",
 		outdir,
-		["dotS"],
+		DYNASTY_TEST_OUTPUT_LABELS,
 		calibration_kwargs,
 		gaussian_ll_metric,
 	)
