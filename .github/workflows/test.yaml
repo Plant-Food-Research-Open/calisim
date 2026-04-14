@@ -20,9 +20,10 @@ concurrency:
   cancel-in-progress: true
 
 permissions:
-  contents: read
+  contents: write
   pull-requests: write
-
+  issues: write
+  
 jobs:
   run-tests:
     runs-on: ubuntu-latest
