@@ -131,8 +131,8 @@ Fixed
 [0.3.0] - 2025/03/24
 --------------------
 
-Fixed
-^^^^^
+Changed
+^^^^^^^
 
 * Removing Python 3.13 support.
 
