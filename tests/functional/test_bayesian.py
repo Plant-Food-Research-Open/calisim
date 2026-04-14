@@ -89,6 +89,7 @@ def test_dynesty(
 		n_iterations=50000,
 		method="dynamic",
 		calibration_func_kwargs=dict(t=observed_data.day),
+		method_kwargs=dict(dlogz_init=0.1, nlive_init=200, nlive_batch=100),
 	)
 
 	calibrator = get_calibrator(
@@ -98,10 +99,10 @@ def test_dynesty(
 		sir_parameter_spec,
 		"dynesty",
 		outdir,
-		sir_model.output_labels,
+		["dotS"],
 		calibration_kwargs,
 		gaussian_ll_metric,
 	)
 
-	calibrator.specify().execute()
+	calibrator.specify().execute().analyze()
 	assert is_close(sir_model, calibrator)
