@@ -10,22 +10,21 @@ from pydantic import Field
 
 from ..base import CalibrationMethodBase, CalibrationWorkflowBase
 from ..data_model import CalibrationModel
-from .openturns_wrapper import OpenTurnsReliabilityAnalysis
 
-TASK = "reliability_analysis"
-IMPLEMENTATIONS: dict[str, type[CalibrationWorkflowBase]] = dict(
-	openturns=OpenTurnsReliabilityAnalysis,
+TASK = "reliability"
+BASE_IMPLEMENTATIONS: dict[str, str] = dict(
+	openturns=f"calisim.{TASK}.openturns_wrapper:OpenTurnsReliabilityAnalysis",
 )
 
 
-def get_implementations() -> dict[str, type[CalibrationWorkflowBase]]:
+def get_implementations() -> dict[str, str]:
 	"""Get the calibration implementations for reliability analysis.
 
 	Returns:
-		Dict[str, type[CalibrationWorkflowBase]]: The dictionary of
+		Dict[str, str]: The dictionary of
 			calibration implementations for reliability analysis.
 	"""
-	return IMPLEMENTATIONS
+	return BASE_IMPLEMENTATIONS
 
 
 class ReliabilityAnalysisMethodModel(CalibrationModel):
@@ -53,7 +52,7 @@ class ReliabilityAnalysisMethod(CalibrationMethodBase):
 		calibration_func: Callable,
 		specification: ReliabilityAnalysisMethodModel,
 		engine: str = "openturns",
-		implementation: CalibrationWorkflowBase | None = None,
+		implementation: type[CalibrationWorkflowBase] | None = None,
 	) -> None:
 		"""ReliabilityAnalysisMethod constructor.
 
@@ -64,7 +63,7 @@ class ReliabilityAnalysisMethod(CalibrationMethodBase):
 				specification.
 		    engine (str, optional): The reliability analysis backend.
 				Defaults to "openturns".
-			implementation (CalibrationWorkflowBase | None): The calibration
+			implementation (type[CalibrationWorkflowBase] | None): The calibration
 				workflow implementation.
 		"""
 		super().__init__(
@@ -72,6 +71,6 @@ class ReliabilityAnalysisMethod(CalibrationMethodBase):
 			specification,
 			TASK,
 			engine,
-			IMPLEMENTATIONS,
+			get_implementations(),
 			implementation,
 		)

@@ -10,22 +10,21 @@ from pydantic import Field
 
 from ..base import CalibrationMethodBase, CalibrationWorkflowBase
 from ..data_model import CalibrationModel
-from .emukit_wrapper import EmukitQuadrature
 
 TASK = "quadrature"
-IMPLEMENTATIONS: dict[str, type[CalibrationWorkflowBase]] = dict(
-	emukit=EmukitQuadrature
+BASE_IMPLEMENTATIONS: dict[str, str] = dict(
+	emukit=f"calisim.{TASK}.emukit_wrapper:EmukitQuadrature",
 )
 
 
-def get_implementations() -> dict[str, type[CalibrationWorkflowBase]]:
+def get_implementations() -> dict[str, str]:
 	"""Get the calibration implementations for quadrature.
 
 	Returns:
-		Dict[str, type[CalibrationWorkflowBase]]: The dictionary
+		Dict[str, str]: The dictionary
 			of calibration implementations for quadrature.
 	"""
-	return IMPLEMENTATIONS
+	return BASE_IMPLEMENTATIONS
 
 
 class QuadratureMethodModel(CalibrationModel):
@@ -52,7 +51,7 @@ class QuadratureMethod(CalibrationMethodBase):
 		calibration_func: Callable,
 		specification: QuadratureMethodModel,
 		engine: str = "emukit",
-		implementation: CalibrationWorkflowBase | None = None,
+		implementation: type[CalibrationWorkflowBase] | None = None,
 	) -> None:
 		"""QuadratureMethod constructor.
 
@@ -63,7 +62,7 @@ class QuadratureMethod(CalibrationMethodBase):
 				specification.
 		    engine (str, optional): The Quadrature backend.
 				Defaults to "emukit".
-			implementation (CalibrationWorkflowBase | None): The
+			implementation (type[CalibrationWorkflowBase] | None): The
 				calibration workflow implementation.
 		"""
 		super().__init__(
@@ -71,6 +70,6 @@ class QuadratureMethod(CalibrationMethodBase):
 			specification,
 			TASK,
 			engine,
-			IMPLEMENTATIONS,
+			get_implementations(),
 			implementation,
 		)

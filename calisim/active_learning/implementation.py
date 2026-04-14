@@ -10,22 +10,22 @@ from pydantic import Field
 
 from ..base import CalibrationMethodBase, CalibrationWorkflowBase
 from ..data_model import CalibrationModel
-from .skactiveml_wrapper import SkActiveMLActiveLearning
 
 TASK = "active_learning"
-IMPLEMENTATIONS: dict[str, type[CalibrationWorkflowBase]] = dict(
-	skactiveml=SkActiveMLActiveLearning
+
+BASE_IMPLEMENTATIONS: dict[str, str] = dict(
+	skactiveml=f"calisim.{TASK}.skactiveml_wrapper:SkActiveMLActiveLearning"
 )
 
 
-def get_implementations() -> dict[str, type[CalibrationWorkflowBase]]:
+def get_implementations() -> dict[str, str]:
 	"""Get the calibration implementations for active learning.
 
 	Returns:
-		Dict[str, type[CalibrationWorkflowBase]]: The dictionary
+		Dict[str, str]: The dictionary
 			of calibration implementations for active learning.
 	"""
-	return IMPLEMENTATIONS
+	return BASE_IMPLEMENTATIONS
 
 
 class ActiveLearningMethodModel(CalibrationModel):
@@ -49,7 +49,7 @@ class ActiveLearningMethod(CalibrationMethodBase):
 		calibration_func: Callable,
 		specification: ActiveLearningMethodModel,
 		engine: str = "skactiveml",
-		implementation: CalibrationWorkflowBase | None = None,
+		implementation: type[CalibrationWorkflowBase] | None = None,
 	) -> None:
 		"""ActiveLearningMethod constructor.
 
@@ -60,7 +60,7 @@ class ActiveLearningMethod(CalibrationMethodBase):
 				specification.
 		    engine (str, optional): The active learning backend.
 				Defaults to "emukit".
-			implementation (CalibrationWorkflowBase | None): The
+			implementation (type[CalibrationWorkflowBase] | None): The
 				calibration workflow implementation.
 		"""
 		super().__init__(
@@ -68,6 +68,6 @@ class ActiveLearningMethod(CalibrationMethodBase):
 			specification,
 			TASK,
 			engine,
-			IMPLEMENTATIONS,
+			get_implementations(),
 			implementation,
 		)

@@ -4,35 +4,30 @@ Implements the supported Approximate Bayesian Computation methods.
 
 """
 
-import importlib
 from collections.abc import Callable
 
 from pydantic import Field
 
 from ..base import CalibrationMethodBase, CalibrationWorkflowBase
 from ..data_model import CalibrationModel
-from .pyabc_wrapper import PyABCApproximateBayesianComputation
-from .pymc_wrapper import PyMCApproximateBayesianComputation
 
-TASK = "approximate_bayesian_computation"
-IMPLEMENTATIONS: dict[str, type[CalibrationWorkflowBase]] = dict(
-	pymc=PyMCApproximateBayesianComputation, pyabc=PyABCApproximateBayesianComputation
+TASK = "abc"
+
+BASE_IMPLEMENTATIONS: dict[str, str] = dict(
+	pymc=f"calisim.{TASK}.pymc_wrapper:PyMCApproximateBayesianComputation",
+	pyabc=f"calisim.{TASK}.pyabc_wrapper:PyABCApproximateBayesianComputation",
+	elfi=f"calisim.experimental.{TASK}.elfi_wrapper:ELFIApproximateBayesianComputation",
 )
 
-if importlib.util.find_spec("elfi") is not None:
-	from ..experimental.abc.elfi_wrapper import ELFIApproximateBayesianComputation
 
-	IMPLEMENTATIONS["elfi"] = ELFIApproximateBayesianComputation
-
-
-def get_implementations() -> dict[str, type[CalibrationWorkflowBase]]:
+def get_implementations() -> dict[str, str]:
 	"""Get the calibration implementations for Approximate Bayesian Computation.
 
 	Returns:
-		Dict[str, type[CalibrationWorkflowBase]]: The dictionary of
+		Dict[str, str]: The dictionary of
 			calibration implementations for Approximate Bayesian Computation.
 	"""
-	return IMPLEMENTATIONS
+	return BASE_IMPLEMENTATIONS
 
 
 class ApproximateBayesianComputationMethodModel(CalibrationModel):
@@ -72,7 +67,7 @@ class ApproximateBayesianComputationMethod(CalibrationMethodBase):
 		calibration_func: Callable,
 		specification: ApproximateBayesianComputationMethodModel,
 		engine: str = "pymc",
-		implementation: CalibrationWorkflowBase | None = None,
+		implementation: type[CalibrationWorkflowBase] | None = None,
 	) -> None:
 		"""ApproximateBayesianComputationMethod constructor.
 
@@ -83,7 +78,7 @@ class ApproximateBayesianComputationMethod(CalibrationMethodBase):
 				calibration specification.
 		    engine (str, optional): The Approximate Bayesian
 				Computation backend. Defaults to "pymc".
-			implementation (CalibrationWorkflowBase | None): The
+			implementation (type[CalibrationWorkflowBase] | None): The
 				calibration workflow implementation.
 		"""
 		super().__init__(
@@ -91,6 +86,6 @@ class ApproximateBayesianComputationMethod(CalibrationMethodBase):
 			specification,
 			TASK,
 			engine,
-			IMPLEMENTATIONS,
+			get_implementations(),
 			implementation,
 		)

@@ -11,23 +11,23 @@ from pydantic import Field
 
 from ..base import CalibrationMethodBase, CalibrationWorkflowBase
 from ..data_model import CalibrationModel
-from .ies_wrapper import IESHistoryMatching
-from .pyesmda_wrapper import PyESMDAHistoryMatching
 
 TASK = "history_matching"
-IMPLEMENTATIONS: dict[str, type[CalibrationWorkflowBase]] = dict(
-	ies=IESHistoryMatching, pyesmda=PyESMDAHistoryMatching
+
+BASE_IMPLEMENTATIONS: dict[str, str] = dict(
+	ies=f"calisim.{TASK}.ies_wrapper:IESHistoryMatching",
+	pyesmda=f"calisim.{TASK}.pyesmda_wrapper:PyESMDAHistoryMatching",
 )
 
 
-def get_implementations() -> dict[str, type[CalibrationWorkflowBase]]:
+def get_implementations() -> dict[str, str]:
 	"""Get the calibration implementations for history matching.
 
 	Returns:
-		Dict[str, type[CalibrationWorkflowBase]]: The dictionary of
+		Dict[str, str]: The dictionary of
 			calibration implementations for history matching.
 	"""
-	return IMPLEMENTATIONS
+	return BASE_IMPLEMENTATIONS
 
 
 class HistoryMatchingMethodModel(CalibrationModel):
@@ -50,7 +50,7 @@ class HistoryMatchingMethod(CalibrationMethodBase):
 		calibration_func: Callable,
 		specification: HistoryMatchingMethodModel,
 		engine: str = "ies",
-		implementation: CalibrationWorkflowBase | None = None,
+		implementation: type[CalibrationWorkflowBase] | None = None,
 	) -> None:
 		"""HistoryMatchingMethod constructor.
 
@@ -61,7 +61,7 @@ class HistoryMatchingMethod(CalibrationMethodBase):
 				specification.
 		    engine (str, optional): The history matching backend.
 				Defaults to "ies".
-			implementation (CalibrationWorkflowBase | None): The
+			implementation (type[CalibrationWorkflowBase] | None): The
 				calibration workflow implementation.
 		"""
 		super().__init__(
@@ -69,6 +69,6 @@ class HistoryMatchingMethod(CalibrationMethodBase):
 			specification,
 			TASK,
 			engine,
-			IMPLEMENTATIONS,
+			get_implementations(),
 			implementation,
 		)

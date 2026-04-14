@@ -10,20 +10,21 @@ from pydantic import Field
 
 from ...base import CalibrationMethodBase, CalibrationWorkflowBase
 from ...data_model import CalibrationModel
-from .ensemble_kalman_filter import EKFStateEstimation
 
 TASK = "state_estimation"
-IMPLEMENTATIONS: dict[str, type[CalibrationWorkflowBase]] = dict(ekf=EKFStateEstimation)
+BASE_IMPLEMENTATIONS: dict[str, str] = dict(
+	ekf=f"calisim.{TASK}.ensemble_kalman_filter:EKFStateEstimation",
+)
 
 
-def get_implementations() -> dict[str, type[CalibrationWorkflowBase]]:
+def get_implementations() -> dict[str, str]:
 	"""Get the calibration implementations for state estimation.
 
 	Returns:
-		Dict[str, type[CalibrationWorkflowBase]]: The dictionary of
+		Dict[str, str]: The dictionary of
 			calibration implementations for state estimation.
 	"""
-	return IMPLEMENTATIONS
+	return BASE_IMPLEMENTATIONS
 
 
 class StateEstimationMethodModel(CalibrationModel):
@@ -50,7 +51,7 @@ class StateEstimationMethod(CalibrationMethodBase):
 		calibration_func: Callable,
 		specification: StateEstimationMethodModel,
 		engine: str = "ekf",
-		implementation: CalibrationWorkflowBase | None = None,
+		implementation: type[CalibrationWorkflowBase] | None = None,
 	) -> None:
 		"""StateEstimationMethod constructor.
 
@@ -61,7 +62,7 @@ class StateEstimationMethod(CalibrationMethodBase):
 				specification.
 		    engine (str, optional): The state estimation backend.
 				Defaults to "ekf".
-			implementation (CalibrationWorkflowBase | None): The
+			implementation (type[CalibrationWorkflowBase] | None): The
 				calibration workflow implementation.
 		"""
 		super().__init__(
@@ -69,6 +70,6 @@ class StateEstimationMethod(CalibrationMethodBase):
 			specification,
 			TASK,
 			engine,
-			IMPLEMENTATIONS,
+			get_implementations(),
 			implementation,
 		)

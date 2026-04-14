@@ -8,22 +8,21 @@ from collections.abc import Callable
 
 from ..base import CalibrationMethodBase, CalibrationWorkflowBase
 from ..data_model import CalibrationModel
-from .emukit_wrapper import EmukitExperimentalDesign
 
 TASK = "experimental_design"
-IMPLEMENTATIONS: dict[str, type[CalibrationWorkflowBase]] = dict(
-	emukit=EmukitExperimentalDesign
+BASE_IMPLEMENTATIONS: dict[str, str] = dict(
+	emukit=f"calisim.{TASK}.emukit_wrapper:EmukitExperimentalDesign",
 )
 
 
-def get_implementations() -> dict[str, type[CalibrationWorkflowBase]]:
+def get_implementations() -> dict[str, str]:
 	"""Get the calibration implementations for experimental design.
 
 	Returns:
-		Dict[str, type[CalibrationWorkflowBase]]: The dictionary
+		Dict[str, str]: The dictionary
 			of calibration implementations for experimental design.
 	"""
-	return IMPLEMENTATIONS
+	return BASE_IMPLEMENTATIONS
 
 
 class ExperimentalDesignMethodModel(CalibrationModel):
@@ -42,7 +41,7 @@ class ExperimentalDesignMethod(CalibrationMethodBase):
 		calibration_func: Callable,
 		specification: ExperimentalDesignMethodModel,
 		engine: str = "emukit",
-		implementation: CalibrationWorkflowBase | None = None,
+		implementation: type[CalibrationWorkflowBase] | None = None,
 	) -> None:
 		"""ExperimentalDesignMethod constructor.
 
@@ -53,7 +52,7 @@ class ExperimentalDesignMethod(CalibrationMethodBase):
 				specification.
 		    engine (str, optional): The experimental design backend.
 				Defaults to "emukit".
-			implementation (CalibrationWorkflowBase | None): The
+			implementation (type[CalibrationWorkflowBase] | None): The
 				calibration workflow implementation.
 		"""
 		super().__init__(
@@ -61,6 +60,6 @@ class ExperimentalDesignMethod(CalibrationMethodBase):
 			specification,
 			TASK,
 			engine,
-			IMPLEMENTATIONS,
+			get_implementations(),
 			implementation,
 		)

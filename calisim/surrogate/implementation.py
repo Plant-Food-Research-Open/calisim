@@ -4,34 +4,29 @@ Implements the supported surrogate modelling methods.
 
 """
 
-import importlib
 from collections.abc import Callable
 
 from pydantic import Field
 
 from ..base import CalibrationMethodBase, CalibrationWorkflowBase
 from ..data_model import CalibrationModel
-from .sklearn_wrapper import SklearnSurrogateModel
 
-TASK = "surrogate_modelling"
-IMPLEMENTATIONS: dict[str, type[CalibrationWorkflowBase]] = dict(
-	sklearn=SklearnSurrogateModel
+TASK = "surrogate"
+
+BASE_IMPLEMENTATIONS: dict[str, str] = dict(
+	sklearn=f"calisim.{TASK}.sklearn_wrapper:SklearnSurrogateModel",
+	gpytorch=f"calisim.{TASK}.gpytorch_wrapper:GPyTorchSurrogateModel",
 )
 
-if importlib.util.find_spec("gpytorch") is not None:
-	from .gpytorch_wrapper import GPyTorchSurrogateModel
 
-	IMPLEMENTATIONS["gpytorch"] = GPyTorchSurrogateModel
-
-
-def get_implementations() -> dict[str, type[CalibrationWorkflowBase]]:
+def get_implementations() -> dict[str, str]:
 	"""Get the calibration implementations for surrogate modelling.
 
 	Returns:
-		Dict[str, type[CalibrationWorkflowBase]]: The dictionary of
+		Dict[str, str]: The dictionary of
 			calibration implementations for surrogate modelling.
 	"""
-	return IMPLEMENTATIONS
+	return BASE_IMPLEMENTATIONS
 
 
 class SurrogateModelMethodModel(CalibrationModel):
@@ -55,7 +50,7 @@ class SurrogateModelMethod(CalibrationMethodBase):
 		calibration_func: Callable,
 		specification: SurrogateModelMethodModel,
 		engine: str = "sklearn",
-		implementation: CalibrationWorkflowBase | None = None,
+		implementation: type[CalibrationWorkflowBase] | None = None,
 	) -> None:
 		"""SurrogateModelMethod constructor.
 
@@ -66,7 +61,7 @@ class SurrogateModelMethod(CalibrationMethodBase):
 				specification.
 		    engine (str, optional): The surrogate modelling backend.
 				Defaults to "sklearn".
-			implementation (CalibrationWorkflowBase | None): The
+			implementation (type[CalibrationWorkflowBase] | None): The
 				calibration workflow implementation.
 		"""
 		super().__init__(
@@ -74,6 +69,6 @@ class SurrogateModelMethod(CalibrationMethodBase):
 			specification,
 			TASK,
 			engine,
-			IMPLEMENTATIONS,
+			get_implementations(),
 			implementation,
 		)

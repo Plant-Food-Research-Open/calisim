@@ -10,26 +10,24 @@ from pydantic import Field
 
 from ..base import CalibrationMethodBase, CalibrationWorkflowBase
 from ..data_model import CalibrationModel
-from .chaospy_wrapper import ChaospyUncertaintyAnalysis
-from .openturns_wrapper import OpenTurnsUncertaintyAnalysis
-from .pygpc_wrapper import PygpcUncertaintyAnalysis
 
-TASK = "uncertainty_analysis"
-IMPLEMENTATIONS: dict[str, type[CalibrationWorkflowBase]] = dict(
-	chaospy=ChaospyUncertaintyAnalysis,
-	pygpc=PygpcUncertaintyAnalysis,
-	openturns=OpenTurnsUncertaintyAnalysis,
+TASK = "uncertainty"
+
+BASE_IMPLEMENTATIONS: dict[str, str] = dict(
+	chaospy=f"calisim.{TASK}.chaospy_wrapper:ChaospyUncertaintyAnalysis",
+	pygpc=f"calisim.{TASK}.pygpc_wrapper:PygpcUncertaintyAnalysis",
+	openturns=f"calisim.{TASK}.openturns_wrapper:OpenTurnsUncertaintyAnalysis",
 )
 
 
-def get_implementations() -> dict[str, type[CalibrationWorkflowBase]]:
+def get_implementations() -> dict[str, str]:
 	"""Get the calibration implementations for the uncertainty analysis.
 
 	Returns:
-		Dict[str, type[CalibrationWorkflowBase]]: The dictionary of
+		Dict[str, str]: The dictionary of
 			calibration implementations for the uncertainty analysis.
 	"""
-	return IMPLEMENTATIONS
+	return BASE_IMPLEMENTATIONS
 
 
 class UncertaintyAnalysisMethodModel(CalibrationModel):
@@ -60,7 +58,7 @@ class UncertaintyAnalysisMethod(CalibrationMethodBase):
 		calibration_func: Callable,
 		specification: UncertaintyAnalysisMethodModel,
 		engine: str = "chaospy",
-		implementation: CalibrationWorkflowBase | None = None,
+		implementation: type[CalibrationWorkflowBase] | None = None,
 	) -> None:
 		"""UncertaintyAnalysisMethod constructor.
 
@@ -71,7 +69,7 @@ class UncertaintyAnalysisMethod(CalibrationMethodBase):
 				specification.
 		    engine (str, optional): The uncertainty analysis backend.
 				Defaults to "chaospy".
-			implementation (CalibrationWorkflowBase | None): The
+			implementation (type[CalibrationWorkflowBase] | None): The
 				calibration workflow implementation.
 		"""
 		super().__init__(
@@ -79,6 +77,6 @@ class UncertaintyAnalysisMethod(CalibrationMethodBase):
 			specification,
 			TASK,
 			engine,
-			IMPLEMENTATIONS,
+			get_implementations(),
 			implementation,
 		)

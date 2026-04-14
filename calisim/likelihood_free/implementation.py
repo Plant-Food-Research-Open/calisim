@@ -4,7 +4,6 @@ Implements the supported likelihood-free methods.
 
 """
 
-import importlib
 from collections.abc import Callable
 
 from pydantic import Field
@@ -13,22 +12,19 @@ from ..base import CalibrationMethodBase, CalibrationWorkflowBase
 from ..data_model import CalibrationModel
 
 TASK = "likelihood_free"
-IMPLEMENTATIONS: dict[str, type[CalibrationWorkflowBase]] = dict()
-
-if importlib.util.find_spec("elfi") is not None:
-	from ..experimental.likelihood_free.elfi_wrapper import ELFILikelihoodFree
-
-	IMPLEMENTATIONS["elfi"] = ELFILikelihoodFree
+BASE_IMPLEMENTATIONS: dict[str, str] = dict(
+	elfi=f"calisim.experimental.{TASK}.elfi_wrapper:ELFILikelihoodFree"
+)
 
 
-def get_implementations() -> dict[str, type[CalibrationWorkflowBase]]:
+def get_implementations() -> dict[str, str]:
 	"""Get the calibration implementations for likelihood-free.
 
 	Returns:
-		Dict[str, type[CalibrationWorkflowBase]]: The dictionary of
+		Dict[str, str]: The dictionary of
 			calibration implementations for likelihood-free.
 	"""
-	return IMPLEMENTATIONS
+	return BASE_IMPLEMENTATIONS
 
 
 class LikelihoodFreeMethodModel(CalibrationModel):
@@ -59,7 +55,7 @@ class LikelihoodFreeMethod(CalibrationMethodBase):
 		calibration_func: Callable,
 		specification: LikelihoodFreeMethodModel,
 		engine: str = "elfi",
-		implementation: CalibrationWorkflowBase | None = None,
+		implementation: type[CalibrationWorkflowBase] | None = None,
 	) -> None:
 		"""LikelihoodFreeMethod constructor.
 
@@ -70,7 +66,7 @@ class LikelihoodFreeMethod(CalibrationMethodBase):
 				calibration specification.
 		    engine (str, optional): The likelihood-free backend.
 				Defaults to "elfi".
-			implementation (CalibrationWorkflowBase | None): The
+			implementation (type[CalibrationWorkflowBase] | None): The
 				calibration workflow implementation.
 		"""
 		super().__init__(
@@ -78,6 +74,6 @@ class LikelihoodFreeMethod(CalibrationMethodBase):
 			specification,
 			TASK,
 			engine,
-			IMPLEMENTATIONS,
+			get_implementations(),
 			implementation,
 		)

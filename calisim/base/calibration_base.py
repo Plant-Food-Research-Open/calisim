@@ -5,6 +5,7 @@ simulation calibration procedures.
 
 """
 
+import importlib
 import os.path as osp
 from abc import ABC, abstractmethod
 from collections.abc import Callable
@@ -734,14 +735,16 @@ class CalibrationWorkflowBase(ABC):
 class CalibrationMethodBase(CalibrationWorkflowBase):
 	"""The calibration method abstract class."""
 
+	_RESOLVED_CACHE: dict[str, type] = {}
+
 	def __init__(
 		self,
 		calibration_func: Callable,
 		specification: CalibrationModel,
 		task: str,
 		engine: str,
-		implementations: dict[str, type[CalibrationWorkflowBase]],
-		implementation: CalibrationWorkflowBase | None = None,
+		implementations: dict[str, str],
+		implementation: type[CalibrationWorkflowBase] | None = None,
 	) -> None:
 		"""CalibrationMethodBase constructor.
 
@@ -751,9 +754,9 @@ class CalibrationMethodBase(CalibrationWorkflowBase):
 		    specification (CalibrationModel): The calibration specification.
 		    task (str): The calibration task.
 		    engine (str): The calibration implementation engine.
-		    implementations (dict[str, type[CalibrationWorkflowBase]]): The
+		    implementations (dict[str, str]): The
 		        list of supported engines.
-		    implementation (CalibrationWorkflowBase | None): The
+		    implementation (type[CalibrationWorkflowBase] | None): The
 		        calibration workflow implementation.
 		"""
 		super().__init__(calibration_func, specification, task)
@@ -764,17 +767,19 @@ class CalibrationMethodBase(CalibrationWorkflowBase):
 			if engine not in self.supported_engines:
 				raise NotImplementedError(f"Unsupported {task} engine: {engine}")
 
-			implementation_class = implementations.get(engine, None)
-			if implementation_class is None:
+			implementation_module = implementations.get(engine, None)
+			if implementation_module is None:
 				raise ValueError(
 					f"{self.task} implementation not defined for: {engine}.",
 					f"Supported engines are {', '.join(self.supported_engines)}",
 				)
+
+			implementation_class = self.resolve_implementation(implementation_module)
 			self.implementation = implementation_class(
 				calibration_func, specification, task
 			)
 		else:
-			self.implementation = implementation
+			self.implementation = implementation(calibration_func, specification, task)
 
 	def _implementation_check(self, function_name: str) -> None:
 		"""Check that the implementation is set.
@@ -846,6 +851,39 @@ class CalibrationMethodBase(CalibrationWorkflowBase):
 			return ", ".join(self.supported_engines)
 		else:
 			return self.supported_engines
+
+	def resolve_implementation(
+		self, implementation: str | type[CalibrationWorkflowBase]
+	) -> type[CalibrationWorkflowBase]:
+		"""Lazy load the implementation class from a module string.
+
+		Args:
+			implementation (str | type[CalibrationWorkflowBase]): The calibration
+				implementation.
+
+		Raises:
+			ImportError: Error raised due to missing dependencies.
+
+		Returns:
+			type[CalibrationWorkflowBase]: The calibration workflow implementation.
+		"""
+		if isinstance(implementation, str):
+			if implementation in self._RESOLVED_CACHE:
+				return self._RESOLVED_CACHE[implementation]
+
+			module_path, class_name = implementation.split(":")
+			try:
+				module = importlib.import_module(module_path)
+			except ModuleNotFoundError as e:
+				raise ImportError(
+					f"Optional dependency for {implementation} is not installed"
+				) from e
+			implementation_class = getattr(module, class_name)
+			self._RESOLVED_CACHE[implementation] = implementation_class
+		else:
+			implementation_class = implementation
+
+		return implementation_class
 
 	def get_artifacts(self) -> list[str]:
 		"""Getter method for the artifact list.

@@ -10,26 +10,24 @@ from pydantic import Field
 
 from ..base import CalibrationMethodBase, CalibrationWorkflowBase
 from ..data_model import CalibrationModel
-from .dynesty_wrapper import DynestyBayesianCalibration
-from .emcee_wrapper import EmceeBayesianCalibration
-from .openturns_wrapper import OpenTurnsBayesianCalibration
 
-TASK = "bayesian_calibration"
-IMPLEMENTATIONS: dict[str, type[CalibrationWorkflowBase]] = dict(
-	openturns=OpenTurnsBayesianCalibration,
-	emcee=EmceeBayesianCalibration,
-	dynesty=DynestyBayesianCalibration,
+TASK = "bayesian"
+
+BASE_IMPLEMENTATIONS: dict[str, str] = dict(
+	openturns=f"calisim.{TASK}.openturns_wrapper:OpenTurnsBayesianCalibration",
+	emcee=f"calisim.{TASK}.emcee_wrapper:EmceeBayesianCalibration",
+	dynesty=f"calisim.{TASK}.dynesty_wrapper:DynestyBayesianCalibration",
 )
 
 
-def get_implementations() -> dict[str, type[CalibrationWorkflowBase]]:
+def get_implementations() -> dict[str, str]:
 	"""Get the calibration implementations for Bayesian calibration.
 
 	Returns:
-		Dict[str, type[CalibrationWorkflowBase]]: The dictionary of
+		Dict[str, str]: The dictionary of
 			calibration implementations for Bayesian calibration.
 	"""
-	return IMPLEMENTATIONS
+	return BASE_IMPLEMENTATIONS
 
 
 class BayesianCalibrationMethodModel(CalibrationModel):
@@ -59,7 +57,7 @@ class BayesianCalibrationMethod(CalibrationMethodBase):
 		calibration_func: Callable,
 		specification: BayesianCalibrationMethodModel,
 		engine: str = "openturns",
-		implementation: CalibrationWorkflowBase | None = None,
+		implementation: type[CalibrationWorkflowBase] | None = None,
 	) -> None:
 		"""BayesianCalibrationMethod constructor.
 
@@ -70,7 +68,7 @@ class BayesianCalibrationMethod(CalibrationMethodBase):
 				calibration specification.
 		    engine (str, optional): The Bayesian calibration
 				backend. Defaults to "openturns".
-			implementation (CalibrationWorkflowBase | None): The
+			implementation (type[CalibrationWorkflowBase] | None): The
 				calibration workflow implementation.
 		"""
 		super().__init__(
@@ -78,6 +76,6 @@ class BayesianCalibrationMethod(CalibrationMethodBase):
 			specification,
 			TASK,
 			engine,
-			IMPLEMENTATIONS,
+			get_implementations(),
 			implementation,
 		)

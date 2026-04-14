@@ -10,24 +10,22 @@ from pydantic import Field
 
 from ..base import CalibrationMethodBase, CalibrationWorkflowBase
 from ..data_model import CalibrationModel
-from .openturns_wrapper import OpenTurnsSensitivityAnalysis
-from .salib_wrapper import SALibSensitivityAnalysis
 
-TASK = "sensitivity_analysis"
-IMPLEMENTATIONS: dict[str, type[CalibrationWorkflowBase]] = dict(
-	salib=SALibSensitivityAnalysis,
-	openturns=OpenTurnsSensitivityAnalysis,
+TASK = "sensitivity"
+BASE_IMPLEMENTATIONS: dict[str, str] = dict(
+	salib=f"calisim.{TASK}.salib_wrapper:SALibSensitivityAnalysis",
+	openturns=f"calisim.{TASK}.openturns_wrapper:OpenTurnsSensitivityAnalysis",
 )
 
 
-def get_implementations() -> dict[str, type[CalibrationWorkflowBase]]:
+def get_implementations() -> dict[str, str]:
 	"""Get the calibration implementations for sensitivity analysis.
 
 	Returns:
-		Dict[str, type[CalibrationWorkflowBase]]: The dictionary of
+		Dict[str, str]: The dictionary of
 			calibration implementations for sensitivity analysis.
 	"""
-	return IMPLEMENTATIONS
+	return BASE_IMPLEMENTATIONS
 
 
 class SensitivityAnalysisMethodModel(CalibrationModel):
@@ -51,7 +49,7 @@ class SensitivityAnalysisMethod(CalibrationMethodBase):
 		calibration_func: Callable,
 		specification: SensitivityAnalysisMethodModel,
 		engine: str = "salib",
-		implementation: CalibrationWorkflowBase | None = None,
+		implementation: type[CalibrationWorkflowBase] | None = None,
 	) -> None:
 		"""SensitivityAnalysisMethod constructor.
 
@@ -62,7 +60,7 @@ class SensitivityAnalysisMethod(CalibrationMethodBase):
 				specification.
 		    engine (str, optional): The sensitivity analysis backend.
 				Defaults to "salib".
-			implementation (CalibrationWorkflowBase | None): The calibration
+			implementation (type[CalibrationWorkflowBase] | None): The calibration
 				workflow implementation.
 		"""
 		super().__init__(
@@ -70,6 +68,6 @@ class SensitivityAnalysisMethod(CalibrationMethodBase):
 			specification,
 			TASK,
 			engine,
-			IMPLEMENTATIONS,
+			get_implementations(),
 			implementation,
 		)

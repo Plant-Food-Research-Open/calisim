@@ -4,38 +4,31 @@ Implements the supported optimisation methods.
 
 """
 
-import importlib
 from collections.abc import Callable
 
 from pydantic import Field
 
 from ..base import CalibrationMethodBase, CalibrationWorkflowBase
 from ..data_model import CalibrationModel
-from .emukit_wrapper import EmukitOptimisation
-from .openturns_wrapper import OpenTurnsOptimisation
-from .optuna_wrapper import OptunaOptimisation
 
 TASK = "optimisation"
-IMPLEMENTATIONS: dict[str, type[CalibrationWorkflowBase]] = dict(
-	optuna=OptunaOptimisation,
-	emukit=EmukitOptimisation,
-	openturns=OpenTurnsOptimisation,
+
+BASE_IMPLEMENTATIONS: dict[str, str] = dict(
+	optuna=f"calisim.{TASK}.optuna_wrapper:OptunaOptimisation",
+	emukit=f"calisim.{TASK}.emukit_wrapper:EmukitOptimisation",
+	openturns=f"calisim.{TASK}.openturns_wrapper:OpenTurnsOptimisation",
+	botorch=f"calisim.{TASK}.botorch_wrapper:BoTorchOptimisation",
 )
 
-if importlib.util.find_spec("botorch") is not None:
-	from .botorch_wrapper import BoTorchOptimisation
 
-	IMPLEMENTATIONS["botorch"] = BoTorchOptimisation
-
-
-def get_implementations() -> dict[str, type[CalibrationWorkflowBase]]:
+def get_implementations() -> dict[str, str]:
 	"""Get the calibration implementations for optimisation.
 
 	Returns:
 		Dict[str, type[CalibrationWorkflowBase]]:
 			The dictionary of calibration implementations for optimisation.
 	"""
-	return IMPLEMENTATIONS
+	return BASE_IMPLEMENTATIONS
 
 
 class OptimisationMethodModel(CalibrationModel):
@@ -65,7 +58,7 @@ class OptimisationMethod(CalibrationMethodBase):
 		calibration_func: Callable,
 		specification: OptimisationMethodModel,
 		engine: str = "optuna",
-		implementation: CalibrationWorkflowBase | None = None,
+		implementation: type[CalibrationWorkflowBase] | None = None,
 	) -> None:
 		"""OptimisationMethod constructor.
 
@@ -76,7 +69,7 @@ class OptimisationMethod(CalibrationMethodBase):
 				specification.
 		    engine (str, optional): The optimisation backend.
 				Defaults to "optuna".
-			implementation (CalibrationWorkflowBase | None): The calibration
+			implementation (type[CalibrationWorkflowBase] | None): The calibration
 				workflow implementation.
 		"""
 		super().__init__(
@@ -84,6 +77,6 @@ class OptimisationMethod(CalibrationMethodBase):
 			specification,
 			TASK,
 			engine,
-			IMPLEMENTATIONS,
+			get_implementations(),
 			implementation,
 		)

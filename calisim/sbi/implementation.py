@@ -4,7 +4,6 @@ Implements the supported simulation-based inference methods.
 
 """
 
-import importlib
 from collections.abc import Callable
 
 from pydantic import Field
@@ -12,28 +11,21 @@ from pydantic import Field
 from ..base import CalibrationMethodBase, CalibrationWorkflowBase
 from ..data_model import CalibrationModel
 
-TASK = "simulation_based_inference"
-IMPLEMENTATIONS: dict[str, type[CalibrationWorkflowBase]] = dict()
-
-if importlib.util.find_spec("lampe") is not None:
-	from .lampe_wrapper import LAMPESimulationBasedInference
-
-	IMPLEMENTATIONS["lampe"] = LAMPESimulationBasedInference
-
-if importlib.util.find_spec("sbi") is not None:
-	from .sbi_wrapper import SBISimulationBasedInference
-
-	IMPLEMENTATIONS["sbi"] = SBISimulationBasedInference
+TASK = "sbi"
+BASE_IMPLEMENTATIONS: dict[str, str] = dict(
+	lampe=f"calisim.{TASK}.lampe_wrapper:LAMPESimulationBasedInference",
+	sbi=f"calisim.{TASK}.sbi_wrapper:SBISimulationBasedInference",
+)
 
 
-def get_implementations() -> dict[str, type[CalibrationWorkflowBase]]:
+def get_implementations() -> dict[str, str]:
 	"""Get the calibration implementations for simulation-based inference.
 
 	Returns:
-		Dict[str, type[CalibrationWorkflowBase]]: The dictionary of
+		Dict[str, str]: The dictionary of
 			calibration implementations for simulation-based inference.
 	"""
-	return IMPLEMENTATIONS
+	return BASE_IMPLEMENTATIONS
 
 
 class SimulationBasedInferenceMethodModel(CalibrationModel):
@@ -56,7 +48,7 @@ class SimulationBasedInferenceMethod(CalibrationMethodBase):
 		calibration_func: Callable,
 		specification: SimulationBasedInferenceMethodModel,
 		engine: str = "sbi",
-		implementation: CalibrationWorkflowBase | None = None,
+		implementation: type[CalibrationWorkflowBase] | None = None,
 	) -> None:
 		"""SimulationBasedInferenceMethod constructor.
 
@@ -67,7 +59,7 @@ class SimulationBasedInferenceMethod(CalibrationMethodBase):
 				calibration specification.
 		    engine (str, optional): The simulation-based inference
 				backend. Defaults to "sbi".
-			implementation (CalibrationWorkflowBase | None): The
+			implementation (type[CalibrationWorkflowBase] | None): The
 				calibration workflow implementation.
 		"""
 		super().__init__(
@@ -75,6 +67,6 @@ class SimulationBasedInferenceMethod(CalibrationMethodBase):
 			specification,
 			TASK,
 			engine,
-			IMPLEMENTATIONS,
+			get_implementations(),
 			implementation,
 		)

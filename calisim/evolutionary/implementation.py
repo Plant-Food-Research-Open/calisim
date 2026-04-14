@@ -4,7 +4,6 @@ Implements the supported evolutionary algorithm methods.
 
 """
 
-import importlib
 from collections.abc import Callable
 from typing import Any
 
@@ -12,27 +11,23 @@ from pydantic import Field
 
 from ..base import CalibrationMethodBase, CalibrationWorkflowBase
 from ..data_model import CalibrationModel
-from .spotpy_wrapper import SPOTPYEvolutionary
 
 TASK = "evolutionary"
-IMPLEMENTATIONS: dict[str, type[CalibrationWorkflowBase]] = dict(
-	spotpy=SPOTPYEvolutionary
+
+BASE_IMPLEMENTATIONS: dict[str, str] = dict(
+	spotpy=f"calisim.{TASK}.spotpy_wrapper:SPOTPYEvolutionary",
+	evotorch=f"calisim.{TASK}.evotorch_wrapper:EvoTorchEvolutionary",
 )
 
-if importlib.util.find_spec("evotorch") is not None:
-	from .evotorch_wrapper import EvoTorchEvolutionary
 
-	IMPLEMENTATIONS["evotorch"] = EvoTorchEvolutionary
-
-
-def get_implementations() -> dict[str, type[CalibrationWorkflowBase]]:
+def get_implementations() -> dict[str, str]:
 	"""Get the calibration implementations for evolutionary algorithm.
 
 	Returns:
-		Dict[str, type[CalibrationWorkflowBase]]: The dictionary
+		Dict[str, str]: The dictionary
 			of calibration implementations for evolutionary algorithm.
 	"""
-	return IMPLEMENTATIONS
+	return BASE_IMPLEMENTATIONS
 
 
 class EvolutionaryMethodModel(CalibrationModel):
@@ -59,7 +54,7 @@ class EvolutionaryMethod(CalibrationMethodBase):
 		calibration_func: Callable,
 		specification: EvolutionaryMethodModel,
 		engine: str = "spotpy",
-		implementation: CalibrationWorkflowBase | None = None,
+		implementation: type[CalibrationWorkflowBase] | None = None,
 	) -> None:
 		"""EvolutionaryMethod constructor.
 
@@ -70,7 +65,7 @@ class EvolutionaryMethod(CalibrationMethodBase):
 				specification.
 		    engine (str, optional): The evolutionary algorithm backend.
 				Defaults to "spotpy".
-			implementation (CalibrationWorkflowBase | None): The
+			implementation (type[CalibrationWorkflowBase] | None): The
 				calibration workflow implementation.
 		"""
 		super().__init__(
@@ -78,6 +73,6 @@ class EvolutionaryMethod(CalibrationMethodBase):
 			specification,
 			TASK,
 			engine,
-			IMPLEMENTATIONS,
+			get_implementations(),
 			implementation,
 		)
