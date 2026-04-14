@@ -10,15 +10,13 @@ import os.path as osp
 from abc import ABC, abstractmethod
 from collections.abc import Callable
 from functools import wraps
+from importlib.metadata import entry_points
 from typing import Any
 
 import numpy as np
 import pandas as pd
-import shap
-import uncertainty_toolbox as uct
 from matplotlib import pyplot as plt
 from matplotlib.figure import Figure
-from shap import KernelExplainer
 from sklearn.base import BaseEstimator
 
 from ..data_model import (
@@ -522,6 +520,9 @@ class CalibrationWorkflowBase(ABC):
 		    test_size (float, optional): The test dataset size. Defaults to 0.
 		    outfile (str | None, optional): The output file. Defaults to None.
 		"""
+		import shap
+		from shap import KernelExplainer
+
 		if test_size == 0:
 			test_indx = 25
 		else:
@@ -565,6 +566,7 @@ class CalibrationWorkflowBase(ABC):
 		Returns:
 		    float: The uncertainty calibration metric.
 		"""
+		import uncertainty_toolbox as uct
 
 		metric_func = getattr(uct, metric)
 		score = metric_func(mu, sigma, Y, recal_model=recal_model)
@@ -581,6 +583,8 @@ class CalibrationWorkflowBase(ABC):
 		    sigma (np.ndarray): The conditional predicted standard deviations.
 		    Y (np.ndarray): The simulation output data.
 		"""
+		import uncertainty_toolbox as uct
+
 		exp_props, obs_props = uct.get_proportion_lists_vectorized(mu, sigma, y)
 		recal_model = uct.iso_recal(exp_props, obs_props)
 		emulator.recal_model = recal_model
@@ -735,7 +739,8 @@ class CalibrationWorkflowBase(ABC):
 class CalibrationMethodBase(CalibrationWorkflowBase):
 	"""The calibration method abstract class."""
 
-	_RESOLVED_CACHE: dict[str, type] = {}
+	_PLUGIN_CACHE: dict[str, dict[str, str]] = {}
+	_IMPLEMENTATION_CACHE: dict[str, type] = {}
 
 	def __init__(
 		self,
@@ -868,8 +873,8 @@ class CalibrationMethodBase(CalibrationWorkflowBase):
 			type[CalibrationWorkflowBase]: The calibration workflow implementation.
 		"""
 		if isinstance(implementation, str):
-			if implementation in self._RESOLVED_CACHE:
-				return self._RESOLVED_CACHE[implementation]
+			if implementation in self._IMPLEMENTATION_CACHE:
+				return self._IMPLEMENTATION_CACHE[implementation]
 
 			module_path, class_name = implementation.split(":")
 			try:
@@ -879,11 +884,32 @@ class CalibrationMethodBase(CalibrationWorkflowBase):
 					f"Optional dependency for {implementation} is not installed"
 				) from e
 			implementation_class = getattr(module, class_name)
-			self._RESOLVED_CACHE[implementation] = implementation_class
+			self._IMPLEMENTATION_CACHE[implementation] = implementation_class
 		else:
 			implementation_class = implementation
 
 		return implementation_class
+
+	@classmethod
+	def load_external_implementations(
+		cls: type["CalibrationMethodBase"], task: str
+	) -> dict[str, str]:
+		"""Load external implementation plugins.
+
+		Args:
+			cls (type["CalibrationMethodBase"]): The calibration method class.
+			task (str): The calibration task.
+
+		Returns:
+			dict[str, str]: The external implementation plugins.
+		"""
+		if task not in cls._PLUGIN_CACHE:
+			implementations = entry_points().select(group=f"calisim.external.{task}")
+			cls._PLUGIN_CACHE[task] = {
+				implementation.name: implementation.value
+				for implementation in implementations
+			}
+		return cls._PLUGIN_CACHE[task]
 
 	def get_artifacts(self) -> list[str]:
 		"""Getter method for the artifact list.

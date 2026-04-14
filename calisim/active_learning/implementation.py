@@ -25,7 +25,9 @@ def get_implementations() -> dict[str, str]:
 		Dict[str, str]: The dictionary
 			of calibration implementations for active learning.
 	"""
-	return BASE_IMPLEMENTATIONS
+	implementations = dict(BASE_IMPLEMENTATIONS)
+	implementations.update(CalibrationMethodBase.load_external_implementations(TASK))
+	return implementations
 
 
 class ActiveLearningMethodModel(CalibrationModel):

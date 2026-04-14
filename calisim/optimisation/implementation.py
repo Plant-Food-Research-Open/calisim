@@ -28,7 +28,9 @@ def get_implementations() -> dict[str, str]:
 		Dict[str, type[CalibrationWorkflowBase]]:
 			The dictionary of calibration implementations for optimisation.
 	"""
-	return BASE_IMPLEMENTATIONS
+	implementations = dict(BASE_IMPLEMENTATIONS)
+	implementations.update(CalibrationMethodBase.load_external_implementations(TASK))
+	return implementations
 
 
 class OptimisationMethodModel(CalibrationModel):
