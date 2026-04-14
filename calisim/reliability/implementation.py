@@ -54,7 +54,9 @@ class ReliabilityAnalysisMethod(CalibrationMethodBase):
 		calibration_func: Callable,
 		specification: ReliabilityAnalysisMethodModel,
 		engine: str = "openturns",
-		implementation: type[CalibrationWorkflowBase] | None = None,
+		implementation: type[CalibrationWorkflowBase]
+		| CalibrationWorkflowBase
+		| None = None,
 	) -> None:
 		"""ReliabilityAnalysisMethod constructor.
 
@@ -65,8 +67,8 @@ class ReliabilityAnalysisMethod(CalibrationMethodBase):
 				specification.
 		    engine (str, optional): The reliability analysis backend.
 				Defaults to "openturns".
-			implementation (type[CalibrationWorkflowBase] | None): The calibration
-				workflow implementation.
+			implementation (type[CalibrationWorkflowBase] | CalibrationWorkflowBase
+			| None): The calibration workflow implementation.
 		"""
 		super().__init__(
 			calibration_func,

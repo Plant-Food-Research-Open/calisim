@@ -52,7 +52,9 @@ class HistoryMatchingMethod(CalibrationMethodBase):
 		calibration_func: Callable,
 		specification: HistoryMatchingMethodModel,
 		engine: str = "ies",
-		implementation: type[CalibrationWorkflowBase] | None = None,
+		implementation: type[CalibrationWorkflowBase]
+		| CalibrationWorkflowBase
+		| None = None,
 	) -> None:
 		"""HistoryMatchingMethod constructor.
 
@@ -63,8 +65,8 @@ class HistoryMatchingMethod(CalibrationMethodBase):
 				specification.
 		    engine (str, optional): The history matching backend.
 				Defaults to "ies".
-			implementation (type[CalibrationWorkflowBase] | None): The
-				calibration workflow implementation.
+			implementation (type[CalibrationWorkflowBase] | CalibrationWorkflowBase
+				| None): The calibration workflow implementation.
 		"""
 		super().__init__(
 			calibration_func,

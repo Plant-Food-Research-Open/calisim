@@ -51,7 +51,9 @@ class SensitivityAnalysisMethod(CalibrationMethodBase):
 		calibration_func: Callable,
 		specification: SensitivityAnalysisMethodModel,
 		engine: str = "salib",
-		implementation: type[CalibrationWorkflowBase] | None = None,
+		implementation: type[CalibrationWorkflowBase]
+		| CalibrationWorkflowBase
+		| None = None,
 	) -> None:
 		"""SensitivityAnalysisMethod constructor.
 
@@ -62,8 +64,8 @@ class SensitivityAnalysisMethod(CalibrationMethodBase):
 				specification.
 		    engine (str, optional): The sensitivity analysis backend.
 				Defaults to "salib".
-			implementation (type[CalibrationWorkflowBase] | None): The calibration
-				workflow implementation.
+			implementation (type[CalibrationWorkflowBase] | CalibrationWorkflowBase
+				| None): The calibration workflow implementation.
 		"""
 		super().__init__(
 			calibration_func,

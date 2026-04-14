@@ -50,7 +50,9 @@ class SimulationBasedInferenceMethod(CalibrationMethodBase):
 		calibration_func: Callable,
 		specification: SimulationBasedInferenceMethodModel,
 		engine: str = "sbi",
-		implementation: type[CalibrationWorkflowBase] | None = None,
+		implementation: type[CalibrationWorkflowBase]
+		| CalibrationWorkflowBase
+		| None = None,
 	) -> None:
 		"""SimulationBasedInferenceMethod constructor.
 
@@ -61,8 +63,8 @@ class SimulationBasedInferenceMethod(CalibrationMethodBase):
 				calibration specification.
 		    engine (str, optional): The simulation-based inference
 				backend. Defaults to "sbi".
-			implementation (type[CalibrationWorkflowBase] | None): The
-				calibration workflow implementation.
+			implementation (type[CalibrationWorkflowBase] | CalibrationWorkflowBase
+				| None): The calibration workflow implementation.
 		"""
 		super().__init__(
 			calibration_func,

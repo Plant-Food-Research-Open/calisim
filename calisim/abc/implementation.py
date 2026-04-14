@@ -69,7 +69,9 @@ class ApproximateBayesianComputationMethod(CalibrationMethodBase):
 		calibration_func: Callable,
 		specification: ApproximateBayesianComputationMethodModel,
 		engine: str = "pymc",
-		implementation: type[CalibrationWorkflowBase] | None = None,
+		implementation: type[CalibrationWorkflowBase]
+		| CalibrationWorkflowBase
+		| None = None,
 	) -> None:
 		"""ApproximateBayesianComputationMethod constructor.
 
@@ -80,8 +82,8 @@ class ApproximateBayesianComputationMethod(CalibrationMethodBase):
 				calibration specification.
 		    engine (str, optional): The Approximate Bayesian
 				Computation backend. Defaults to "pymc".
-			implementation (type[CalibrationWorkflowBase] | None): The
-				calibration workflow implementation.
+			implementation (type[CalibrationWorkflowBase] | CalibrationWorkflowBase
+				| None): The calibration workflow implementation.
 		"""
 		super().__init__(
 			calibration_func,

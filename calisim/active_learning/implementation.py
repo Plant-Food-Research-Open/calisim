@@ -51,7 +51,9 @@ class ActiveLearningMethod(CalibrationMethodBase):
 		calibration_func: Callable,
 		specification: ActiveLearningMethodModel,
 		engine: str = "skactiveml",
-		implementation: type[CalibrationWorkflowBase] | None = None,
+		implementation: type[CalibrationWorkflowBase]
+		| CalibrationWorkflowBase
+		| None = None,
 	) -> None:
 		"""ActiveLearningMethod constructor.
 
@@ -62,8 +64,8 @@ class ActiveLearningMethod(CalibrationMethodBase):
 				specification.
 		    engine (str, optional): The active learning backend.
 				Defaults to "emukit".
-			implementation (type[CalibrationWorkflowBase] | None): The
-				calibration workflow implementation.
+			implementation (type[CalibrationWorkflowBase] | CalibrationWorkflowBase
+				| None): The calibration workflow implementation.
 		"""
 		super().__init__(
 			calibration_func,

@@ -60,7 +60,9 @@ class OptimisationMethod(CalibrationMethodBase):
 		calibration_func: Callable,
 		specification: OptimisationMethodModel,
 		engine: str = "optuna",
-		implementation: type[CalibrationWorkflowBase] | None = None,
+		implementation: type[CalibrationWorkflowBase]
+		| CalibrationWorkflowBase
+		| None = None,
 	) -> None:
 		"""OptimisationMethod constructor.
 
@@ -71,8 +73,8 @@ class OptimisationMethod(CalibrationMethodBase):
 				specification.
 		    engine (str, optional): The optimisation backend.
 				Defaults to "optuna".
-			implementation (type[CalibrationWorkflowBase] | None): The calibration
-				workflow implementation.
+			implementation (type[CalibrationWorkflowBase] | CalibrationWorkflowBase
+			| None): The calibration workflow implementation.
 		"""
 		super().__init__(
 			calibration_func,

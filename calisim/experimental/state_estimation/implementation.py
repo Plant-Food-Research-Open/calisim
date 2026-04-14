@@ -53,7 +53,9 @@ class StateEstimationMethod(CalibrationMethodBase):
 		calibration_func: Callable,
 		specification: StateEstimationMethodModel,
 		engine: str = "ekf",
-		implementation: type[CalibrationWorkflowBase] | None = None,
+		implementation: type[CalibrationWorkflowBase]
+		| CalibrationWorkflowBase
+		| None = None,
 	) -> None:
 		"""StateEstimationMethod constructor.
 
@@ -64,8 +66,8 @@ class StateEstimationMethod(CalibrationMethodBase):
 				specification.
 		    engine (str, optional): The state estimation backend.
 				Defaults to "ekf".
-			implementation (type[CalibrationWorkflowBase] | None): The
-				calibration workflow implementation.
+			implementation (type[CalibrationWorkflowBase] | CalibrationWorkflowBase
+				| None): The calibration workflow implementation.
 		"""
 		super().__init__(
 			calibration_func,

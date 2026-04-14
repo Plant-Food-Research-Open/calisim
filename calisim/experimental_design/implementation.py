@@ -43,7 +43,9 @@ class ExperimentalDesignMethod(CalibrationMethodBase):
 		calibration_func: Callable,
 		specification: ExperimentalDesignMethodModel,
 		engine: str = "emukit",
-		implementation: type[CalibrationWorkflowBase] | None = None,
+		implementation: type[CalibrationWorkflowBase]
+		| CalibrationWorkflowBase
+		| None = None,
 	) -> None:
 		"""ExperimentalDesignMethod constructor.
 
@@ -54,8 +56,8 @@ class ExperimentalDesignMethod(CalibrationMethodBase):
 				specification.
 		    engine (str, optional): The experimental design backend.
 				Defaults to "emukit".
-			implementation (type[CalibrationWorkflowBase] | None): The
-				calibration workflow implementation.
+			implementation (type[CalibrationWorkflowBase] | CalibrationWorkflowBase
+				| None): The calibration workflow implementation.
 		"""
 		super().__init__(
 			calibration_func,

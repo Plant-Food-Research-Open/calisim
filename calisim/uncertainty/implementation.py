@@ -60,7 +60,9 @@ class UncertaintyAnalysisMethod(CalibrationMethodBase):
 		calibration_func: Callable,
 		specification: UncertaintyAnalysisMethodModel,
 		engine: str = "chaospy",
-		implementation: type[CalibrationWorkflowBase] | None = None,
+		implementation: type[CalibrationWorkflowBase]
+		| CalibrationWorkflowBase
+		| None = None,
 	) -> None:
 		"""UncertaintyAnalysisMethod constructor.
 
@@ -71,8 +73,8 @@ class UncertaintyAnalysisMethod(CalibrationMethodBase):
 				specification.
 		    engine (str, optional): The uncertainty analysis backend.
 				Defaults to "chaospy".
-			implementation (type[CalibrationWorkflowBase] | None): The
-				calibration workflow implementation.
+			implementation (type[CalibrationWorkflowBase] | CalibrationWorkflowBase
+				| None): The calibration workflow implementation.
 		"""
 		super().__init__(
 			calibration_func,

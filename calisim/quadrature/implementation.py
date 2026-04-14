@@ -53,7 +53,9 @@ class QuadratureMethod(CalibrationMethodBase):
 		calibration_func: Callable,
 		specification: QuadratureMethodModel,
 		engine: str = "emukit",
-		implementation: type[CalibrationWorkflowBase] | None = None,
+		implementation: type[CalibrationWorkflowBase]
+		| CalibrationWorkflowBase
+		| None = None,
 	) -> None:
 		"""QuadratureMethod constructor.
 
@@ -64,8 +66,8 @@ class QuadratureMethod(CalibrationMethodBase):
 				specification.
 		    engine (str, optional): The Quadrature backend.
 				Defaults to "emukit".
-			implementation (type[CalibrationWorkflowBase] | None): The
-				calibration workflow implementation.
+			implementation (type[CalibrationWorkflowBase] | CalibrationWorkflowBase
+				| None): The calibration workflow implementation.
 		"""
 		super().__init__(
 			calibration_func,

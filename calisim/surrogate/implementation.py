@@ -52,7 +52,9 @@ class SurrogateModelMethod(CalibrationMethodBase):
 		calibration_func: Callable,
 		specification: SurrogateModelMethodModel,
 		engine: str = "sklearn",
-		implementation: type[CalibrationWorkflowBase] | None = None,
+		implementation: type[CalibrationWorkflowBase]
+		| CalibrationWorkflowBase
+		| None = None,
 	) -> None:
 		"""SurrogateModelMethod constructor.
 
@@ -63,8 +65,8 @@ class SurrogateModelMethod(CalibrationMethodBase):
 				specification.
 		    engine (str, optional): The surrogate modelling backend.
 				Defaults to "sklearn".
-			implementation (type[CalibrationWorkflowBase] | None): The
-				calibration workflow implementation.
+			implementation (type[CalibrationWorkflowBase] | CalibrationWorkflowBase
+				| None): The calibration workflow implementation.
 		"""
 		super().__init__(
 			calibration_func,

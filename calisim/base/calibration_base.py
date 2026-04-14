@@ -749,7 +749,9 @@ class CalibrationMethodBase(CalibrationWorkflowBase):
 		task: str,
 		engine: str,
 		implementations: dict[str, str],
-		implementation: type[CalibrationWorkflowBase] | None = None,
+		implementation: type[CalibrationWorkflowBase]
+		| CalibrationWorkflowBase
+		| None = None,
 	) -> None:
 		"""CalibrationMethodBase constructor.
 
@@ -761,8 +763,8 @@ class CalibrationMethodBase(CalibrationWorkflowBase):
 		    engine (str): The calibration implementation engine.
 		    implementations (dict[str, str]): The
 		        list of supported engines.
-		    implementation (type[CalibrationWorkflowBase] | None): The
-		        calibration workflow implementation.
+		    implementation (type[CalibrationWorkflowBase] | CalibrationWorkflowBase
+				| None): The calibration workflow implementation.
 		"""
 		super().__init__(calibration_func, specification, task)
 		self.engine = engine
@@ -783,8 +785,10 @@ class CalibrationMethodBase(CalibrationWorkflowBase):
 			self.implementation = implementation_class(
 				calibration_func, specification, task
 			)
-		else:
+		elif callable(implementation):
 			self.implementation = implementation(calibration_func, specification, task)
+		else:
+			self.implementation = implementation
 
 	def _implementation_check(self, function_name: str) -> None:
 		"""Check that the implementation is set.

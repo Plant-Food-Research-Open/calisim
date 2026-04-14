@@ -56,7 +56,9 @@ class EvolutionaryMethod(CalibrationMethodBase):
 		calibration_func: Callable,
 		specification: EvolutionaryMethodModel,
 		engine: str = "spotpy",
-		implementation: type[CalibrationWorkflowBase] | None = None,
+		implementation: type[CalibrationWorkflowBase]
+		| CalibrationWorkflowBase
+		| None = None,
 	) -> None:
 		"""EvolutionaryMethod constructor.
 
@@ -67,8 +69,8 @@ class EvolutionaryMethod(CalibrationMethodBase):
 				specification.
 		    engine (str, optional): The evolutionary algorithm backend.
 				Defaults to "spotpy".
-			implementation (type[CalibrationWorkflowBase] | None): The
-				calibration workflow implementation.
+			implementation (type[CalibrationWorkflowBase] | CalibrationWorkflowBase
+				| None): The calibration workflow implementation.
 		"""
 		super().__init__(
 			calibration_func,

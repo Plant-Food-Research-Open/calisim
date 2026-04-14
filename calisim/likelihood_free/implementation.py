@@ -57,7 +57,9 @@ class LikelihoodFreeMethod(CalibrationMethodBase):
 		calibration_func: Callable,
 		specification: LikelihoodFreeMethodModel,
 		engine: str = "elfi",
-		implementation: type[CalibrationWorkflowBase] | None = None,
+		implementation: type[CalibrationWorkflowBase]
+		| CalibrationWorkflowBase
+		| None = None,
 	) -> None:
 		"""LikelihoodFreeMethod constructor.
 
@@ -68,8 +70,8 @@ class LikelihoodFreeMethod(CalibrationMethodBase):
 				calibration specification.
 		    engine (str, optional): The likelihood-free backend.
 				Defaults to "elfi".
-			implementation (type[CalibrationWorkflowBase] | None): The
-				calibration workflow implementation.
+			implementation (type[CalibrationWorkflowBase] | CalibrationWorkflowBase
+				| None): The calibration workflow implementation.
 		"""
 		super().__init__(
 			calibration_func,
