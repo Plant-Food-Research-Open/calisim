@@ -1,4 +1,4 @@
-FROM ghcr.io/plant-food-research-open/calisim:0.9.0
+FROM ghcr.io/plant-food-research-open/calisim:1.0.0
 
 ARG NB_USER=jovyan
 

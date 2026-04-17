@@ -1,6 +1,26 @@
 Changelog
 =========
 
+[1.0.0] - 2026/04/18
+--------------------
+
+Added
+^^^^^
+
+* Adding extensible plugin system for custom implementations.
+* Including tutorials on custom calibrators and plugins.
+
+Changed
+^^^^^^^
+
+* Using lazy loading for implementations.
+* Modified calibration workflow constructor to support both callables and instantiated implementations.
+
+Fixed
+^^^^^
+
+* Fixed broken functional test for dynesty wrapper for Bayesian inference.
+
 [0.9.0] - 2026/04/13
 --------------------
 
@@ -11,11 +31,6 @@ Added
 * Adding support for constant parameters.
 * Adding `Hydra` wrapper class.
 * Adding `TorchX` wrapper class.
-
-Fixed
-^^^^^
-
-* Fixed broken functional test for dynesty wrapper for Bayesian inference.
 
 [0.8.0] - 2026/04/11
 --------------------
