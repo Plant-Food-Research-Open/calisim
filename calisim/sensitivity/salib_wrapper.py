@@ -4,6 +4,7 @@ Implements the supported sensitivity analysis methods using the SALib library.
 
 """
 
+import numpy as np
 import pandas as pd
 from matplotlib import pyplot as plt
 from SALib import ProblemSpec
@@ -13,6 +14,26 @@ from ..base import CalibrationWorkflowBase
 
 class SALibSensitivityAnalysis(CalibrationWorkflowBase):
 	"""The SALib sensitivity analysis method class."""
+
+	def sample_parameters(self, n_samples: int) -> np.ndarray:
+		"""Sample from the parameter space.
+
+		Args:
+			n_samples (int): The number of samples.
+
+		Returns:
+			np.ndarray: The sampled parameter values.
+		"""
+		sampler_name = self.specification.method
+		sample_func = getattr(self.sp, f"sample_{sampler_name}")
+
+		sampler_kwargs = self.specification.method_kwargs
+		if sampler_kwargs is None:
+			sampler_kwargs = {}
+		sampler_kwargs["seed"] = self.specification.random_seed
+		sample_func(n_samples, **sampler_kwargs)
+
+		return self.sp.samples
 
 	def specify(self) -> None:
 		"""Specify the parameters of the model calibration procedure."""
@@ -53,17 +74,12 @@ class SALibSensitivityAnalysis(CalibrationWorkflowBase):
 			data_type = spec.data_type
 			data_types.append(data_type)
 
-		sampler_name = self.specification.method
-		sample_func = getattr(self.sp, f"sample_{sampler_name}")
-		sampler_kwargs = self.specification.method_kwargs
-		if sampler_kwargs is None:
-			sampler_kwargs = {}
-		sampler_kwargs["seed"] = self.specification.random_seed
 		n_samples = self.specification.n_samples
-
 		sp_samples = self.specification.X
+		sampler_name = self.specification.method
+
 		if sp_samples is None:
-			sample_func(n_samples, **sampler_kwargs)
+			self.sample_parameters(n_samples)
 		else:
 			self.sp.samples = sp_samples
 
