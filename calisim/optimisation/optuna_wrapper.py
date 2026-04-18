@@ -27,6 +27,8 @@ class OptunaOptimisation(CalibrationWorkflowBase):
 			nsga=opt_samplers.NSGAIISampler,
 			qmc=opt_samplers.QMCSampler,
 			gp=opt_samplers.GPSampler,
+			random=opt_samplers.RandomSampler,
+			grid=opt_samplers.GridSampler,
 		)
 		sampler_class = supported_samplers.get(sampler_name, None)
 		if sampler_class is None:
@@ -111,6 +113,7 @@ class OptunaOptimisation(CalibrationWorkflowBase):
 		if output_labels is None:
 			output_labels = [f"objective_{i+1}" for i in range(len(directions))]
 
+		n_trials = self.specification.n_iterations
 		for i in range(len(output_labels)):
 			for plot_func in [
 				optuna.visualization.plot_edf,
@@ -120,6 +123,12 @@ class OptunaOptimisation(CalibrationWorkflowBase):
 				optuna.visualization.plot_slice,
 			]:
 				output_label = output_labels[i]
+				if (
+					n_trials <= 1
+					and plot_func == optuna.visualization.plot_param_importances
+				):
+					continue
+
 				optimisation_plot = plot_func(
 					self.study,
 					target=lambda t: t.values[i],
