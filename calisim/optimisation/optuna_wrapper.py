@@ -27,6 +27,8 @@ class OptunaOptimisation(CalibrationWorkflowBase):
 			nsga=opt_samplers.NSGAIISampler,
 			qmc=opt_samplers.QMCSampler,
 			gp=opt_samplers.GPSampler,
+			random=opt_samplers.RandomSampler,
+			grid=opt_samplers.GridSampler,
 		)
 		sampler_class = supported_samplers.get(sampler_name, None)
 		if sampler_class is None:
@@ -78,6 +80,9 @@ class OptunaOptimisation(CalibrationWorkflowBase):
 				parameters, simulation_id, observed_data, **objective_kwargs
 			)
 
+		if not self.specification.verbose:
+			optuna.logging.set_verbosity(optuna.logging.WARNING)
+
 		objective_kwargs = self.get_calibration_func_kwargs()
 
 		self.study.optimize(
@@ -101,7 +106,8 @@ class OptunaOptimisation(CalibrationWorkflowBase):
 		if output_labels is None:
 			output_labels = [f"objective_{i+1}" for i in range(len(directions))]
 
-		for i in range(len(directions)):
+		n_trials = self.specification.n_iterations
+		for i in range(len(output_labels)):
 			for plot_func in [
 				optuna.visualization.plot_edf,
 				optuna.visualization.plot_optimization_history,
@@ -109,30 +115,44 @@ class OptunaOptimisation(CalibrationWorkflowBase):
 				optuna.visualization.plot_param_importances,
 				optuna.visualization.plot_slice,
 			]:
+				output_label = output_labels[i]
+				if (
+					n_trials <= 1
+					and plot_func == optuna.visualization.plot_param_importances
+				):
+					continue
+
 				optimisation_plot = plot_func(
 					self.study,
 					target=lambda t: t.values[i],
-					target_name=output_labels[i],
+					target_name=output_label,
 				)
-				plot_name = plot_func.__name__
+				plot_name = plot_func.__name__.replace("_", "-")
 				if outdir is not None:
 					outfile = self.join(
 						outdir,
-						f"{time_now}-{task}-{experiment_name}_{plot_name}_objective_{i+1}.png",
+						f"{time_now}-{task}-{experiment_name}-{plot_name}-{output_label}.png",
 					)
 					self.append_artifact(outfile)
 					optimisation_plot.write_image(outfile)
 				else:
 					optimisation_plot.show()
 
-		if outdir is None:
-			return
+		if len(output_labels) >= 2 and len(output_labels) <= 3:
+			optimisation_plot = optuna.visualization.plot_pareto_front(
+				self.study, target_names=output_labels
+			)
+			if outdir is not None:
+				outfile = self.join(
+					outdir,
+					f"{time_now}-{task}-{experiment_name}-plot-pareto-front.png",
+				)
+				self.append_artifact(outfile)
+				optimisation_plot.write_image(outfile)
+			else:
+				optimisation_plot.show()
 
 		trials_df: pd.DataFrame = self.study.trials_dataframe()
-		outfile = self.join(outdir, f"{time_now}-{task}-{experiment_name}_trials.csv")
-		self.append_artifact(outfile)
-		trials_df.to_csv(outfile, index=False)
-
 		values = [value for value in trials_df.columns if value.startswith("value")]
 
 		trials_df_best = trials_df.sort_values(values).head(1)
@@ -143,3 +163,10 @@ class OptunaOptimisation(CalibrationWorkflowBase):
 			estimate = trials_df_best[col].item()
 			parameter_estimate = ParameterEstimateModel(name=name, estimate=estimate)
 			self.add_parameter_estimate(parameter_estimate)
+
+		if outdir is None:
+			return
+
+		outfile = self.join(outdir, f"{time_now}-{task}-{experiment_name}_trials.csv")
+		self.append_artifact(outfile)
+		trials_df.to_csv(outfile, index=False)
