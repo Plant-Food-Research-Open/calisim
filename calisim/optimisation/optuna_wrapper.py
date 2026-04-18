@@ -145,7 +145,7 @@ class OptunaOptimisation(CalibrationWorkflowBase):
 				else:
 					optimisation_plot.show()
 
-		if len(output_labels) == 2:
+		if len(output_labels) >= 2 and len(output_labels) <= 3:
 			optimisation_plot = optuna.visualization.plot_pareto_front(
 				self.study, target_names=output_labels
 			)
