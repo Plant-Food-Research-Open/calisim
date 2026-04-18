@@ -16,6 +16,34 @@ from ..data_model import ParameterDataType
 class SALibSensitivityAnalysis(CalibrationWorkflowBase):
 	"""The SALib sensitivity analysis method class."""
 
+	def sample_parameters(self, n_samples: int) -> np.ndarray:
+		"""Sample from the parameter space.
+
+		Args:
+			n_samples (int): The number of samples.
+
+		Returns:
+			np.ndarray: The sampled parameter values.
+		"""
+		sampler_name = self.specification.method
+		sample_func = getattr(self.sp, f"sample_{sampler_name}")
+
+		sampler_kwargs = self.specification.method_kwargs
+		if sampler_kwargs is None:
+			sampler_kwargs = {}
+		sampler_kwargs["seed"] = self.specification.random_seed
+		sample_func(n_samples, **sampler_kwargs)
+
+		n_replicates = self.specification.n_replicates
+		sp_results = self.specification.Y
+		if n_replicates > 1 and sp_results is None:
+			X = self.sp.samples
+			X = np.repeat(X, n_replicates, axis=0)
+			self.rng.shuffle(X)
+			self.sp.samples = X
+
+		return self.sp.samples
+
 	def specify(self) -> None:
 		"""Specify the parameters of the model calibration procedure."""
 		self.names = []
@@ -62,23 +90,11 @@ class SALibSensitivityAnalysis(CalibrationWorkflowBase):
 			data_types.append(data_type)
 
 		sampler_name = self.specification.method
-		sample_func = getattr(self.sp, f"sample_{sampler_name}")
-		sampler_kwargs = self.specification.method_kwargs
-		if sampler_kwargs is None:
-			sampler_kwargs = {}
-		sampler_kwargs["seed"] = self.specification.random_seed
 		n_samples = self.specification.n_samples
-
 		sp_samples = self.specification.X
 		sp_results = self.specification.Y
 		if sp_samples is None:
-			sample_func(n_samples, **sampler_kwargs)
-			n_replicates = self.specification.n_replicates
-			if n_replicates > 1 and sp_results is None:
-				X = self.sp.samples
-				X = np.repeat(X, n_replicates, axis=0)
-				self.rng.shuffle(X)
-				self.sp.samples = X
+			self.sample_parameters(n_samples)
 		else:
 			self.sp.samples = sp_samples
 
