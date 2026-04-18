@@ -168,3 +168,4 @@ catboost_info
 coverage.json
 md_report.md
 **/logs/
+*.bak
