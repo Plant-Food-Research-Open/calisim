@@ -10,14 +10,27 @@ authors:
   - family-names: "Zhang"
     given-names: "Jingjing"
     orcid: "https://orcid.org/0000-0001-8809-3405"
+  - family-names: "Chen"
+    given-names: "Ting-Hsuan"
+    orcid: "https://orcid.org/0000-0002-7311-8064"
   - family-names: "Zhu"
     given-names: "Junqi"
     orcid: "https://orcid.org/0000-0002-9093-651X"
+  - family-names: "Vignes"
+    given-names: "Matthieu"
+    orcid: "https://orcid.org/0000-0001-8929-2975"
+  - family-names: "Hayman"
+    given-names: "David"
+    orcid: "https://orcid.org/0000-0003-0087-3015"
+  - family-names: "Liu"
+    given-names: "Jian"
+    orcid: "https://orcid.org/0000-0002-8398-0141"
   - family-names: "Van Houtte"
     given-names: "Chris"
     orcid: "https://orcid.org/0000-0003-4428-9208"
 title: "calisim: A toolbox for the calibration and evaluation of simulation models"
 version: 1.0.0
+doi: 10.5281/zenodo.20372829
 date-released: 2026-04-18
 license: Apache-2.0
 url: "https://github.com/Plant-Food-Research-Open/calisim"
