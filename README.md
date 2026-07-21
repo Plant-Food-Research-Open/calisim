@@ -40,6 +40,7 @@ ______________________________________________________________________
 - [Communication](#communication)
 - [Contributions and Support](#contributions-and-support)
 - [License](#license)
+- [Funding and Acknowledgements](#funding-and-acknowledgements)
 
 # Introduction
 
@@ -201,3 +202,7 @@ For our community code of conduct, please also view [CODE_OF_CONDUCT.md](https:/
 calisim is published under the Apache License (see [LICENSE](https://github.com/Plant-Food-Research-Open/calisim/tree/main/LICENSE)).
 
 View all third party licenses (see [third_party](https://github.com/Plant-Food-Research-Open/calisim/tree/main/third_party))
+
+# Funding and Acknowledgements
+
+This work was funded by the New Zealand Ministry of Business, Innovation, and Employment (MBIE) through the Strategic Science Investment Fund (contract number C11X1702) as part of the Digital Horticultural Systems Ngā Pou Rangahau, a Growing Futures™ programme at Plant & Food Research. We sincerely thank the Fruit Physiology Group, orchard managers, and all those who contributed their time and effort to the management and operation of the orchards. Your dedication has been instrumental in the success of this project. Our gratitude extends to the wider Digital Horticultural Systems team for their invaluable support in the modelling and software development process. Our work would not have been possible without the considerable dedication and collaboration of all parties involved.
