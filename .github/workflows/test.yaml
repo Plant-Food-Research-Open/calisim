@@ -23,13 +23,13 @@ permissions:
   contents: write
   pull-requests: write
   issues: write
-  
+
 jobs:
   run-tests:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: ["3.10", "3.11", "3.12"]
+        python-version: ["3.11", "3.12"]
 
     steps:
       - uses: actions/checkout@v4
@@ -70,7 +70,7 @@ jobs:
           --md-report-flavor gfm --md-report-output md_report.md
 
       - name: Update Coverage Badge
-        if: matrix.python-version == 3.10 && (github.event_name == 'release' || github.event_name == 'workflow_dispatch')
+        if: matrix.python-version == 3.11 && (github.event_name == 'release' || github.event_name == 'workflow_dispatch')
         uses: we-cli/coverage-badge-action@main
 
       - name: Output reports to the job summary

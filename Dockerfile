@@ -1,4 +1,4 @@
-FROM python:3.10.13-bullseye AS base
+FROM python:3.11.14-bookworm AS base
 
 ARG BUILD_DATE
 
