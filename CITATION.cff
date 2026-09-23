@@ -34,3 +34,17 @@ doi: 10.5281/zenodo.20372829
 date-released: 2026-04-18
 license: Apache-2.0
 url: "https://github.com/Plant-Food-Research-Open/calisim"
+keywords:
+  - model calibration
+  - optimisation
+  - bayesian calibration
+  - surrogate modelling
+  - sensitivity analysis
+  - uncertainty analysis
+  - experimental design
+abstract: >
+  calisim is an open-source, low-code model calibration library that streamlines and standardises your workflows, 
+  while aiming to be as flexible and extensible as needed to support more complex use-cases. 
+  Using calisim will speed up your experiment cycle substantially and make you more productive.
+  calisim is primarily a wrapper around popular libraries and frameworks including Optuna, PyMC, scikit-learn, and emcee among many others. 
+  The design and simplicity of calisim was inspired by the scikit-learn and PyCaret libraries.
