@@ -1,6 +1,26 @@
 Changelog
 =========
 
+[1.2.0] - 2026/11/19
+--------------------
+
+Added
+^^^^^
+
+* Added shared agent instructions, project skills, specialist subagents, scoped
+  rules, and lifecycle hooks for AI-assisted development.
+* Added agent configuration validation, focused tooling tests, and CI checks.
+* Added contributor development guides, an architecture map, and a task template.
+* Added an accessibility policy and AI-assistance disclosure fields for pull requests.
+
+Changed
+^^^^^^^
+
+* Updated the AI-assisted development policy and documented Conventional Commits
+  for agents.
+* Updated citation metadata and aligned its version with the package release.
+* Updated the Binder image reference to calisim 1.2.0.
+
 [1.1.0] - 2026/09/07
 --------------------
 
