@@ -14,7 +14,7 @@ ______________________________________________________________________
 [![Lint](https://github.com/Plant-Food-Research-Open/calisim/actions/workflows/lint.yaml/badge.svg?branch=main)](https://github.com/Plant-Food-Research-Open/calisim/actions/workflows/lint.yaml)
 [![Test](https://github.com/Plant-Food-Research-Open/calisim/actions/workflows/test.yaml/badge.svg?branch=main)](https://github.com/Plant-Food-Research-Open/calisim/actions/workflows/test.yaml)
 [![Publish](https://github.com/Plant-Food-Research-Open/calisim/actions/workflows/publish.yaml/badge.svg)](https://github.com/Plant-Food-Research-Open/calisim/actions/workflows/publish.yaml)
-[![Build](https://github.com/Plant-Food-Research-Open/calisim/actions/workflows/build.yaml/badge.svg?branch=main)](https://github.com/Plant-Food-Research-Open/calisim/actions/workflows/build.yaml)
+[![Build](https://github.com/Plant-Food-Research-Open/calisim/actions/workflows/build.yaml/badge.svg)](https://github.com/Plant-Food-Research-Open/calisim/actions/workflows/build.yaml)
 [![CodeQL Advanced](https://github.com/Plant-Food-Research-Open/calisim/actions/workflows/codeql.yaml/badge.svg?branch=main)](https://github.com/Plant-Food-Research-Open/calisim/actions/workflows/codeql.yaml)
 
 [**PyPI**](https://pypi.python.org/pypi/calisim)
