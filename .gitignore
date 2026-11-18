@@ -101,6 +101,15 @@ ipython_config.py
 #   https://python-poetry.org/docs/basic-usage/#commit-your-poetrylock-file-to-version-control
 #poetry.lock
 
+# Machine-local agent settings and state (shared configuration stays tracked)
+.claude/settings.local.json
+.claude/worktrees/
+.claude/projects/
+.codex/auth.json
+.codex/history.jsonl
+.codex/sessions/
+.codex/log/
+
 # pdm
 #   Similar to Pipfile.lock, it is generally recommended to include pdm.lock in version control.
 #pdm.lock

@@ -1,0 +1,4 @@
+interface:
+  display_name: "calisim check"
+  short_description: "Run focused project checks and report evidence"
+  default_prompt: "Use $calisim-check for the relevant part of this calisim task."

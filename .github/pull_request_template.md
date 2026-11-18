@@ -25,6 +25,13 @@ Example how to mark a checkbox :-
 
 Please describe the tests that you ran to verify your changes. Provide instructions so we can reproduce.
 
+# AI assistance and human review
+
+If AI materially assisted this contribution, identify the tool and the parts it
+helped produce, checks actually run and their results, and any remaining
+limitations. State whether human review is pending or complete. Write `None`
+if there was no material AI assistance. See [AI_POLICY.md](../AI_POLICY.md).
+
 # Describe if there is any unusual behaviour of your code(Write `NA` if there isn't)
 
 A clear and concise description of it.

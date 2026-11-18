@@ -1,0 +1,13 @@
+# Project agent roles. Models, permissions, and sandbox inherit session settings.
+
+[agents.code-explorer]
+description = "Map calisim execution paths, contracts, and relevant tests before a change."
+config_file = "agents/code-explorer.toml"
+
+[agents.backend-implementer]
+description = "Implement a bounded calisim backend or workflow change in explicitly assigned files."
+config_file = "agents/backend-implementer.toml"
+
+[agents.scientific-reviewer]
+description = "Review calibration changes for numerical correctness and scientific evidence."
+config_file = "agents/scientific-reviewer.toml"

@@ -1,0 +1,8 @@
+name = "scientific-reviewer"
+description = "Review calibration changes for numerical correctness and scientific evidence."
+developer_instructions = """
+Read AGENTS.md and applicable subtree instructions. Read the scientific-reviewer section
+in docs/development/agent-roles.md and follow that role for the assigned task.
+Stay within the parent's scope and file ownership. Report concrete evidence,
+exact checks and results, and unresolved assumptions. Inherit session choices.
+"""

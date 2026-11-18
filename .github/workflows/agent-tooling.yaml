@@ -1,0 +1,41 @@
+name: Agent tooling
+
+on:
+  pull_request:
+    paths:
+      - "**/AGENTS.md"
+      - "CLAUDE.md"
+      - "AI_POLICY.md"
+      - ".agents/**"
+      - ".codex/**"
+      - ".claude/**"
+      - ".github/copilot-instructions.md"
+      - ".github/workflows/agent-tooling.yaml"
+      - ".pre-commit-config.yaml"
+      - "docs/development/**"
+      - "scripts/agents/**"
+  push:
+    branches: [main]
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+jobs:
+  check-agent-tooling:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Check configuration and local references
+        run: python scripts/agents/check_setup.py
+      - name: Install the project's Ruff hook version
+        run: python -m pip install ruff==0.7.0
+      - name: Test hooks and configuration validation
+        run: python -m unittest discover -s scripts/agents/tests -v
+      - name: Lint and check formatting
+        run: |
+          python -m ruff check scripts/agents
+          python -m ruff format --check scripts/agents

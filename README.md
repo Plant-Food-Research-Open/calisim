@@ -195,6 +195,11 @@ Please refer to the following links:
 
 Contributions are more than welcome. For general guidelines on how to contribute to this project, take a look at [CONTRIBUTING.md](https://github.com/Plant-Food-Research-Open/calisim/tree/main/CONTRIBUTING.md).
 
+For AI-assisted development, start with [AGENTS.md](AGENTS.md) and the
+[development guide](docs/development/README.md), including the architecture map
+and reusable task template. Follow the [AI-assisted development policy](AI_POLICY.md)
+when preparing contributions.
+
 For our community code of conduct, please also view [CODE_OF_CONDUCT.md](https://github.com/Plant-Food-Research-Open/calisim/tree/main/CODE_OF_CONDUCT.md).
 
 # License
